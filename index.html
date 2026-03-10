@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>TABOSAN AYU ANALYTICS LAB</title>
+
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0b1620;
+color:white;
+margin:0;
+}
+
+header{
+background:#081018;
+padding:25px;
+font-size:32px;
+text-align:center;
+font-weight:bold;
+}
+
+.container{
+width:1200px;
+margin:auto;
+padding:20px;
+}
+
+.card{
+background:#13202c;
+padding:20px;
+margin-bottom:20px;
+border-radius:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+TABOSAN AYU ANALYTICS LAB
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>月別釣果</h2>
+<div id="chart_div" style="height:400px;"></div>
+</div>
+
+</div>
+
+<script>
+
+google.charts.load('current', {'packages':['corechart']});
+
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart(){
+
+var data = google.visualization.arrayToDataTable([
+['月','釣果'],
+['6月',15],
+['7月',45],
+['8月',62],
+['9月',33]
+]);
+
+var options={
+backgroundColor:'#13202c',
+legend:{textStyle:{color:'white'}},
+hAxis:{textStyle:{color:'white'}},
+vAxis:{textStyle:{color:'white'}},
+};
+
+var chart=new google.visualization.ColumnChart(document.getElementById('chart_div'));
+
+chart.draw(data,options);
+
+}
+
+</script>
+
+</body>
+</html>
