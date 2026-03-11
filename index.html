@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -7,44 +8,167 @@
 <style>
 
 body{
-background:#081420;
+background:#081a1a;
 color:white;
 font-family:Arial;
+margin:0;
 text-align:center;
-padding-top:120px;
 }
 
-h1{
-font-size:42px;
+header{
+font-size:34px;
+padding:40px;
+font-weight:bold;
+color:#52ffe1;
+text-shadow:0 0 10px #00ffc8;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+}
+
+.card-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+padding:20px;
+}
+
+.card{
+background:#0e2a1f;
+border-radius:12px;
+padding:25px;
+box-shadow:0 0 10px rgba(0,255,170,0.3);
+transition:0.3s;
+}
+
+.card:hover{
+box-shadow:0 0 20px rgba(0,255,170,0.8);
+transform:translateY(-4px);
+}
+
+.title{
+font-size:14px;
+opacity:0.8;
+}
+
+.value{
+font-size:28px;
+margin-top:8px;
+color:#7CFFD4;
+}
+
+.rank-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+padding:20px;
+}
+
+.rank-card{
+background:#0e2a1f;
+padding:25px;
+border-radius:12px;
+box-shadow:0 0 10px rgba(0,255,170,0.3);
+}
+
+.rank-title{
+font-size:18px;
+margin-bottom:10px;
+color:#52ffe1;
+}
+
+.button-area{
+margin:40px;
 }
 
 button{
-margin-top:40px;
 padding:15px 40px;
-font-size:20px;
-background:#3b6edc;
+font-size:18px;
 border:none;
 border-radius:8px;
+background:#00cfa5;
 color:white;
 cursor:pointer;
+margin:10px;
 }
 
 button:hover{
-background:#5a86e6;
+background:#00ffd0;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<h1>TABOSAN AYU ANALYTICS LAB</h1>
+<header>
+TABOSAN AYU ANALYTICS LAB
+</header>
 
-<p>鮎釣りデータ分析ダッシュボード</p>
+<div class="container">
+
+<div class="card-grid">
+
+<div class="card">
+<div class="title">総釣果</div>
+<div class="value">22</div>
+</div>
+
+<div class="card">
+<div class="title">釣行回数</div>
+<div class="value">2</div>
+</div>
+
+<div class="card">
+<div class="title">平均釣果</div>
+<div class="value">11</div>
+</div>
+
+<div class="card">
+<div class="title">最大サイズ</div>
+<div class="value">25</div>
+</div>
+
+</div>
+
+<div class="rank-grid">
+
+<div class="rank-card">
+<div class="rank-title">ポイントランキング</div>
+白鳥 17<br>
+大和 5
+</div>
+
+<div class="rank-card">
+<div class="rank-title">竿ランキング</div>
+TF 10<br>
+AD 7<br>
+FW 5
+</div>
+
+<div class="rank-card">
+<div class="rank-title">河川ランキング</div>
+長良川 22
+</div>
+
+</div>
+
+<div class="button-area">
 
 <a href="dashboard.html">
-<button>ダッシュボードを見る</button>
+<button>📊 分析を見る</button>
 </a>
+
+<a href="gallery.html">
+<button>📷 写真を見る</button>
+</a>
+
+</div>
+
+</div>
 
 </body>
 </html>
