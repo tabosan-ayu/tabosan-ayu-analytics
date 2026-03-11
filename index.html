@@ -10,13 +10,13 @@
 
 body{
 font-family:Arial;
-background:#08141f;
+background:#0b1620;
 color:white;
 margin:0;
 }
 
 header{
-background:#071018;
+background:#081018;
 padding:25px;
 font-size:32px;
 text-align:center;
@@ -24,217 +24,24 @@ font-weight:bold;
 }
 
 .container{
-width:1200px;
-margin:auto;
-padding:20px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:25px;
+padding:25px;
 }
 
 .card{
-background:#12212e;
-padding:30px;
+background:#0f1c2a;
+padding:20px;
 border-radius:10px;
-margin-top:25px;
 }
 
-.card h2{
-margin-top:0;
-}
-
-.summary-grid{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:20px;
-margin-top:20px;
-}
-
-.summary-card{
-background:#12212e;
-padding:25px;
-border-radius:10px;
-text-align:center;
-}
-
-.summary-card h3{
-margin:0;
-color:#7fc2ff;
-font-size:16px;
-}
-
-.summary-card p{
-font-size:32px;
-margin:10px 0 0 0;
-font-weight:bold;
+.chart{
+height:350px;
 }
 
 </style>
-
-<script>
-
-google.charts.load('current',{'packages':['corechart']});
-google.charts.setOnLoadCallback(init);
-
-const SHEET_ID="1VW63HjLHVUwC9w6cgnAvt-oV3cItpSSY4a5Ykq2VtXk";
-
-function sheet(name){
-return fetch(`https://opensheet.elk.sh/${SHEET_ID}/${name}`)
-.then(r=>r.json());
-}
-
-function num(v){
-return Number(v)||0;
-}
-
-function columnChart(id,title,data){
-
-const table=google.visualization.arrayToDataTable(data);
-
-const options={
-title:title,
-backgroundColor:'#12212e',
-titleTextStyle:{color:'white'},
-legend:{textStyle:{color:'white'}},
-hAxis:{textStyle:{color:'white'}},
-vAxis:{textStyle:{color:'white'}},
-chartArea:{width:'80%',height:'70%'}
-};
-
-const chart=new google.visualization.ColumnChart(document.getElementById(id));
-chart.draw(table,options);
-
-}
-
-function barChart(id,title,data){
-
-const table=google.visualization.arrayToDataTable(data);
-
-const options={
-title:title,
-backgroundColor:'#12212e',
-titleTextStyle:{color:'white'},
-legend:{textStyle:{color:'white'}},
-hAxis:{textStyle:{color:'white'}},
-vAxis:{textStyle:{color:'white'}},
-chartArea:{width:'70%',height:'70%'}
-};
-
-const chart=new google.visualization.BarChart(document.getElementById(id));
-chart.draw(table,options);
-
-}
-
-async function init(){
-
-const month=await sheet("WEB_MONTH");
-const point=await sheet("POINT_RANK");
-const size=await sheet("SIZE_RANK");
-const efficiency=await sheet("POINT_EFFICIENCY");
-const rod=await sheet("POINT_ROD");
-const river=await sheet("RIVER_MONTH");
-const time=await sheet("POINT_TIME");
-const water=await sheet("POINT_WATER_RANK");
-
-
-
-/* 月別 */
-
-let monthData=[['月','釣果']];
-
-month.forEach(r=>{
-monthData.push([r.月+"月",num(r.匹数)]);
-});
-
-columnChart("monthChart","月別釣果",monthData);
-
-
-
-/* ポイント */
-
-let pointData=[['ポイント','匹数']];
-
-point.forEach(r=>{
-pointData.push([r.ポイント,num(r.匹数)]);
-});
-
-barChart("pointChart","ポイントランキング",pointData);
-
-
-
-/* サイズ */
-
-let sizeData=[['ポイント','サイズ']];
-
-size.forEach(r=>{
-sizeData.push([r.ポイント,num(r.最大サイズ)]);
-});
-
-barChart("sizeChart","サイズランキング",sizeData);
-
-
-
-/* 効率 */
-
-let effData=[['ポイント','効率']];
-
-efficiency.forEach(r=>{
-effData.push([r.ポイント,num(r.効率)]);
-});
-
-barChart("effChart","効率ランキング",effData);
-
-
-
-/* 竿 */
-
-let rodData=[['竿','匹数']];
-
-rod.forEach(r=>{
-rodData.push([r.竿略称,num(r.匹数)]);
-});
-
-barChart("rodChart","竿ランキング",rodData);
-
-
-
-/* 河川 */
-
-let riverData=[['河川','匹数']];
-
-river.forEach(r=>{
-riverData.push([r.河川,num(r.匹数)]);
-});
-
-barChart("riverChart","河川ランキング",riverData);
-
-
-
-/* 時間 */
-
-let timeData=[['時間','匹数']];
-
-time.forEach(r=>{
-timeData.push([r.開始,num(r.匹数)]);
-});
-
-columnChart("timeChart","時間ランキング",timeData);
-
-
-
-/* 水位 */
-
-let waterData=[['水位','匹数']];
-
-water.forEach(r=>{
-waterData.push([r.水位,num(r.匹数)]);
-});
-
-barChart("waterChart","水位ランキング",waterData);
-
-}
-
-</script>
-
 </head>
-
 
 <body>
 
@@ -245,46 +52,152 @@ TABOSAN AYU ANALYTICS LAB
 <div class="container">
 
 <div class="card">
-<h2>月別釣果</h2>
-<div id="monthChart" style="height:500px"></div>
+<h3>月別釣果</h3>
+<div id="month_chart" class="chart"></div>
 </div>
 
 <div class="card">
-<h2>ポイントランキング</h2>
-<div id="pointChart" style="height:500px"></div>
+<h3>河川ランキング</h3>
+<div id="river_chart" class="chart"></div>
 </div>
 
 <div class="card">
-<h2>サイズランキング</h2>
-<div id="sizeChart" style="height:500px"></div>
+<h3>竿ランキング</h3>
+<div id="rod_chart" class="chart"></div>
 </div>
 
 <div class="card">
-<h2>効率ランキング</h2>
-<div id="effChart" style="height:500px"></div>
+<h3>水位ランキング</h3>
+<div id="water_chart" class="chart"></div>
 </div>
 
 <div class="card">
-<h2>竿ランキング</h2>
-<div id="rodChart" style="height:500px"></div>
-</div>
-
-<div class="card">
-<h2>河川ランキング</h2>
-<div id="riverChart" style="height:500px"></div>
-</div>
-
-<div class="card">
-<h2>時間ランキング</h2>
-<div id="timeChart" style="height:500px"></div>
-</div>
-
-<div class="card">
-<h2>水位ランキング</h2>
-<div id="waterChart" style="height:500px"></div>
+<h3>天候ランキング</h3>
+<div id="weather_chart" class="chart"></div>
 </div>
 
 </div>
+
+<script>
+
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawCharts);
+
+function drawCharts(){
+
+drawMonth();
+drawRiver();
+drawRod();
+drawWater();
+drawWeather();
+
+}
+
+function drawMonth(){
+
+var data = google.visualization.arrayToDataTable([
+['月','匹数'],
+['6月',22],
+['7月',0],
+['8月',0]
+]);
+
+var options = {
+backgroundColor:'#0f1c2a',
+legend:{textStyle:{color:'white'}},
+hAxis:{textStyle:{color:'white'}},
+vAxis:{textStyle:{color:'white'}},
+titleTextStyle:{color:'white'}
+};
+
+var chart = new google.visualization.ColumnChart(document.getElementById('month_chart'));
+chart.draw(data,options);
+
+}
+
+function drawRiver(){
+
+var data = google.visualization.arrayToDataTable([
+['河川','匹数'],
+['長良川',22]
+]);
+
+var options = {
+backgroundColor:'#0f1c2a',
+legend:{textStyle:{color:'white'}},
+hAxis:{textStyle:{color:'white'}},
+vAxis:{textStyle:{color:'white'}},
+titleTextStyle:{color:'white'}
+};
+
+var chart = new google.visualization.BarChart(document.getElementById('river_chart'));
+chart.draw(data,options);
+
+}
+
+function drawRod(){
+
+var data = google.visualization.arrayToDataTable([
+['竿','匹数'],
+['TF',10],
+['AD',7],
+['FW',5]
+]);
+
+var options = {
+backgroundColor:'#0f1c2a',
+legend:{textStyle:{color:'white'}},
+hAxis:{textStyle:{color:'white'}},
+vAxis:{textStyle:{color:'white'}},
+titleTextStyle:{color:'white'}
+};
+
+var chart = new google.visualization.BarChart(document.getElementById('rod_chart'));
+chart.draw(data,options);
+
+}
+
+function drawWater(){
+
+var data = google.visualization.arrayToDataTable([
+['水位','匹数'],
+['平水',22]
+]);
+
+var options = {
+backgroundColor:'#0f1c2a',
+legend:{textStyle:{color:'white'}},
+hAxis:{textStyle:{color:'white'}},
+vAxis:{textStyle:{color:'white'}},
+titleTextStyle:{color:'white'}
+};
+
+var chart = new google.visualization.BarChart(document.getElementById('water_chart'));
+chart.draw(data,options);
+
+}
+
+function drawWeather(){
+
+var data = google.visualization.arrayToDataTable([
+['天候','匹数'],
+['晴',22]
+]);
+
+var options = {
+backgroundColor:'#0f1c2a',
+legend:{textStyle:{color:'white'}},
+hAxis:{textStyle:{color:'white'}},
+vAxis:{textStyle:{color:'white'}},
+titleTextStyle:{color:'white'}
+};
+
+var chart = new google.visualization.BarChart(document.getElementById('weather_chart'));
+chart.draw(data,options);
+
+}
+
+</script>
 
 </body>
 </html>
