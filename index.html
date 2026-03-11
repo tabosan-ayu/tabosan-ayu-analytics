@@ -43,12 +43,31 @@ google.charts.setOnLoadCallback(drawChart);
 
 function drawChart(){
 
-var data = google.visualization.arrayToDataTable([
-['月','釣果'],
-['6月',10],
-['7月',5],
-['8月',7]
-]);
+fetch("https://opensheet.elk.sh/1VW63HjLHVUwC9w6cgnAvt-oV3cItpSSY4a5Ykq2VtXk/WEB_MONTH")
+.then(res => res.json())
+.then(data => {
+
+let chartData = [['月','釣果']];
+
+data.forEach(row => {
+chartData.push([row.月 + "月", Number(row.匹数)]);
+});
+
+var dataTable = google.visualization.arrayToDataTable(chartData);
+
+var options = {
+title:'月別釣果',
+backgroundColor:'#13202c',
+titleTextStyle:{color:'white'},
+legend:{textStyle:{color:'white'}},
+hAxis:{textStyle:{color:'white'}},
+vAxis:{textStyle:{color:'white'}}
+};
+
+var chart = new google.visualization.ColumnChart(document.getElementById('chart'));
+chart.draw(dataTable, options);
+
+});
 
 var options = {
 title:'月別釣果',
