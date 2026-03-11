@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <title>AYU ANALYTICS DASHBOARD</title>
 
-<script src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 
@@ -22,7 +22,7 @@ width:200px;
 height:100%;
 background:#0f1f2e;
 padding-top:30px;
-box-shadow:0 0 20px rgba(0,0,0,0.5);
+box-shadow:0 0 20px rgba(0,0,0,0.6);
 }
 
 .sidebar h2{
@@ -30,7 +30,7 @@ text-align:center;
 }
 
 .sidebar h2 a{
-color:#33d17a;
+color:#33ff99;
 text-decoration:none;
 font-size:22px;
 }
@@ -66,13 +66,13 @@ gap:25px;
 background:#13212e;
 padding:25px;
 border-radius:16px;
-box-shadow:0 0 10px rgba(0,255,170,0.15);
+box-shadow:0 0 10px rgba(0,255,170,0.2);
 transition:0.3s;
 }
 
 .card:hover{
 transform:translateY(-5px);
-box-shadow:0 0 20px rgba(0,255,170,0.6);
+box-shadow:0 0 25px rgba(0,255,170,0.6);
 }
 
 .title{
@@ -82,52 +82,14 @@ color:#7ee7b7;
 }
 
 .chart{
-height:300px;
+height:280px;
+}
+
+.bigchart{
+grid-column:span 3;
 }
 
 </style>
-
-<script>
-
-google.charts.load('current',{packages:['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-function drawChart(){
-
-var data = google.visualization.arrayToDataTable([
-['月','匹数'],
-['6月',22],
-['7月',30],
-['8月',18],
-['9月',40]
-]);
-
-var options={
-
-backgroundColor:'transparent',
-
-legend:{textStyle:{color:'white'}},
-
-hAxis:{textStyle:{color:'white'}},
-
-vAxis:{textStyle:{color:'white'}},
-
-animation:{
-startup:true,
-duration:1200,
-easing:'out'
-},
-
-colors:['#33d17a']
-};
-
-var chart=new google.visualization.AreaChart(document.getElementById('chart1'));
-
-chart.draw(data,options);
-
-}
-
-</script>
 
 </head>
 
@@ -163,25 +125,3 @@ chart.draw(data,options);
 <div class="title">最大サイズ</div>
 <h1>25cm</h1>
 </div>
-
-<div class="card">
-<div class="title">月別釣果</div>
-<div id="chart1" class="chart"></div>
-</div>
-
-<div class="card">
-<div class="title">ベストポイント</div>
-<h2>白鳥</h2>
-</div>
-
-<div class="card">
-<div class="title">ベスト竿</div>
-<h2>TF</h2>
-</div>
-
-</div>
-
-</div>
-
-</body>
-</html>
