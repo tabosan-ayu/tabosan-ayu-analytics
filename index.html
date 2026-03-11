@@ -177,7 +177,7 @@ async function initCharts(){
       .slice(0, 10)
       .map(row => [
         row.ポイント,
-        toNumber(row.効率 || row['匹/時間'] || row.平均効率)
+        toNumber(row['効率（匹/時間）'])
       ]);
 
     drawBarChart('efficiencyChart', '効率ランキング', 'ポイント', '効率', efficiencyRows);
