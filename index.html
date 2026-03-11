@@ -10,34 +10,38 @@
 
 body{
 font-family:Arial;
-background:#0b1620;
+background:#081420;
 color:white;
 margin:0;
 }
 
 header{
-background:#081018;
-padding:25px;
-font-size:32px;
 text-align:center;
+padding:20px;
+font-size:28px;
 font-weight:bold;
+background:#061018;
 }
 
 .container{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:25px;
-padding:25px;
+gap:20px;
+padding:20px;
 }
 
 .card{
-background:#0f1c2a;
+background:#0e1d2b;
 padding:20px;
 border-radius:10px;
 }
 
 .chart{
 height:350px;
+}
+
+h3{
+margin-top:0;
 }
 
 </style>
@@ -76,6 +80,11 @@ TABOSAN AYU ANALYTICS LAB
 <div id="weather_chart" class="chart"></div>
 </div>
 
+<div class="card">
+<h3>効率ランキング</h3>
+<div id="efficiency_chart" class="chart"></div>
+</div>
+
 </div>
 
 <script>
@@ -90,6 +99,7 @@ drawRiver();
 drawRod();
 drawWater();
 drawWeather();
+drawEfficiency();
 
 }
 
@@ -102,97 +112,112 @@ var data = google.visualization.arrayToDataTable([
 ['8月',0]
 ]);
 
-var options = {
-backgroundColor:'#0f1c2a',
+var options={
+backgroundColor:'#0e1d2b',
 legend:{textStyle:{color:'white'}},
 hAxis:{textStyle:{color:'white'}},
-vAxis:{textStyle:{color:'white'}},
-titleTextStyle:{color:'white'}
+vAxis:{textStyle:{color:'white'},minValue:0}
 };
 
-var chart = new google.visualization.ColumnChart(document.getElementById('month_chart'));
+var chart=new google.visualization.ColumnChart(document.getElementById('month_chart'));
 chart.draw(data,options);
 
 }
 
 function drawRiver(){
 
-var data = google.visualization.arrayToDataTable([
+var data=google.visualization.arrayToDataTable([
 ['河川','匹数'],
 ['長良川',22]
 ]);
 
-var options = {
-backgroundColor:'#0f1c2a',
+var options={
+backgroundColor:'#0e1d2b',
 legend:{textStyle:{color:'white'}},
 hAxis:{textStyle:{color:'white'}},
-vAxis:{textStyle:{color:'white'}},
-titleTextStyle:{color:'white'}
+vAxis:{textStyle:{color:'white'},minValue:0}
 };
 
-var chart = new google.visualization.BarChart(document.getElementById('river_chart'));
+var chart=new google.visualization.BarChart(document.getElementById('river_chart'));
 chart.draw(data,options);
 
 }
 
 function drawRod(){
 
-var data = google.visualization.arrayToDataTable([
+var data=google.visualization.arrayToDataTable([
 ['竿','匹数'],
 ['TF',10],
 ['AD',7],
 ['FW',5]
 ]);
 
-var options = {
-backgroundColor:'#0f1c2a',
+var options={
+backgroundColor:'#0e1d2b',
 legend:{textStyle:{color:'white'}},
 hAxis:{textStyle:{color:'white'}},
-vAxis:{textStyle:{color:'white'}},
-titleTextStyle:{color:'white'}
+vAxis:{textStyle:{color:'white'},minValue:0}
 };
 
-var chart = new google.visualization.BarChart(document.getElementById('rod_chart'));
+var chart=new google.visualization.BarChart(document.getElementById('rod_chart'));
 chart.draw(data,options);
 
 }
 
 function drawWater(){
 
-var data = google.visualization.arrayToDataTable([
+var data=google.visualization.arrayToDataTable([
 ['水位','匹数'],
 ['平水',22]
 ]);
 
-var options = {
-backgroundColor:'#0f1c2a',
+var options={
+backgroundColor:'#0e1d2b',
 legend:{textStyle:{color:'white'}},
 hAxis:{textStyle:{color:'white'}},
-vAxis:{textStyle:{color:'white'}},
-titleTextStyle:{color:'white'}
+vAxis:{textStyle:{color:'white'},minValue:0}
 };
 
-var chart = new google.visualization.BarChart(document.getElementById('water_chart'));
+var chart=new google.visualization.BarChart(document.getElementById('water_chart'));
 chart.draw(data,options);
 
 }
 
 function drawWeather(){
 
-var data = google.visualization.arrayToDataTable([
+var data=google.visualization.arrayToDataTable([
 ['天候','匹数'],
 ['晴',22]
 ]);
 
-var options = {
-backgroundColor:'#0f1c2a',
+var options={
+backgroundColor:'#0e1d2b',
 legend:{textStyle:{color:'white'}},
 hAxis:{textStyle:{color:'white'}},
-vAxis:{textStyle:{color:'white'}},
-titleTextStyle:{color:'white'}
+vAxis:{textStyle:{color:'white'},minValue:0}
 };
 
-var chart = new google.visualization.BarChart(document.getElementById('weather_chart'));
+var chart=new google.visualization.BarChart(document.getElementById('weather_chart'));
+chart.draw(data,options);
+
+}
+
+function drawEfficiency(){
+
+var data=google.visualization.arrayToDataTable([
+['ポイント','効率'],
+['白鳥',2.42],
+['大和',2.00]
+]);
+
+var options={
+backgroundColor:'#0e1d2b',
+legend:{textStyle:{color:'white'}},
+hAxis:{textStyle:{color:'white'}},
+vAxis:{textStyle:{color:'white'},minValue:0}
+};
+
+var chart=new google.visualization.BarChart(document.getElementById('efficiency_chart'));
 chart.draw(data,options);
 
 }
