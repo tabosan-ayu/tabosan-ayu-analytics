@@ -5,166 +5,186 @@
 <meta charset="UTF-8">
 <title>TABOSAN AYU ANALYTICS LAB</title>
 
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+
 <style>
 
 body{
-background:#081a1a;
-color:white;
-font-family:Arial;
 margin:0;
+font-family:Arial;
+background:#0b1620;
+color:white;
+}
+
+.sidebar{
+position:fixed;
+width:200px;
+height:100%;
+background:#0f1f2e;
+padding-top:30px;
+box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+
+.sidebar h2{
 text-align:center;
+color:#33d17a;
 }
 
-header{
-font-size:34px;
-padding:40px;
-font-weight:bold;
-color:#52ffe1;
-text-shadow:0 0 10px #00ffc8;
+.menu{
+margin-top:40px;
 }
 
-.container{
-max-width:1200px;
-margin:auto;
-}
-
-.card-grid{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:20px;
-padding:20px;
-}
-
-.card{
-background:#0e2a1f;
-border-radius:12px;
-padding:25px;
-box-shadow:0 0 10px rgba(0,255,170,0.3);
+.menu a{
+display:block;
+padding:15px 30px;
+color:white;
+text-decoration:none;
 transition:0.3s;
 }
 
+.menu a:hover{
+background:#1e3347;
+}
+
+.main{
+margin-left:200px;
+padding:30px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:25px;
+}
+
+.card{
+background:#13212e;
+padding:25px;
+border-radius:16px;
+box-shadow:0 0 10px rgba(0,255,170,0.15);
+animation:glow 4s infinite alternate;
+}
+
 .card:hover{
-box-shadow:0 0 20px rgba(0,255,170,0.8);
-transform:translateY(-4px);
+transform:translateY(-5px);
+box-shadow:0 0 20px rgba(0,255,170,0.6);
+}
+
+@keyframes glow{
+
+0%{
+box-shadow:0 0 8px rgba(0,255,170,0.2);
+}
+
+100%{
+box-shadow:0 0 18px rgba(0,255,170,0.4);
+}
+
+}
+
+.chart{
+height:300px;
 }
 
 .title{
-font-size:14px;
-opacity:0.8;
-}
-
-.value{
-font-size:28px;
-margin-top:8px;
-color:#7CFFD4;
-}
-
-.rank-grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:20px;
-padding:20px;
-}
-
-.rank-card{
-background:#0e2a1f;
-padding:25px;
-border-radius:12px;
-box-shadow:0 0 10px rgba(0,255,170,0.3);
-}
-
-.rank-title{
+margin-bottom:15px;
 font-size:18px;
-margin-bottom:10px;
-color:#52ffe1;
-}
-
-.button-area{
-margin:40px;
-}
-
-button{
-padding:15px 40px;
-font-size:18px;
-border:none;
-border-radius:8px;
-background:#00cfa5;
-color:white;
-cursor:pointer;
-margin:10px;
-}
-
-button:hover{
-background:#00ffd0;
+color:#7ee7b7;
 }
 
 </style>
+
+<script>
+
+google.charts.load('current',{packages:['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart(){
+
+var data = google.visualization.arrayToDataTable([
+['月','匹数'],
+['6月',22],
+['7月',30],
+['8月',18],
+['9月',40]
+]);
+
+var options={
+
+backgroundColor:'transparent',
+
+legend:{textStyle:{color:'white'}},
+
+hAxis:{textStyle:{color:'white'}},
+
+vAxis:{textStyle:{color:'white'}},
+
+animation:{
+startup:true,
+duration:1200,
+easing:'out'
+},
+
+colors:['#33d17a']
+};
+
+var chart=new google.visualization.AreaChart(document.getElementById('chart1'));
+
+chart.draw(data,options);
+
+}
+
+</script>
 
 </head>
 
 <body>
 
-<header>
-TABOSAN AYU ANALYTICS LAB
-</header>
+<div class="sidebar">
 
-<div class="container">
+<h2>AYU LAB</h2>
 
-<div class="card-grid">
+<div class="menu">
+
+<a href="#">ダッシュボード</a> <a href="#">河川分析</a> <a href="#">竿分析</a> <a href="#">ポイント分析</a> <a href="#">写真</a>
+
+</div>
+
+</div>
+
+<div class="main">
+
+<div class="grid">
 
 <div class="card">
 <div class="title">総釣果</div>
-<div class="value">22</div>
+<h1>22</h1>
 </div>
 
 <div class="card">
-<div class="title">釣行回数</div>
-<div class="value">2</div>
-</div>
-
-<div class="card">
-<div class="title">平均釣果</div>
-<div class="value">11</div>
+<div class="title">平均効率</div>
+<h1>2.3</h1>
 </div>
 
 <div class="card">
 <div class="title">最大サイズ</div>
-<div class="value">25</div>
+<h1>25cm</h1>
 </div>
 
+<div class="card">
+<div class="title">月別釣果</div>
+<div id="chart1" class="chart"></div>
 </div>
 
-<div class="rank-grid">
-
-<div class="rank-card">
-<div class="rank-title">ポイントランキング</div>
-白鳥 17<br>
-大和 5
+<div class="card">
+<div class="title">ベストポイント</div>
+<h2>白鳥</h2>
 </div>
 
-<div class="rank-card">
-<div class="rank-title">竿ランキング</div>
-TF 10<br>
-AD 7<br>
-FW 5
+<div class="card">
+<div class="title">ベスト竿</div>
+<h2>TF</h2>
 </div>
-
-<div class="rank-card">
-<div class="rank-title">河川ランキング</div>
-長良川 22
-</div>
-
-</div>
-
-<div class="button-area">
-
-<a href="dashboard.html">
-<button>📊 分析を見る</button>
-</a>
-
-<a href="gallery.html">
-<button>📷 写真を見る</button>
-</a>
 
 </div>
 
