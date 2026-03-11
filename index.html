@@ -5,193 +5,62 @@
 <meta charset="UTF-8">
 <title>TABOSAN AYU ANALYTICS LAB</title>
 
-<script src="https://www.gstatic.com/charts/loader.js"></script>
-
 <style>
 
 body{
 margin:0;
 font-family:Arial;
-background:#0b1620;
+background:#081620;
 color:white;
-}
-
-.sidebar{
-position:fixed;
-width:200px;
-height:100%;
-background:#0f1f2e;
-padding-top:30px;
-box-shadow:0 0 20px rgba(0,0,0,0.5);
-}
-
-.sidebar h2{
 text-align:center;
 }
 
-.sidebar h2 a{
+.container{
+margin-top:180px;
+}
+
+h1{
+font-size:42px;
 color:#33d17a;
-text-decoration:none;
-font-size:22px;
+text-shadow:0 0 20px #33d17a;
 }
 
-.menu{
-margin-top:40px;
-}
-
-.menu a{
-display:block;
-padding:15px 30px;
-color:white;
-text-decoration:none;
+button{
+margin:25px;
+padding:18px 45px;
+font-size:18px;
+border:none;
+border-radius:12px;
+background:#33d17a;
+color:#081620;
+cursor:pointer;
 transition:0.3s;
 }
 
-.menu a:hover{
-background:#1e3347;
-}
-
-.main{
-margin-left:200px;
-padding:30px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:25px;
-}
-
-.card{
-background:#13212e;
-padding:25px;
-border-radius:16px;
-box-shadow:0 0 10px rgba(0,255,170,0.15);
-animation:glow 4s infinite alternate;
-}
-
-.card:hover{
-transform:translateY(-5px);
-box-shadow:0 0 20px rgba(0,255,170,0.6);
-}
-
-@keyframes glow{
-
-0%{
-box-shadow:0 0 8px rgba(0,255,170,0.2);
-}
-
-100%{
-box-shadow:0 0 18px rgba(0,255,170,0.4);
-}
-
-}
-
-.chart{
-height:300px;
-}
-
-.title{
-margin-bottom:15px;
-font-size:18px;
-color:#7ee7b7;
+button:hover{
+transform:scale(1.05);
+box-shadow:0 0 15px #33d17a;
 }
 
 </style>
-
-<script>
-
-google.charts.load('current',{packages:['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-function drawChart(){
-
-var data = google.visualization.arrayToDataTable([
-['月','匹数'],
-['6月',22],
-['7月',30],
-['8月',18],
-['9月',40]
-]);
-
-var options={
-
-backgroundColor:'transparent',
-
-legend:{textStyle:{color:'white'}},
-
-hAxis:{textStyle:{color:'white'}},
-
-vAxis:{textStyle:{color:'white'}},
-
-animation:{
-startup:true,
-duration:1200,
-easing:'out'
-},
-
-colors:['#33d17a']
-};
-
-var chart=new google.visualization.AreaChart(document.getElementById('chart1'));
-
-chart.draw(data,options);
-
-}
-
-</script>
 
 </head>
 
 <body>
 
-<div class="sidebar">
+<div class="container">
 
-<h2><a href="index.html">AYU LAB</a></h2>
+<h1>TABOSAN AYU ANALYTICS LAB</h1>
 
-<div class="menu">
+<br>
 
-<a href="dashboard.html">ダッシュボード</a> <a href="#">河川分析</a> <a href="#">竿分析</a> <a href="#">ポイント分析</a> <a href="#">写真</a>
+<button onclick="location.href='dashboard.html'">
+📊 分析を見る
+</button>
 
-</div>
-
-</div>
-
-<div class="main">
-
-<div class="grid">
-
-<div class="card">
-<div class="title">総釣果</div>
-<h1>22</h1>
-</div>
-
-<div class="card">
-<div class="title">平均効率</div>
-<h1>2.3</h1>
-</div>
-
-<div class="card">
-<div class="title">最大サイズ</div>
-<h1>25cm</h1>
-</div>
-
-<div class="card">
-<div class="title">月別釣果</div>
-<div id="chart1" class="chart"></div>
-</div>
-
-<div class="card">
-<div class="title">ベストポイント</div>
-<h2>白鳥</h2>
-</div>
-
-<div class="card">
-<div class="title">ベスト竿</div>
-<h2>TF</h2>
-</div>
-
-</div>
+<button>
+📷 写真を見る
+</button>
 
 </div>
 
