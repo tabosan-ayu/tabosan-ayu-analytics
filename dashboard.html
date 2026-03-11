@@ -44,7 +44,6 @@ display:block;
 padding:15px 30px;
 color:white;
 text-decoration:none;
-transition:0.3s;
 }
 
 .menu a:hover{
@@ -81,10 +80,6 @@ font-size:18px;
 color:#7ee7b7;
 }
 
-.chart{
-height:280px;
-}
-
 .bigchart{
 grid-column:span 3;
 }
@@ -97,11 +92,13 @@ grid-column:span 3;
 
 <div class="sidebar">
 
-<h2><a href="index.html">AYU LAB</a></h2>
+<h2>
+<a href="index.html">AYU LAB</a>
+</h2>
 
 <div class="menu">
 
-<a href="#">ダッシュボード</a> <a href="#">河川分析</a> <a href="#">竿分析</a> <a href="#">ポイント分析</a> <a href="#">写真</a>
+<a href="#">ダッシュボード</a> <a href="#">河川分析</a> <a href="#">竿分析</a> <a href="#">ポイント分析</a>
 
 </div>
 
@@ -125,3 +122,48 @@ grid-column:span 3;
 <div class="title">最大サイズ</div>
 <h1>25cm</h1>
 </div>
+
+<div class="card bigchart">
+<div class="title">月別釣果</div>
+<canvas id="monthChart"></canvas>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const ctx=document.getElementById('monthChart').getContext('2d');
+
+const gradient=ctx.createLinearGradient(0,0,0,300);
+gradient.addColorStop(0,'rgba(0,255,170,0.7)');
+gradient.addColorStop(1,'rgba(0,255,170,0)');
+
+new Chart(ctx,{
+type:'line',
+data:{
+labels:['6月','7月','8月','9月'],
+datasets:[{
+label:'匹数',
+data:[22,30,18,40],
+borderColor:'#33ff99',
+backgroundColor:gradient,
+fill:true,
+tension:0.4,
+pointRadius:4
+}]
+},
+options:{
+plugins:{legend:{labels:{color:'white'}}},
+scales:{
+x:{ticks:{color:'white'}},
+y:{ticks:{color:'white'}}
+}
+}
+});
+
+</script>
+
+</body>
+</html>
