@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>TABOSAN AYU ANALYTICS LAB</title>
 
 <script src="https://www.gstatic.com/charts/loader.js"></script>
@@ -10,7 +11,7 @@
 <style>
 
 body{
-font-family:Arial,sans-serif;
+font-family:Arial;
 background:#0b1620;
 color:white;
 margin:0;
@@ -47,14 +48,13 @@ text-align:center;
 
 .summary-card h3{
 margin:0 0 10px 0;
-font-size:18px;
 color:#9ecbff;
 }
 
 .summary-card p{
-margin:0;
 font-size:30px;
 font-weight:bold;
+margin:0;
 }
 
 .card{
@@ -64,50 +64,26 @@ border-radius:10px;
 margin-top:20px;
 }
 
-.card h2{
-margin-top:0;
-}
-
 </style>
 
 <script>
 
-google.charts.load('current', {'packages':['corechart']});
+google.charts.load('current',{'packages':['corechart']});
 google.charts.setOnLoadCallback(initCharts);
 
-const SHEET_ID = "1VW63HjLHVUwC9w6cgnAvt-oV3cItpSSY4a5Ykq2VtXk";
+const SHEET="1VW63HjLHVUwC9w6cgnAvt-oV3cItpSSY4a5Ykq2VtXk";
 
 function fetchSheet(name){
-return fetch(`https://opensheet.elk.sh/${SHEET_ID}/${name}`)
+return fetch(`https://opensheet.elk.sh/${SHEET}/${name}`)
 .then(res=>res.json());
 }
 
-function toNumber(v){
-return Number(String(v).replace(/,/g,""))||0;
-}
+function drawBar(id,title,label,value,rows){
 
-function drawColumn(id,title,h1,h2,rows){
-
-const data = google.visualization.arrayToDataTable([[h1,h2],...rows]);
-
-const options={
-title:title,
-backgroundColor:"#13202c",
-titleTextStyle:{color:"white"},
-legend:{textStyle:{color:"white"}},
-hAxis:{textStyle:{color:"white"}},
-vAxis:{textStyle:{color:"white"}}
-};
-
-new google.visualization.ColumnChart(
-document.getElementById(id)
-).draw(data,options);
-
-}
-
-function drawBar(id,title,h1,h2,rows){
-
-const data = google.visualization.arrayToDataTable([[h1,h2],...rows]);
+const data=google.visualization.arrayToDataTable([
+[label,value],
+...rows
+]);
 
 const options={
 title:title,
@@ -124,94 +100,86 @@ document.getElementById(id)
 
 }
 
-function setText(id,v){
-document.getElementById(id).textContent=v;
+function drawColumn(id,title,label,value,rows){
+
+const data=google.visualization.arrayToDataTable([
+[label,value],
+...rows
+]);
+
+const options={
+title:title,
+backgroundColor:"#13202c",
+titleTextStyle:{color:"white"},
+legend:{textStyle:{color:"white"}},
+hAxis:{textStyle:{color:"white"}},
+vAxis:{textStyle:{color:"white"}}
+};
+
+new google.visualization.ColumnChart(
+document.getElementById(id)
+).draw(data,options);
+
 }
 
 async function initCharts(){
 
-const [
-webMonth,
-pointRank,
-sizeRank,
-pointEfficiency,
-riverMonth,
-rodRank,
-today
-] = await Promise.all([
+const month=await fetchSheet("WEB_MONTH");
+const point=await fetchSheet("POINT_RANK");
+const size=await fetchSheet("SIZE_RANK");
+const efficiency=await fetchSheet("POINT_EFFICIENCY");
+const river=await fetchSheet("RIVER_MONTH");
+const rod=await fetchSheet("POINT_ROD");
+const water=await fetchSheet("POINT_WATER_RANK");
+const time=await fetchSheet("POINT_TIME_RANK");
+const weather=await fetchSheet("POINT_WEATHER_RANK");
+const today=await fetchSheet("TODAY");
 
-fetchSheet("WEB_MONTH"),
-fetchSheet("POINT_RANK"),
-fetchSheet("SIZE_RANK"),
-fetchSheet("POINT_EFFICIENCY"),
-fetchSheet("RIVER_MONTH"),
-fetchSheet("POINT_ROD"),
-fetchSheet("TODAY")
-
-]);
-
-const monthRows = webMonth
-.filter(r=>r.月)
-.map(r=>[r.月+"月",toNumber(r.匹数)]);
-
+const monthRows=month.map(r=>[r.月+"月",Number(r.匹数)]);
 drawColumn("monthChart","月別釣果","月","釣果",monthRows);
 
-const pointRows = pointRank
-.filter(r=>r.ポイント)
-.slice(0,10)
-.map(r=>[r.ポイント,toNumber(r.総釣果||r.匹数)]);
-
+const pointRows=point.map(r=>[r.ポイント,Number(r.総釣果||r.匹数)]);
 drawBar("pointChart","ポイントランキング","ポイント","匹数",pointRows);
 
-const sizeRows = sizeRank
-.filter(r=>r.ポイント||r.河川||r.竿名)
-.slice(0,10)
-.map(r=>[
+const sizeRows=size.map(r=>[
 r.ポイント||r.河川||r.竿名,
-toNumber(r.最大サイズ||r.サイズ)
+Number(r.最大サイズ||r.サイズ)
 ]);
-
 drawBar("sizeChart","サイズランキング","項目","サイズ",sizeRows);
 
-const efficiencyRows = pointEfficiency
-.filter(r=>r.ポイント)
-.slice(0,10)
-.map(r=>[
+const effRows=efficiency.map(r=>[
 r.ポイント,
-toNumber(r["平均匹数"])
+Number(r["平均匹数"]||r.効率||0)
 ]);
+drawBar("effChart","効率ランキング","ポイント","平均匹数",effRows);
 
-drawBar("efficiencyChart","効率ランキング","ポイント","平均匹数",efficiencyRows);
-
-const riverRows = riverMonth
-.filter(r=>r.河川)
-.slice(0,10)
-.map(r=>[
-r.河川,
-toNumber(r.匹数)
-]);
-
+const riverRows=river.map(r=>[r.河川,Number(r.匹数)]);
 drawBar("riverChart","河川ランキング","河川","匹数",riverRows);
 
-const rodRows = rodRank
-.filter(r=>r.竿名)
-.slice(0,10)
-.map(r=>[
-r.竿名,
-toNumber(r.匹数)
+const rodRows=rod.map(r=>[
+r.竿略称||r.竿名,
+Number(r["sum 匹数"]||r.匹数)
 ]);
-
 drawBar("rodChart","竿ランキング","竿","匹数",rodRows);
 
-const totalCatch = monthRows.reduce((a,b)=>a+toNumber(b[1]),0);
-const trips = today.length;
-const avg = trips ? (totalCatch/trips).toFixed(1) : 0;
-const max = Math.max(...sizeRows.map(r=>toNumber(r[1])));
+const waterRows=water.map(r=>[r.水位,Number(r.匹数)]);
+drawBar("waterChart","水位ランキング","水位","匹数",waterRows);
 
-setText("totalCatch",totalCatch+"匹");
-setText("totalTrips",trips+"回");
-setText("avgCatch",avg+"匹");
-setText("maxSize",max+"cm");
+const timeRows=time.map(r=>[r.時間帯,Number(r.匹数)]);
+drawBar("timeChart","時間帯ランキング","時間帯","匹数",timeRows);
+
+const weatherRows=weather.map(r=>[r.天候,Number(r.匹数)]);
+drawBar("weatherChart","天候ランキング","天候","匹数",weatherRows);
+
+const total=monthRows.reduce((a,b)=>a+b[1],0);
+const trips=today.length;
+const avg=(total/trips).toFixed(1);
+const max=Math.max(...sizeRows.map(r=>r[1]));
+
+document.getElementById("totalCatch").innerText=total+"匹";
+document.getElementById("totalTrips").innerText=trips+"回";
+document.getElementById("avgCatch").innerText=avg+"匹";
+document.getElementById("maxSize").innerText=max+"cm";
 
 }
 
@@ -268,7 +236,7 @@ TABOSAN AYU ANALYTICS LAB
 
 <div class="card">
 <h2>効率ランキング</h2>
-<div id="efficiencyChart" style="height:500px"></div>
+<div id="effChart" style="height:500px"></div>
 </div>
 
 <div class="card">
@@ -279,6 +247,21 @@ TABOSAN AYU ANALYTICS LAB
 <div class="card">
 <h2>竿ランキング</h2>
 <div id="rodChart" style="height:500px"></div>
+</div>
+
+<div class="card">
+<h2>水位ランキング</h2>
+<div id="waterChart" style="height:500px"></div>
+</div>
+
+<div class="card">
+<h2>時間帯ランキング</h2>
+<div id="timeChart" style="height:500px"></div>
+</div>
+
+<div class="card">
+<h2>天候ランキング</h2>
+<div id="weatherChart" style="height:500px"></div>
 </div>
 
 </div>
