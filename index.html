@@ -12,7 +12,7 @@
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(160deg,#06121c,#02080f);
+background:linear-gradient(160deg,#04131d,#01070c);
 color:white;
 }
 
@@ -23,7 +23,7 @@ display:flex;
 justify-content:center;
 gap:100px;
 padding:25px;
-background:#081a28;
+background:#071a28;
 box-shadow:0 0 30px rgba(0,255,200,0.15);
 }
 
@@ -42,11 +42,18 @@ color:#33ffd2;
 
 .title{
 text-align:center;
-font-size:44px;
+font-size:46px;
 margin-top:40px;
-margin-bottom:40px;
 color:#7fffd4;
 letter-spacing:3px;
+}
+
+.line{
+width:220px;
+height:2px;
+background:#33ffd2;
+margin:15px auto 40px auto;
+box-shadow:0 0 10px #33ffd2;
 }
 
 /* カード */
@@ -61,17 +68,19 @@ padding:20px;
 }
 
 .stat{
-background:#0d2234;
+background:rgba(15,34,52,0.8);
+backdrop-filter:blur(10px);
 padding:35px 25px;
 border-radius:18px;
 text-align:center;
-box-shadow:0 0 25px rgba(0,255,200,0.08);
+border:1px solid rgba(0,255,200,0.1);
+box-shadow:0 0 25px rgba(0,255,200,0.1);
 transition:0.3s;
 }
 
 .stat:hover{
 transform:translateY(-6px);
-box-shadow:0 0 45px rgba(0,255,200,0.35);
+box-shadow:0 0 50px rgba(0,255,200,0.35);
 }
 
 .stat h3{
@@ -82,7 +91,7 @@ color:#7fffd4;
 
 .stat p{
 margin:15px 0 0 0;
-font-size:52px;
+font-size:54px;
 font-weight:bold;
 }
 
@@ -91,9 +100,11 @@ font-weight:bold;
 .chartbox{
 max-width:1500px;
 margin:60px auto;
-background:#0d2234;
+background:rgba(15,34,52,0.8);
+backdrop-filter:blur(10px);
 border-radius:20px;
 padding:40px;
+border:1px solid rgba(0,255,200,0.1);
 box-shadow:0 0 35px rgba(0,255,200,0.1);
 }
 
@@ -125,6 +136,7 @@ display:block;
 </div>
 
 <div class="title">2026 SEASON SUMMARY</div>
+<div class="line"></div>
 
 <div class="stats">
 
@@ -168,7 +180,7 @@ display:block;
 const ctx=document.getElementById("monthChart").getContext("2d");
 
 const gradient=ctx.createLinearGradient(0,0,0,300);
-gradient.addColorStop(0,"#45ffd0");
+gradient.addColorStop(0,"#33ffd2");
 gradient.addColorStop(1,"#007a6a");
 
 new Chart(ctx,{
