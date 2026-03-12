@@ -4,10 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <title>TABOSAN AYU ANALYTICS LAB</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script src="https://www.gstatic.com/charts/loader.js"></script>
-
-<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 
@@ -44,12 +43,24 @@ padding:10px;
 background:#05121a;
 position:sticky;
 top:0;
+z-index:100;
 }
 
 nav a{
 color:#7fffd4;
 text-decoration:none;
 font-size:13px;
+cursor:pointer;
+}
+
+/* PAGE */
+
+.page{
+display:none;
+}
+
+.page.active{
+display:block;
 }
 
 /* CONTAINER */
@@ -118,91 +129,35 @@ margin-bottom:10px;
 color:#7fffd4;
 }
 
-/* LIST */
+/* TABLE */
 
-.list-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:20px;
-margin-bottom:25px;
-}
-
-.list-box{
-background:#0b2435;
-padding:18px;
-border-radius:10px;
-}
-
-.list-box div{
-border-bottom:1px solid #12384a;
-padding:6px 0;
-}
-
-/* HEATMAP */
-
-.heatmap{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(40px,1fr));
-gap:6px;
-}
-
-.heat{
-height:40px;
-display:flex;
-align-items:center;
-justify-content:center;
-border-radius:4px;
-font-size:12px;
-}
-
-.h1{background:#0f2b38}
-.h2{background:#14505f}
-.h3{background:#1b7687}
-.h4{background:#24a7be}
-.h5{background:#35e3ff}
-
-/* CALENDAR */
-
-.calendar{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(70px,1fr));
-gap:6px;
-}
-
-.calendar div{
-background:#0f2b38;
-padding:10px;
-text-align:center;
-border-radius:4px;
-font-size:12px;
-}
-
-/* SEARCH */
-
-#searchBox{
+table{
 width:100%;
+border-collapse:collapse;
+}
+
+th,td{
 padding:10px;
-margin-bottom:10px;
-border-radius:6px;
-border:none;
-}
-
-#dataList li{
-padding:5px;
 border-bottom:1px solid #12384a;
+text-align:left;
 }
 
-/* MAP */
+/* PHOTO */
 
-iframe{
+.gallery{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+}
+
+.gallery img{
+width:100%;
 border-radius:10px;
 }
-
-/* FOOTER */
 
 footer{
 text-align:center;
-padding:35px;
+padding:30px;
 color:#5ac;
 font-size:12px;
 }
@@ -217,17 +172,19 @@ TABOSAN AYU ANALYTICS LAB
 </header>
 
 <nav>
-<a href="#">HOME</a>
-<a href="#">DATA</a>
-<a href="#">ANALYTICS</a>
-<a href="#">PHOTO</a>
+<a onclick="showPage('home')">HOME</a>
+<a onclick="showPage('data')">DATA</a>
+<a onclick="showPage('analytics')">ANALYTICS</a>
+<a onclick="showPage('photo')">PHOTO</a>
 </nav>
+
+<!-- HOME -->
+
+<div id="home" class="page active">
 
 <div class="container">
 
-<div class="title">
-2026 SEASON SUMMARY
-</div>
+<div class="title">2026 SEASON SUMMARY</div>
 
 <div class="cards">
 
@@ -270,6 +227,70 @@ TABOSAN AYU ANALYTICS LAB
 <div id="chart_river" style="height:260px"></div>
 </div>
 
+</div>
+
+</div>
+
+</div>
+
+<!-- DATA -->
+
+<div id="data" class="page">
+
+<div class="container">
+
+<div class="title">FISHING DATA</div>
+
+<table>
+
+<tr>
+<th>日付</th>
+<th>河川</th>
+<th>釣果</th>
+<th>最大</th>
+<th>竿</th>
+</tr>
+
+<tr>
+<td>9/12</td>
+<td>長良川中央</td>
+<td>18</td>
+<td>22cm</td>
+<td>競技SP</td>
+</tr>
+
+<tr>
+<td>9/8</td>
+<td>白川</td>
+<td>15</td>
+<td>21cm</td>
+<td>銀影エア</td>
+</tr>
+
+<tr>
+<td>9/2</td>
+<td>板取川</td>
+<td>20</td>
+<td>23cm</td>
+<td>MT急瀬</td>
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- ANALYTICS -->
+
+<div id="analytics" class="page">
+
+<div class="container">
+
+<div class="title">ANALYTICS</div>
+
+<div class="grid">
+
 <div class="chart-box">
 <div class="section-title">SIZE DISTRIBUTION</div>
 <div id="chart_size" style="height:260px"></div>
@@ -282,84 +303,26 @@ TABOSAN AYU ANALYTICS LAB
 
 </div>
 
-<div class="list-grid">
-
-<div class="list-box">
-<div class="section-title">RIVER RANKING</div>
-<div>1位 長良川中央 120匹</div>
-<div>2位 板取川 80匹</div>
-<div>3位 白川 45匹</div>
-</div>
-
-<div class="list-box">
-<div class="section-title">ROD RANKING</div>
-<div>1位 競技SP A 85匹</div>
-<div>2位 銀影エアT 70匹</div>
-<div>3位 MT急瀬 55匹</div>
 </div>
 
 </div>
 
-<div class="chart-box">
+<!-- PHOTO -->
 
-<div class="section-title">CATCH HEATMAP</div>
+<div id="photo" class="page">
 
-<div class="heatmap">
+<div class="container">
 
-<div class="heat h1">2</div>
-<div class="heat h2">6</div>
-<div class="heat h3">12</div>
-<div class="heat h4">18</div>
-<div class="heat h3">14</div>
-<div class="heat h2">8</div>
-<div class="heat h4">17</div>
-<div class="heat h5">25</div>
+<div class="title">PHOTO GALLERY</div>
 
-</div>
+<div class="gallery">
+
+<img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5">
+<img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e">
+<img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470">
+<img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e">
 
 </div>
-
-<div class="chart-box">
-
-<div class="section-title">FISHING CALENDAR</div>
-
-<div class="calendar">
-
-<div>6/1<br>2</div>
-<div>6/5<br>6</div>
-<div>6/12<br>12</div>
-<div>6/20<br>18</div>
-<div>6/28<br>14</div>
-
-</div>
-
-</div>
-
-<div class="chart-box">
-
-<div class="section-title">FISHING MAP</div>
-
-<iframe
-width="100%"
-height="400"
-src="https://maps.google.com/maps?q=長良川&t=&z=9&output=embed">
-</iframe>
-
-</div>
-
-<div class="chart-box">
-
-<div class="section-title">FISHING DATA SEARCH</div>
-
-<input id="searchBox" placeholder="河川検索">
-
-<ul id="dataList">
-
-<li>長良川中央 18匹</li>
-<li>白川 15匹</li>
-<li>板取川 20匹</li>
-
-</ul>
 
 </div>
 
@@ -374,6 +337,18 @@ AYU FISHING DATA DASHBOARD
 
 <script>
 
+function showPage(id){
+
+document.querySelectorAll(".page").forEach(p=>{
+p.classList.remove("active");
+});
+
+document.getElementById(id).classList.add("active");
+
+}
+
+/* CHART */
+
 google.charts.load('current',{packages:['corechart']});
 google.charts.setOnLoadCallback(drawCharts);
 
@@ -387,8 +362,9 @@ var m=google.visualization.arrayToDataTable([
 ['9月',55]
 ]);
 
-new google.visualization.ColumnChart(document.getElementById('chart_month'))
-.draw(m,{backgroundColor:'transparent',colors:['#35e3ff']});
+new google.visualization.ColumnChart(
+document.getElementById('chart_month')
+).draw(m,{backgroundColor:'transparent',colors:['#35e3ff']});
 
 var r=google.visualization.arrayToDataTable([
 ['河川','釣果'],
@@ -397,8 +373,9 @@ var r=google.visualization.arrayToDataTable([
 ['白川',45]
 ]);
 
-new google.visualization.PieChart(document.getElementById('chart_river'))
-.draw(r,{backgroundColor:'transparent'});
+new google.visualization.PieChart(
+document.getElementById('chart_river')
+).draw(r,{backgroundColor:'transparent'});
 
 var s=google.visualization.arrayToDataTable([
 ['サイズ','匹'],
@@ -408,8 +385,9 @@ var s=google.visualization.arrayToDataTable([
 ['22+',45]
 ]);
 
-new google.visualization.ColumnChart(document.getElementById('chart_size'))
-.draw(s,{backgroundColor:'transparent',colors:['#4df0d2']});
+new google.visualization.ColumnChart(
+document.getElementById('chart_size')
+).draw(s,{backgroundColor:'transparent',colors:['#4df0d2']});
 
 var t=google.visualization.arrayToDataTable([
 ['時間','匹'],
@@ -417,26 +395,11 @@ var t=google.visualization.arrayToDataTable([
 ['午後',125]
 ]);
 
-new google.visualization.PieChart(document.getElementById('chart_time'))
-.draw(t,{backgroundColor:'transparent'});
+new google.visualization.PieChart(
+document.getElementById('chart_time')
+).draw(t,{backgroundColor:'transparent'});
 
 }
-
-document.getElementById("searchBox").addEventListener("keyup",function(){
-
-var filter=this.value.toLowerCase();
-var list=document.getElementById("dataList").getElementsByTagName("li");
-
-for(var i=0;i<list.length;i++){
-
-var txt=list[i].textContent;
-
-list[i].style.display=
-txt.toLowerCase().indexOf(filter)>-1 ? "" : "none";
-
-}
-
-});
 
 </script>
 
