@@ -6,7 +6,6 @@
 <title>TABOSAN AYU ANALYTICS LAB</title>
 
 <script src="https://www.gstatic.com/charts/loader.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js"></script>
 
 <style>
 
@@ -96,28 +95,6 @@ transform:translateY(-6px);
 box-shadow:0 0 15px #00ffd5,0 0 30px rgba(0,255,200,.6);
 }
 
-.card:before{
-content:"";
-position:absolute;
-top:-50%;
-left:-50%;
-width:200%;
-height:200%;
-background:linear-gradient(
-120deg,
-transparent,
-rgba(0,255,200,0.25),
-transparent
-);
-transform:rotate(25deg);
-animation:shine 5s infinite;
-}
-
-@keyframes shine{
-0%{left:-150%;}
-100%{left:150%;}
-}
-
 .card-title{
 font-size:14px;
 color:#7fffd4;
@@ -179,7 +156,7 @@ font-size:14px;
 
 .heatmap{
 display:grid;
-grid-template-columns:repeat(12,1fr);
+grid-template-columns:repeat(auto-fit,minmax(40px,1fr));
 gap:6px;
 }
 
@@ -190,12 +167,6 @@ display:flex;
 align-items:center;
 justify-content:center;
 font-size:12px;
-transition:.2s;
-}
-
-.heat:hover{
-transform:scale(1.3);
-box-shadow:0 0 10px #00ffd5,0 0 20px #00ffd5;
 }
 
 .h1{background:#0f2b38}
@@ -380,7 +351,14 @@ TABOSAN AYU ANALYTICS LAB
 
 <div class="section-title">FISHING MAP</div>
 
-<div id="map" style="height:400px;"></div>
+<iframe
+width="100%"
+height="400"
+style="border:0;border-radius:8px"
+loading="lazy"
+allowfullscreen
+src="https://maps.google.com/maps?q=長良川&t=&z=9&ie=UTF8&iwloc=&output=embed">
+</iframe>
 
 </div>
 
@@ -480,23 +458,6 @@ list[i].style.display="none";
 }
 
 });
-
-function initMap(){
-
-var center={lat:35.44,lng:137.01};
-
-var map=new google.maps.Map(
-document.getElementById("map"),
-{zoom:8,center:center}
-);
-
-new google.maps.Marker({position:{lat:35.44,lng:137.01},map:map,title:"長良川"});
-new google.maps.Marker({position:{lat:35.52,lng:136.95},map:map,title:"板取川"});
-new google.maps.Marker({position:{lat:35.67,lng:137.10},map:map,title:"白川"});
-
-}
-
-initMap();
 
 </script>
 
