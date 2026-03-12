@@ -7,8 +7,6 @@
 <meta charset="UTF-8">
 <title>TABOSAN AYU ANALYTICS LAB</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 <style>
@@ -20,8 +18,6 @@ color:white;
 margin:0;
 }
 
-/* HEADER */
-
 header{
 text-align:center;
 padding:25px;
@@ -30,8 +26,6 @@ letter-spacing:4px;
 color:#7fffd4;
 background:#061520;
 }
-
-/* MENU */
 
 nav{
 display:flex;
@@ -43,20 +37,8 @@ padding:10px;
 
 nav a{
 color:#7fffd4;
-cursor:pointer;
+text-decoration:none;
 }
-
-/* PAGE */
-
-.page{
-display:none;
-}
-
-.active{
-display:block;
-}
-
-/* CONTAINER */
 
 .container{
 max-width:1100px;
@@ -70,8 +52,6 @@ font-size:34px;
 margin-bottom:30px;
 color:#6fffe9;
 }
-
-/* CARDS */
 
 .cards{
 display:grid;
@@ -97,8 +77,6 @@ font-size:24px;
 font-weight:bold;
 }
 
-/* GRID */
-
 .grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
@@ -117,31 +95,6 @@ margin-bottom:10px;
 color:#7fffd4;
 }
 
-/* DATA TABLE */
-
-table{
-width:100%;
-border-collapse:collapse;
-}
-
-th,td{
-padding:10px;
-border-bottom:1px solid #12384a;
-}
-
-/* PHOTO */
-
-.gallery{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:15px;
-}
-
-.gallery img{
-width:100%;
-border-radius:10px;
-}
-
 footer{
 text-align:center;
 padding:30px;
@@ -152,34 +105,26 @@ color:#5ac;
 
 </head>
 
-
 <body>
 
 <header>
 TABOSAN AYU ANALYTICS LAB
 </header>
 
-
 <nav>
 
-<a onclick="showPage('home')">HOME</a>
-<a onclick="showPage('data')">DATA</a>
-<a onclick="showPage('analytics')">ANALYTICS</a>
-<a onclick="showPage('photo')">PHOTO</a>
+<a href="index.html">HOME</a>
+<a href="data.html">DATA</a>
+<a href="analytics.html">ANALYTICS</a>
+<a href="photo.html">PHOTO</a>
 
 </nav>
-
-
-<!-- HOME -->
-
-<div id="home" class="page active">
 
 <div class="container">
 
 <div class="title">
 2026 SEASON SUMMARY
 </div>
-
 
 <div class="cards">
 
@@ -210,7 +155,6 @@ TABOSAN AYU ANALYTICS LAB
 
 </div>
 
-
 <div class="grid">
 
 <div class="chart-box">
@@ -222,7 +166,6 @@ MONTHLY CATCH
 <div id="chart_month" style="height:250px"></div>
 
 </div>
-
 
 <div class="chart-box">
 
@@ -238,149 +181,13 @@ RIVER CATCH
 
 </div>
 
-</div>
-
-
-
-<!-- DATA -->
-
-<div id="data" class="page">
-
-<div class="container">
-
-<div class="title">
-FISHING DATA
-</div>
-
-<table>
-
-<tr>
-<th>日付</th>
-<th>河川</th>
-<th>釣果</th>
-<th>最大</th>
-<th>竿</th>
-</tr>
-
-<tr>
-<td>9/12</td>
-<td>長良川中央</td>
-<td>18</td>
-<td>22cm</td>
-<td>競技SP</td>
-</tr>
-
-<tr>
-<td>9/8</td>
-<td>白川</td>
-<td>15</td>
-<td>21cm</td>
-<td>銀影エア</td>
-</tr>
-
-<tr>
-<td>9/2</td>
-<td>板取川</td>
-<td>20</td>
-<td>23cm</td>
-<td>MT急瀬</td>
-</tr>
-
-</table>
-
-</div>
-
-</div>
-
-
-
-<!-- ANALYTICS -->
-
-<div id="analytics" class="page">
-
-<div class="container">
-
-<div class="title">
-ANALYTICS
-</div>
-
-<div class="grid">
-
-<div class="chart-box">
-
-<div class="section-title">
-SIZE DISTRIBUTION
-</div>
-
-<div id="chart_size" style="height:250px"></div>
-
-</div>
-
-
-<div class="chart-box">
-
-<div class="section-title">
-TIME EFFICIENCY
-</div>
-
-<div id="chart_time" style="height:250px"></div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- PHOTO -->
-
-<div id="photo" class="page">
-
-<div class="container">
-
-<div class="title">
-PHOTO GALLERY
-</div>
-
-<div class="gallery">
-
-<img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e">
-<img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470">
-<img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5">
-<img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e">
-
-</div>
-
-</div>
-
-</div>
-
-
 <footer>
 
-TABOSAN AYU ANALYTICS LAB  
-AYU FISHING DATA DASHBOARD
+TABOSAN AYU ANALYTICS LAB
 
 </footer>
 
-
 <script>
-
-function showPage(id){
-
-document.querySelectorAll(".page").forEach(p=>{
-p.classList.remove("active");
-});
-
-document.getElementById(id).classList.add("active");
-
-}
-
-
-/* CHART */
 
 google.charts.load('current',{packages:['corechart']});
 google.charts.setOnLoadCallback(drawCharts);
@@ -399,7 +206,6 @@ new google.visualization.ColumnChart(
 document.getElementById('chart_month')
 ).draw(m,{backgroundColor:'transparent',colors:['#35e3ff']});
 
-
 var r=google.visualization.arrayToDataTable([
 ['河川','釣果'],
 ['長良川',120],
@@ -411,34 +217,11 @@ new google.visualization.PieChart(
 document.getElementById('chart_river')
 ).draw(r,{backgroundColor:'transparent'});
 
-
-var s=google.visualization.arrayToDataTable([
-['サイズ','匹'],
-['15-17',30],
-['18-19',80],
-['20-21',90],
-['22+',45]
-]);
-
-new google.visualization.ColumnChart(
-document.getElementById('chart_size')
-).draw(s,{backgroundColor:'transparent',colors:['#4df0d2']});
-
-
-var t=google.visualization.arrayToDataTable([
-['時間','匹'],
-['午前',120],
-['午後',125]
-]);
-
-new google.visualization.PieChart(
-document.getElementById('chart_time')
-).draw(t,{backgroundColor:'transparent'});
-
 }
 
 </script>
 
 </body>
+
 </html>
 ```
