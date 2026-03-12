@@ -16,19 +16,20 @@ box-sizing:border-box;
 }
 
 body{
-font-family:Arial,Helvetica,sans-serif;
+font-family:Arial;
 background:linear-gradient(180deg,#021018,#000a12,#00070d);
 color:white;
+height:100vh;
+overflow:hidden;
 }
 
 /* タイトル */
 
 header{
 background:#061520;
-padding:22px;
+padding:14px;
 text-align:center;
-font-size:28px;
-font-weight:bold;
+font-size:22px;
 letter-spacing:3px;
 color:#7fffd4;
 }
@@ -38,21 +39,15 @@ color:#7fffd4;
 nav{
 display:flex;
 justify-content:center;
-gap:60px;
+gap:40px;
 background:#05121a;
-padding:14px;
-border-bottom:1px solid #0a2a3a;
+padding:8px;
+font-size:13px;
 }
 
 nav a{
 color:#7fe7d6;
 text-decoration:none;
-font-size:16px;
-letter-spacing:2px;
-}
-
-nav a:hover{
-color:white;
 }
 
 /* メイン */
@@ -60,15 +55,17 @@ color:white;
 .container{
 max-width:1100px;
 margin:auto;
-padding:30px 20px;
+padding:15px;
 }
+
+/* シーズンタイトル */
 
 .title{
 text-align:center;
-font-size:36px;
-letter-spacing:5px;
+font-size:28px;
+letter-spacing:4px;
 color:#6fffe9;
-margin-bottom:30px;
+margin-bottom:12px;
 }
 
 /* カード */
@@ -76,97 +73,76 @@ margin-bottom:30px;
 .cards{
 display:grid;
 grid-template-columns:repeat(5,1fr);
-gap:18px;
-margin-bottom:30px;
+gap:12px;
+margin-bottom:12px;
 }
 
 .card{
 background:#0b2435;
-border-radius:12px;
-padding:20px 10px;
+border-radius:10px;
+padding:12px;
 text-align:center;
 box-shadow:0 0 10px rgba(0,255,200,0.25);
-cursor:pointer;
-transition:0.2s;
-}
-
-.card:hover{
-transform:scale(1.04);
 }
 
 .card-title{
-font-size:14px;
+font-size:12px;
 color:#7fffd4;
-margin-bottom:8px;
+margin-bottom:4px;
 }
 
 .card-value{
-font-size:28px;
+font-size:20px;
 font-weight:bold;
 }
 
-/* グラフ */
+/* グラフエリア */
 
-.chart-area{
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-bottom:12px;
+}
+
+.chart-box{
 background:#0b2435;
-padding:20px;
-border-radius:12px;
+padding:10px;
+border-radius:10px;
 box-shadow:0 0 10px rgba(0,255,200,0.25);
-margin-bottom:25px;
 }
 
 .section-title{
 text-align:center;
-font-size:18px;
-margin-bottom:12px;
+font-size:14px;
+margin-bottom:5px;
 color:#7fffd4;
-letter-spacing:2px;
 }
 
 /* 下段 */
 
-.bottom-area{
+.bottom{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:18px;
+gap:12px;
 }
 
-.latest{
+.box{
 background:#0b2435;
-padding:18px;
-border-radius:12px;
+padding:10px;
+border-radius:10px;
 box-shadow:0 0 10px rgba(0,255,200,0.25);
-font-size:14px;
-}
-
-.latest div{
-padding:5px 0;
-border-bottom:1px solid #12384a;
-}
-
-.ranking{
-background:#0b2435;
-padding:18px;
-border-radius:12px;
-box-shadow:0 0 10px rgba(0,255,200,0.25);
-font-size:14px;
-}
-
-.ranking div{
-padding:5px 0;
-border-bottom:1px solid #12384a;
-}
-
-footer{
-text-align:center;
-padding:20px;
 font-size:12px;
-color:#4aa;
-margin-top:20px;
+}
+
+.box div{
+padding:3px 0;
+border-bottom:1px solid #12384a;
 }
 
 </style>
 </head>
+
 
 <body>
 
@@ -176,16 +152,18 @@ TABOSAN AYU ANALYTICS LAB
 
 <nav>
 <a href="#">HOME</a>
-<a href="data.html">DATA</a>
-<a href="analytics.html">ANALYTICS</a>
-<a href="photo.html">PHOTO</a>
+<a href="#">DATA</a>
+<a href="#">ANALYTICS</a>
+<a href="#">PHOTO</a>
 </nav>
+
 
 <div class="container">
 
 <div class="title">
 2026 SEASON SUMMARY
 </div>
+
 
 <div class="cards">
 
@@ -216,34 +194,55 @@ TABOSAN AYU ANALYTICS LAB
 
 </div>
 
-<div class="chart-area">
 
+<!-- 3つの分析グラフ -->
+
+<div class="grid">
+
+<div class="chart-box">
 <div class="section-title">MONTHLY CATCH</div>
+<div id="chart_month" style="width:100%;height:160px;"></div>
+</div>
 
-<div id="monthly_chart" style="width:100%;height:320px;"></div>
+<div class="chart-box">
+<div class="section-title">RIVER CATCH</div>
+<div id="chart_river" style="width:100%;height:160px;"></div>
+</div>
+
+<div class="chart-box">
+<div class="section-title">SIZE DISTRIBUTION</div>
+<div id="chart_size" style="width:100%;height:160px;"></div>
+</div>
+
+<div class="chart-box">
+<div class="section-title">TIME EFFICIENCY</div>
+<div id="chart_time" style="width:100%;height:160px;"></div>
+</div>
 
 </div>
 
-<div class="bottom-area">
 
-<div class="latest">
+<div class="bottom">
+
+<div class="box">
 
 <div class="section-title">LATEST FISHING</div>
 
-<div>2026.9.12　長良川中央　18匹</div>
-<div>2026.9.8　白川　15匹</div>
-<div>2026.9.2　板取川　20匹</div>
-<div>2026.8.28　長良川中央　14匹</div>
+<div>9/12 長良川中央 18匹</div>
+<div>9/8 白川 15匹</div>
+<div>9/2 板取川 20匹</div>
+<div>8/28 長良川中央 14匹</div>
 
 </div>
 
-<div class="ranking">
+
+<div class="box">
 
 <div class="section-title">RIVER RANKING</div>
 
-<div>1位　長良川中央　120匹</div>
-<div>2位　板取川　80匹</div>
-<div>3位　白川　45匹</div>
+<div>1位 長良川中央 120匹</div>
+<div>2位 板取川 80匹</div>
+<div>3位 白川 45匹</div>
 
 </div>
 
@@ -251,18 +250,17 @@ TABOSAN AYU ANALYTICS LAB
 
 </div>
 
-<footer>
-TABOSAN AYU ANALYTYTICS LAB
-</footer>
 
 <script>
 
 google.charts.load('current',{packages:['corechart']});
-google.charts.setOnLoadCallback(drawChart);
+google.charts.setOnLoadCallback(drawCharts);
 
-function drawChart(){
+function drawCharts(){
 
-var data=google.visualization.arrayToDataTable([
+/* 月別 */
+
+var m=google.visualization.arrayToDataTable([
 ['月','釣果'],
 ['6月',20],
 ['7月',60],
@@ -270,17 +268,44 @@ var data=google.visualization.arrayToDataTable([
 ['9月',55]
 ]);
 
-var options={
-backgroundColor:'transparent',
-legend:{textStyle:{color:'white'}},
-hAxis:{textStyle:{color:'white'}},
-vAxis:{textStyle:{color:'white'}},
-colors:['#30e6c5']
-};
+var chart1=new google.visualization.ColumnChart(document.getElementById('chart_month'));
+chart1.draw(m,{backgroundColor:'transparent',legend:{textStyle:{color:'white'}},colors:['#30e6c5']});
 
-var chart=new google.visualization.ColumnChart(document.getElementById('monthly_chart'));
+/* 河川 */
 
-chart.draw(data,options);
+var r=google.visualization.arrayToDataTable([
+['河川','釣果'],
+['長良川',120],
+['板取川',80],
+['白川',45]
+]);
+
+var chart2=new google.visualization.PieChart(document.getElementById('chart_river'));
+chart2.draw(r,{backgroundColor:'transparent',legend:{textStyle:{color:'white'}}});
+
+/* サイズ */
+
+var s=google.visualization.arrayToDataTable([
+['サイズ','匹数'],
+['15-17',30],
+['18-19',80],
+['20-21',90],
+['22+',45]
+]);
+
+var chart3=new google.visualization.ColumnChart(document.getElementById('chart_size'));
+chart3.draw(s,{backgroundColor:'transparent',legend:{textStyle:{color:'white'}},colors:['#4df0d2']});
+
+/* 効率 */
+
+var t=google.visualization.arrayToDataTable([
+['時間','匹'],
+['午前',120],
+['午後',125]
+]);
+
+var chart4=new google.visualization.PieChart(document.getElementById('chart_time'));
+chart4.draw(t,{backgroundColor:'transparent',legend:{textStyle:{color:'white'}}});
 
 }
 
