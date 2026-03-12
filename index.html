@@ -1,218 +1,224 @@
+```html
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <title>TABOSAN AYU ANALYTICS LAB</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://www.gstatic.com/charts/loader.js"></script>
 
 <style>
 
 body{
-margin:0;
 font-family:Arial;
-background:linear-gradient(160deg,#04131d,#01070c);
+background:linear-gradient(180deg,#04121c,#021018,#000a12);
 color:white;
+margin:0;
 }
 
-/* メニュー */
-
-.topbar{
-display:flex;
-justify-content:center;
-gap:100px;
-padding:25px;
-background:#071a28;
-box-shadow:0 0 30px rgba(0,255,200,0.15);
-}
-
-.topbar a{
-color:#9fe3ff;
-text-decoration:none;
-font-size:26px;
+header{
+background:#081018;
+padding:20px;
+text-align:center;
+font-size:28px;
+font-weight:bold;
 letter-spacing:2px;
 }
 
-.topbar a:hover{
-color:#33ffd2;
+nav{
+display:flex;
+justify-content:center;
+gap:60px;
+background:#07141f;
+padding:15px;
 }
 
-/* タイトル */
+nav a{
+color:#7fe7d6;
+text-decoration:none;
+font-size:18px;
+letter-spacing:2px;
+}
+
+nav a:hover{
+color:white;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:40px 20px;
+}
 
 .title{
 text-align:center;
-font-size:46px;
-margin-top:40px;
-color:#7fffd4;
-letter-spacing:3px;
+font-size:40px;
+letter-spacing:4px;
+color:#6fffe9;
+margin-bottom:40px;
 }
 
-.line{
-width:220px;
-height:2px;
-background:#33ffd2;
-margin:15px auto 40px auto;
-box-shadow:0 0 10px #33ffd2;
+.cards{
+display:flex;
+justify-content:space-between;
+gap:20px;
+flex-wrap:wrap;
+margin-bottom:40px;
 }
 
-/* カード */
-
-.stats{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:60px;
-max-width:1500px;
-margin:auto;
-padding:20px;
-}
-
-.stat{
-background:rgba(15,34,52,0.8);
-backdrop-filter:blur(10px);
-padding:35px 25px;
-border-radius:18px;
+.card{
+flex:1;
+min-width:180px;
+background:#0d2335;
+border-radius:14px;
+padding:25px;
 text-align:center;
-border:1px solid rgba(0,255,200,0.1);
-box-shadow:0 0 25px rgba(0,255,200,0.1);
-transition:0.3s;
+box-shadow:0 0 10px rgba(0,255,200,0.2);
+cursor:pointer;
+transition:0.2s;
 }
 
-.stat:hover{
-transform:translateY(-6px);
-box-shadow:0 0 50px rgba(0,255,200,0.35);
+.card:hover{
+transform:scale(1.05);
+box-shadow:0 0 20px rgba(0,255,200,0.4);
 }
 
-.stat h3{
-margin:0;
-font-size:20px;
+.card-title{
 color:#7fffd4;
+margin-bottom:10px;
+font-size:18px;
 }
 
-.stat p{
-margin:15px 0 0 0;
-font-size:54px;
+.card-value{
+font-size:36px;
 font-weight:bold;
 }
 
-/* グラフ */
-
-.chartbox{
-max-width:1500px;
-margin:60px auto;
-background:rgba(15,34,52,0.8);
-backdrop-filter:blur(10px);
-border-radius:20px;
-padding:40px;
-border:1px solid rgba(0,255,200,0.1);
-box-shadow:0 0 35px rgba(0,255,200,0.1);
+.chart-box{
+background:#0d2335;
+padding:30px;
+border-radius:14px;
+box-shadow:0 0 10px rgba(0,255,200,0.2);
+margin-bottom:40px;
 }
 
-.charttitle{
+.section-title{
 text-align:center;
-font-size:24px;
-color:#7fffd4;
+font-size:22px;
 margin-bottom:20px;
+color:#7fffd4;
 }
 
-canvas{
-height:200px !important;
-max-width:900px;
-margin:auto;
-display:block;
+.latest{
+background:#0d2335;
+padding:25px;
+border-radius:14px;
+box-shadow:0 0 10px rgba(0,255,200,0.2);
+}
+
+.latest div{
+padding:6px 0;
+border-bottom:1px solid #123;
 }
 
 </style>
-
 </head>
 
 <body>
 
-<div class="topbar">
-<a href="index.html">HOME</a>
-<a href="#">DATA</a>
-<a href="dashboard.html">ANALYTICS</a>
-<a href="#">PHOTO</a>
+<header>
+TABOSAN AYU ANALYTICS LAB
+</header>
+
+<nav>
+<a href="#">HOME</a>
+<a href="data.html">DATA</a>
+<a href="analytics.html">ANALYTICS</a>
+<a href="photo.html">PHOTO</a>
+</nav>
+
+<div class="container">
+
+<div class="title">
+2026 SEASON SUMMARY
 </div>
 
-<div class="title">2026 SEASON SUMMARY</div>
-<div class="line"></div>
+<div class="cards">
 
-<div class="stats">
-
-<div class="stat">
-<h3>総釣果</h3>
-<p>245匹</p>
+<div class="card" onclick="location.href='analytics.html#total'">
+<div class="card-title">総釣果</div>
+<div class="card-value">245匹</div>
 </div>
 
-<div class="stat">
-<h3>釣行回数</h3>
-<p>18回</p>
+<div class="card" onclick="location.href='analytics.html#trip'">
+<div class="card-title">釣行回数</div>
+<div class="card-value">18回</div>
 </div>
 
-<div class="stat">
-<h3>平均釣果</h3>
-<p>13.6匹</p>
+<div class="card" onclick="location.href='analytics.html#average'">
+<div class="card-title">平均釣果</div>
+<div class="card-value">13.6匹</div>
 </div>
 
-<div class="stat">
-<h3>平均効率</h3>
-<p>2.4匹/h</p>
+<div class="card" onclick="location.href='analytics.html#efficiency'">
+<div class="card-title">平均効率</div>
+<div class="card-value">2.4匹/h</div>
 </div>
 
-<div class="stat">
-<h3>最大サイズ</h3>
-<p>25cm</p>
+<div class="card" onclick="location.href='analytics.html#size'">
+<div class="card-title">最大サイズ</div>
+<div class="card-value">25cm</div>
 </div>
 
 </div>
 
-<div class="chartbox">
+<div class="chart-box">
+<div class="section-title">月別釣果</div>
+<div id="monthly_chart" style="width:900px;height:400px;margin:auto;"></div>
+</div>
 
-<div class="charttitle">月別釣果</div>
+<div class="latest">
+<div class="section-title">LATEST FISHING</div>
 
-<canvas id="monthChart"></canvas>
+<div>2026.9.12　長良川中央　18匹　最大22cm</div>
+<div>2026.9.8　白川　15匹　最大21cm</div>
+<div>2026.9.2　板取川　20匹　最大23cm</div>
+<div>2026.8.28　長良川中央　14匹　最大21cm</div>
+
+</div>
 
 </div>
 
 <script>
 
-const ctx=document.getElementById("monthChart").getContext("2d");
+google.charts.load('current',{packages:['corechart']});
+google.charts.setOnLoadCallback(drawChart);
 
-const gradient=ctx.createLinearGradient(0,0,0,300);
-gradient.addColorStop(0,"#33ffd2");
-gradient.addColorStop(1,"#007a6a");
+function drawChart(){
 
-new Chart(ctx,{
-type:"bar",
-data:{
-labels:["6月","7月","8月","9月"],
-datasets:[{
-label:"釣果",
-data:[20,60,90,55],
-backgroundColor:gradient,
-borderRadius:6,
-hoverBackgroundColor:"#7fffd4"
-}]
-},
-options:{
-plugins:{
-legend:{labels:{color:"white"}}
-},
-scales:{
-x:{
-ticks:{color:"#9fe3ff"},
-grid:{display:false}
-},
-y:{
-ticks:{color:"#9fe3ff"},
-grid:{color:"rgba(255,255,255,0.05)"}
+var data=google.visualization.arrayToDataTable([
+['月','釣果'],
+['6月',20],
+['7月',60],
+['8月',90],
+['9月',55]
+]);
+
+var options={
+backgroundColor:'transparent',
+legend:{textStyle:{color:'white'}},
+hAxis:{textStyle:{color:'white'}},
+vAxis:{textStyle:{color:'white'}},
+colors:['#2ee6c9']
+};
+
+var chart=new google.visualization.ColumnChart(document.getElementById('monthly_chart'));
+
+chart.draw(data,options);
+
 }
-}
-}
-});
 
 </script>
 
 </body>
 </html>
+```
