@@ -4,7 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <title>TABOSAN AYU ANALYTICS LAB</title>
+
 <script src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js"></script>
 
 <style>
 
@@ -24,7 +26,7 @@ color:white;
 
 header{
 background:#061520;
-padding:22px;
+padding:24px;
 text-align:center;
 font-size:30px;
 letter-spacing:4px;
@@ -34,6 +36,9 @@ color:#7fffd4;
 /* MENU */
 
 nav{
+position:sticky;
+top:0;
+z-index:100;
 display:flex;
 justify-content:center;
 gap:60px;
@@ -59,7 +64,7 @@ padding:30px;
 
 .title{
 text-align:center;
-font-size:38px;
+font-size:40px;
 letter-spacing:6px;
 color:#6fffe9;
 margin-bottom:35px;
@@ -82,11 +87,35 @@ text-align:center;
 box-shadow:0 0 12px rgba(0,255,200,0.25);
 transition:.3s;
 cursor:pointer;
+position:relative;
+overflow:hidden;
 }
 
 .card:hover{
 transform:translateY(-6px);
 box-shadow:0 0 15px #00ffd5,0 0 30px rgba(0,255,200,.6);
+}
+
+.card:before{
+content:"";
+position:absolute;
+top:-50%;
+left:-50%;
+width:200%;
+height:200%;
+background:linear-gradient(
+120deg,
+transparent,
+rgba(0,255,200,0.25),
+transparent
+);
+transform:rotate(25deg);
+animation:shine 5s infinite;
+}
+
+@keyframes shine{
+0%{left:-150%;}
+100%{left:150%;}
 }
 
 .card-title{
@@ -161,6 +190,12 @@ display:flex;
 align-items:center;
 justify-content:center;
 font-size:12px;
+transition:.2s;
+}
+
+.heat:hover{
+transform:scale(1.3);
+box-shadow:0 0 10px #00ffd5,0 0 20px #00ffd5;
 }
 
 .h1{background:#0f2b38}
@@ -169,16 +204,46 @@ font-size:12px;
 .h4{background:#24a7be}
 .h5{background:#35e3ff}
 
+/* CALENDAR */
+
+.calendar{
+display:grid;
+grid-template-columns:repeat(10,1fr);
+gap:6px;
+}
+
+.calendar div{
+background:#0f2b38;
+padding:10px;
+text-align:center;
+border-radius:4px;
+font-size:12px;
+}
+
+/* SEARCH */
+
+#searchBox{
+width:100%;
+padding:10px;
+margin-bottom:10px;
+border:none;
+border-radius:6px;
+}
+
+#dataList li{
+padding:5px;
+border-bottom:1px solid #12384a;
+}
+
 footer{
 text-align:center;
-padding:30px;
+padding:40px;
 color:#5ac;
 font-size:14px;
 }
 
 </style>
 </head>
-
 
 <body>
 
@@ -199,67 +264,39 @@ TABOSAN AYU ANALYTICS LAB
 2026 SEASON SUMMARY
 </div>
 
-
-<!-- SUMMARY -->
-
 <div class="cards">
 
-<div class="card" onclick="location.href='#chart_month'">
-<div class="card-title">総釣果</div>
-<div class="card-value">245匹</div>
-</div>
-
-<div class="card" onclick="location.href='#heatmap'">
-<div class="card-title">釣行回数</div>
-<div class="card-value">18回</div>
-</div>
-
-<div class="card" onclick="location.href='#chart_river'">
-<div class="card-title">平均釣果</div>
-<div class="card-value">13.6匹</div>
-</div>
-
-<div class="card" onclick="location.href='#chart_time'">
-<div class="card-title">平均効率</div>
-<div class="card-value">2.4匹/h</div>
-</div>
-
-<div class="card" onclick="location.href='#chart_size'">
-<div class="card-title">最大サイズ</div>
-<div class="card-value">25cm</div>
-</div>
+<div class="card"><div class="card-title">総釣果</div><div class="card-value">245匹</div></div>
+<div class="card"><div class="card-title">釣行回数</div><div class="card-value">18回</div></div>
+<div class="card"><div class="card-title">平均釣果</div><div class="card-value">13.6匹</div></div>
+<div class="card"><div class="card-title">平均効率</div><div class="card-value">2.4匹/h</div></div>
+<div class="card"><div class="card-title">最大サイズ</div><div class="card-value">25cm</div></div>
 
 </div>
-
-
-<!-- CHARTS -->
 
 <div class="grid">
 
-<div class="chart-box" id="chart_month_box">
+<div class="chart-box">
 <div class="section-title">MONTHLY CATCH</div>
-<div id="chart_month" style="width:100%;height:280px;"></div>
+<div id="chart_month" style="height:280px;"></div>
 </div>
 
-<div class="chart-box" id="chart_river">
+<div class="chart-box">
 <div class="section-title">RIVER CATCH</div>
-<div id="chart_river_chart" style="width:100%;height:280px;"></div>
+<div id="chart_river" style="height:280px;"></div>
 </div>
 
-<div class="chart-box" id="chart_size">
+<div class="chart-box">
 <div class="section-title">SIZE DISTRIBUTION</div>
-<div id="chart_size_chart" style="width:100%;height:280px;"></div>
+<div id="chart_size" style="height:280px;"></div>
 </div>
 
-<div class="chart-box" id="chart_time">
+<div class="chart-box">
 <div class="section-title">TIME EFFICIENCY</div>
-<div id="chart_time_chart" style="width:100%;height:280px;"></div>
+<div id="chart_time" style="height:280px;"></div>
 </div>
 
 </div>
-
-
-<!-- RANKINGS -->
 
 <div class="list-grid">
 
@@ -295,10 +332,7 @@ TABOSAN AYU ANALYTICS LAB
 
 </div>
 
-
-<!-- HEATMAP -->
-
-<div class="chart-box" id="heatmap">
+<div class="chart-box">
 
 <div class="section-title">CATCH HEATMAP</div>
 
@@ -309,33 +343,72 @@ TABOSAN AYU ANALYTICS LAB
 <div class="heat h3">12</div>
 <div class="heat h4">18</div>
 <div class="heat h3">14</div>
-
 <div class="heat h2">8</div>
 <div class="heat h4">17</div>
 <div class="heat h5">25</div>
 <div class="heat h4">20</div>
 <div class="heat h3">13</div>
-
 <div class="heat h3">11</div>
 <div class="heat h5">24</div>
-<div class="heat h5">26</div>
-<div class="heat h4">19</div>
-
-<div class="heat h3">10</div>
-<div class="heat h4">18</div>
-<div class="heat h5">22</div>
 
 </div>
+
+</div>
+
+<div class="chart-box">
+
+<div class="section-title">FISHING CALENDAR</div>
+
+<div class="calendar">
+
+<div>6/1<br>2</div>
+<div>6/5<br>6</div>
+<div>6/12<br>12</div>
+<div>6/20<br>18</div>
+<div>6/28<br>14</div>
+<div>7/3<br>8</div>
+<div>7/8<br>17</div>
+<div>7/15<br>25</div>
+<div>7/22<br>20</div>
+<div>7/29<br>13</div>
+
+</div>
+
+</div>
+
+<div class="chart-box">
+
+<div class="section-title">FISHING MAP</div>
+
+<div id="map" style="height:400px;"></div>
+
+</div>
+
+<div class="chart-box">
+
+<div class="section-title">FISHING DATA SEARCH</div>
+
+<input id="searchBox" placeholder="河川検索">
+
+<ul id="dataList">
+
+<li>長良川中央 18匹</li>
+<li>白川 15匹</li>
+<li>板取川 20匹</li>
+<li>長良川中央 14匹</li>
+
+</ul>
 
 </div>
 
 </div>
 
 <footer>
+
 TABOSAN AYU ANALYTICS LAB  
 AYU FISHING DATA DASHBOARD
-</footer>
 
+</footer>
 
 <script>
 
@@ -353,8 +426,7 @@ var m=google.visualization.arrayToDataTable([
 ]);
 
 new google.visualization.ColumnChart(document.getElementById('chart_month'))
-.draw(m,{backgroundColor:'transparent',colors:['#30e6c5'],legend:{textStyle:{color:'white'}}});
-
+.draw(m,{backgroundColor:'transparent',colors:['#35e3ff'],legend:{textStyle:{color:'white'}}});
 
 var r=google.visualization.arrayToDataTable([
 ['河川','釣果'],
@@ -363,9 +435,8 @@ var r=google.visualization.arrayToDataTable([
 ['白川',45]
 ]);
 
-new google.visualization.PieChart(document.getElementById('chart_river_chart'))
+new google.visualization.PieChart(document.getElementById('chart_river'))
 .draw(r,{backgroundColor:'transparent',legend:{textStyle:{color:'white'}}});
-
 
 var s=google.visualization.arrayToDataTable([
 ['サイズ','匹'],
@@ -375,9 +446,8 @@ var s=google.visualization.arrayToDataTable([
 ['22+',45]
 ]);
 
-new google.visualization.ColumnChart(document.getElementById('chart_size_chart'))
+new google.visualization.ColumnChart(document.getElementById('chart_size'))
 .draw(s,{backgroundColor:'transparent',colors:['#4df0d2'],legend:{textStyle:{color:'white'}}});
-
 
 var t=google.visualization.arrayToDataTable([
 ['時間','匹'],
@@ -385,10 +455,48 @@ var t=google.visualization.arrayToDataTable([
 ['午後',125]
 ]);
 
-new google.visualization.PieChart(document.getElementById('chart_time_chart'))
+new google.visualization.PieChart(document.getElementById('chart_time'))
 .draw(t,{backgroundColor:'transparent',legend:{textStyle:{color:'white'}}});
 
 }
+
+var input=document.getElementById("searchBox");
+
+input.addEventListener("keyup",function(){
+
+var filter=input.value.toLowerCase();
+var list=document.getElementById("dataList").getElementsByTagName("li");
+
+for(i=0;i<list.length;i++){
+
+var txt=list[i].textContent;
+
+if(txt.toLowerCase().indexOf(filter)>-1){
+list[i].style.display="";
+}else{
+list[i].style.display="none";
+}
+
+}
+
+});
+
+function initMap(){
+
+var center={lat:35.44,lng:137.01};
+
+var map=new google.maps.Map(
+document.getElementById("map"),
+{zoom:8,center:center}
+);
+
+new google.maps.Marker({position:{lat:35.44,lng:137.01},map:map,title:"長良川"});
+new google.maps.Marker({position:{lat:35.52,lng:136.95},map:map,title:"板取川"});
+new google.maps.Marker({position:{lat:35.67,lng:137.10},map:map,title:"白川"});
+
+}
+
+initMap();
 
 </script>
 
