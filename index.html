@@ -63,3 +63,139 @@ padding:20px;
 .stat{
 background:#0f2538;
 padding:20px 30px;
+border-radius:14px;
+text-align:center;
+box-shadow:0 0 25px rgba(0,255,170,0.15);
+transition:0.3s;
+}
+
+.stat:hover{
+transform:translateY(-6px);
+box-shadow:0 0 35px rgba(0,255,170,0.35);
+}
+
+.stat h3{
+margin:0;
+font-size:16px;
+color:#66ffcc;
+}
+
+.stat p{
+margin:8px 0 0 0;
+font-size:32px;
+font-weight:bold;
+}
+
+/* グラフカード */
+
+.chartbox{
+max-width:1200px;
+margin:40px auto 80px auto;
+background:#0f2538;
+border-radius:16px;
+padding:30px;
+box-shadow:0 0 25px rgba(0,255,170,0.15);
+}
+
+.charttitle{
+text-align:center;
+color:#66ffcc;
+font-size:20px;
+margin-bottom:10px;
+}
+
+canvas{
+height:300px !important;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="topbar">
+<a href="index.html">HOME</a>
+<a href="#">DATA</a>
+<a href="dashboard.html">ANALYTICS</a>
+<a href="#">PHOTO</a>
+</div>
+
+<div class="title">2026 SEASON SUMMARY</div>
+
+<div class="stats">
+
+<div class="stat">
+<h3>総釣果</h3>
+<p>245匹</p>
+</div>
+
+<div class="stat">
+<h3>釣行回数</h3>
+<p>18回</p>
+</div>
+
+<div class="stat">
+<h3>平均釣果</h3>
+<p>13.6匹</p>
+</div>
+
+<div class="stat">
+<h3>平均効率</h3>
+<p>2.4匹/h</p>
+</div>
+
+<div class="stat">
+<h3>最大サイズ</h3>
+<p>25cm</p>
+</div>
+
+</div>
+
+<div class="chartbox">
+
+<div class="charttitle">月別釣果</div>
+
+<canvas id="monthChart"></canvas>
+
+</div>
+
+<script>
+
+const ctx=document.getElementById("monthChart").getContext("2d");
+
+const gradient=ctx.createLinearGradient(0,0,0,300);
+gradient.addColorStop(0,"rgba(0,255,170,0.6)");
+gradient.addColorStop(1,"rgba(0,255,170,0)");
+
+new Chart(ctx,{
+type:"line",
+data:{
+labels:["6月","7月","8月","9月"],
+datasets:[{
+label:"月別釣果",
+data:[20,60,90,55],
+borderColor:"#33ff99",
+backgroundColor:gradient,
+borderWidth:4,
+fill:true,
+tension:0.45,
+pointRadius:6,
+pointBackgroundColor:"#33ff99"
+}]
+},
+options:{
+plugins:{
+legend:{labels:{color:"white"}}
+},
+scales:{
+x:{ticks:{color:"white"}},
+y:{ticks:{color:"white"}}
+}
+}
+});
+
+</script>
+
+</body>
+</html>
