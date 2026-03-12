@@ -12,7 +12,7 @@
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(180deg,#071826,#020b14);
+background:linear-gradient(160deg,#071826,#02101b);
 color:white;
 }
 
@@ -21,14 +21,14 @@ color:white;
 .topbar{
 display:flex;
 justify-content:center;
-gap:60px;
+gap:70px;
 padding:22px;
 background:#0d2235;
-box-shadow:0 0 20px rgba(0,255,170,0.2);
+box-shadow:0 0 25px rgba(0,255,170,0.15);
 }
 
 .topbar a{
-color:#66ffcc;
+color:#7fffd4;
 text-decoration:none;
 font-size:24px;
 letter-spacing:2px;
@@ -49,7 +49,7 @@ color:#33ff99;
 letter-spacing:2px;
 }
 
-/* カード */
+/* カードエリア */
 
 .stats{
 display:grid;
@@ -60,12 +60,14 @@ margin:auto;
 padding:20px;
 }
 
+/* カード */
+
 .stat{
 background:#0f2538;
 padding:20px 30px;
 border-radius:14px;
 text-align:center;
-box-shadow:0 0 25px rgba(0,255,170,0.15);
+box-shadow:0 0 20px rgba(0,255,170,0.12);
 transition:0.3s;
 }
 
@@ -101,11 +103,11 @@ box-shadow:0 0 25px rgba(0,255,170,0.15);
 text-align:center;
 color:#66ffcc;
 font-size:20px;
-margin-bottom:10px;
+margin-bottom:15px;
 }
 
 canvas{
-height:300px !important;
+height:260px !important;
 }
 
 </style>
@@ -165,23 +167,19 @@ height:300px !important;
 const ctx=document.getElementById("monthChart").getContext("2d");
 
 const gradient=ctx.createLinearGradient(0,0,0,300);
-gradient.addColorStop(0,"rgba(0,255,170,0.6)");
-gradient.addColorStop(1,"rgba(0,255,170,0)");
+gradient.addColorStop(0,"#33ff99");
+gradient.addColorStop(1,"#007a55");
 
 new Chart(ctx,{
-type:"line",
+type:"bar",
 data:{
 labels:["6月","7月","8月","9月"],
 datasets:[{
 label:"月別釣果",
 data:[20,60,90,55],
-borderColor:"#33ff99",
 backgroundColor:gradient,
-borderWidth:4,
-fill:true,
-tension:0.45,
-pointRadius:6,
-pointBackgroundColor:"#33ff99"
+borderRadius:6,
+hoverBackgroundColor:"#66ffcc"
 }]
 },
 options:{
@@ -189,8 +187,14 @@ plugins:{
 legend:{labels:{color:"white"}}
 },
 scales:{
-x:{ticks:{color:"white"}},
-y:{ticks:{color:"white"}}
+x:{
+ticks:{color:"white"},
+grid:{display:false}
+},
+y:{
+ticks:{color:"white"},
+grid:{color:"rgba(255,255,255,0.05)"}
+}
 }
 }
 });
