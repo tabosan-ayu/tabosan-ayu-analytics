@@ -12,102 +12,100 @@
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(160deg,#071826,#02101b);
+background:linear-gradient(160deg,#06121c,#02080f);
 color:white;
 }
 
-/* 上メニュー */
+/* メニュー */
 
 .topbar{
 display:flex;
 justify-content:center;
-gap:70px;
+gap:80px;
 padding:22px;
-background:#0d2235;
-box-shadow:0 0 25px rgba(0,255,170,0.15);
+background:#081a28;
+box-shadow:0 0 30px rgba(0,255,200,0.15);
 }
 
 .topbar a{
-color:#7fffd4;
+color:#9fe3ff;
 text-decoration:none;
 font-size:24px;
 letter-spacing:2px;
 }
 
 .topbar a:hover{
-color:#33ff99;
+color:#33ffd2;
 }
 
 /* タイトル */
 
 .title{
 text-align:center;
-font-size:36px;
+font-size:42px;
 margin-top:40px;
 margin-bottom:40px;
-color:#33ff99;
-letter-spacing:2px;
-}
-
-/* カードエリア */
-
-.stats{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:40px;
-max-width:1200px;
-margin:auto;
-padding:20px;
+color:#7fffd4;
+letter-spacing:3px;
 }
 
 /* カード */
 
+.stats{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:45px;
+max-width:1300px;
+margin:auto;
+padding:20px;
+}
+
 .stat{
-background:#0f2538;
-padding:20px 30px;
+background:#0d2234;
+padding:25px 30px;
 border-radius:14px;
 text-align:center;
-box-shadow:0 0 20px rgba(0,255,170,0.12);
+box-shadow:0 0 25px rgba(0,255,200,0.08);
 transition:0.3s;
 }
 
 .stat:hover{
 transform:translateY(-6px);
-box-shadow:0 0 35px rgba(0,255,170,0.35);
+box-shadow:0 0 35px rgba(0,255,200,0.25);
 }
 
 .stat h3{
 margin:0;
-font-size:16px;
-color:#66ffcc;
+font-size:18px;
+color:#7fffd4;
 }
 
 .stat p{
-margin:8px 0 0 0;
-font-size:32px;
+margin:10px 0 0 0;
+font-size:40px;
 font-weight:bold;
 }
 
 /* グラフカード */
 
 .chartbox{
-max-width:1200px;
-margin:40px auto 80px auto;
-background:#0f2538;
-border-radius:16px;
-padding:30px;
-box-shadow:0 0 25px rgba(0,255,170,0.15);
+max-width:1300px;
+margin:50px auto;
+background:#0d2234;
+border-radius:18px;
+padding:35px;
+box-shadow:0 0 30px rgba(0,255,200,0.1);
 }
 
 .charttitle{
 text-align:center;
-color:#66ffcc;
 font-size:20px;
-margin-bottom:15px;
+color:#7fffd4;
+margin-bottom:20px;
 }
 
 canvas{
-height:260px !important;
+height:220px !important;
 }
 
 </style>
@@ -142,64 +140,4 @@ height:260px !important;
 <p>13.6匹</p>
 </div>
 
-<div class="stat">
-<h3>平均効率</h3>
-<p>2.4匹/h</p>
-</div>
-
-<div class="stat">
-<h3>最大サイズ</h3>
-<p>25cm</p>
-</div>
-
-</div>
-
-<div class="chartbox">
-
-<div class="charttitle">月別釣果</div>
-
-<canvas id="monthChart"></canvas>
-
-</div>
-
-<script>
-
-const ctx=document.getElementById("monthChart").getContext("2d");
-
-const gradient=ctx.createLinearGradient(0,0,0,300);
-gradient.addColorStop(0,"#33ff99");
-gradient.addColorStop(1,"#007a55");
-
-new Chart(ctx,{
-type:"bar",
-data:{
-labels:["6月","7月","8月","9月"],
-datasets:[{
-label:"月別釣果",
-data:[20,60,90,55],
-backgroundColor:gradient,
-borderRadius:6,
-hoverBackgroundColor:"#66ffcc"
-}]
-},
-options:{
-plugins:{
-legend:{labels:{color:"white"}}
-},
-scales:{
-x:{
-ticks:{color:"white"},
-grid:{display:false}
-},
-y:{
-ticks:{color:"white"},
-grid:{color:"rgba(255,255,255,0.05)"}
-}
-}
-}
-});
-
-</script>
-
-</body>
-</html>
+<d
