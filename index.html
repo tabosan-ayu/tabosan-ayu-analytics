@@ -1,9 +1,12 @@
 ```html
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
+
 <meta charset="UTF-8">
 <title>TABOSAN AYU ANALYTICS LAB</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script src="https://www.gstatic.com/charts/loader.js"></script>
@@ -41,7 +44,6 @@ padding:10px;
 nav a{
 color:#7fffd4;
 cursor:pointer;
-font-size:13px;
 }
 
 /* PAGE */
@@ -83,7 +85,6 @@ background:#0b2435;
 padding:18px;
 border-radius:10px;
 text-align:center;
-box-shadow:0 0 10px rgba(0,255,200,0.2);
 }
 
 .card-title{
@@ -148,7 +149,9 @@ color:#5ac;
 }
 
 </style>
+
 </head>
+
 
 <body>
 
@@ -156,12 +159,16 @@ color:#5ac;
 TABOSAN AYU ANALYTICS LAB
 </header>
 
+
 <nav>
+
 <a onclick="showPage('home')">HOME</a>
 <a onclick="showPage('data')">DATA</a>
 <a onclick="showPage('analytics')">ANALYTICS</a>
 <a onclick="showPage('photo')">PHOTO</a>
+
 </nav>
+
 
 <!-- HOME -->
 
@@ -169,35 +176,71 @@ TABOSAN AYU ANALYTICS LAB
 
 <div class="container">
 
-<div class="title">2026 SEASON SUMMARY</div>
+<div class="title">
+2026 SEASON SUMMARY
+</div>
+
 
 <div class="cards">
 
-<div class="card"><div class="card-title">総釣果</div><div class="card-value">245匹</div></div>
-<div class="card"><div class="card-title">釣行回数</div><div class="card-value">18回</div></div>
-<div class="card"><div class="card-title">平均釣果</div><div class="card-value">13.6匹</div></div>
-<div class="card"><div class="card-title">平均効率</div><div class="card-value">2.4匹/h</div></div>
-<div class="card"><div class="card-title">最大サイズ</div><div class="card-value">25cm</div></div>
+<div class="card">
+<div class="card-title">総釣果</div>
+<div class="card-value">245匹</div>
+</div>
+
+<div class="card">
+<div class="card-title">釣行回数</div>
+<div class="card-value">18回</div>
+</div>
+
+<div class="card">
+<div class="card-title">平均釣果</div>
+<div class="card-value">13.6匹</div>
+</div>
+
+<div class="card">
+<div class="card-title">平均効率</div>
+<div class="card-value">2.4匹/h</div>
+</div>
+
+<div class="card">
+<div class="card-title">最大サイズ</div>
+<div class="card-value">25cm</div>
+</div>
 
 </div>
+
 
 <div class="grid">
 
 <div class="chart-box">
-<div class="section-title">MONTHLY CATCH</div>
-<div id="chart_month" style="height:250px"></div>
+
+<div class="section-title">
+MONTHLY CATCH
 </div>
+
+<div id="chart_month" style="height:250px"></div>
+
+</div>
+
 
 <div class="chart-box">
-<div class="section-title">RIVER CATCH</div>
+
+<div class="section-title">
+RIVER CATCH
+</div>
+
 <div id="chart_river" style="height:250px"></div>
-</div>
 
 </div>
 
 </div>
 
 </div>
+
+</div>
+
+
 
 <!-- DATA -->
 
@@ -205,7 +248,9 @@ TABOSAN AYU ANALYTICS LAB
 
 <div class="container">
 
-<div class="title">FISHING DATA</div>
+<div class="title">
+FISHING DATA
+</div>
 
 <table>
 
@@ -247,31 +292,48 @@ TABOSAN AYU ANALYTICS LAB
 
 </div>
 
+
+
 <!-- ANALYTICS -->
 
 <div id="analytics" class="page">
 
 <div class="container">
 
-<div class="title">ANALYTICS</div>
+<div class="title">
+ANALYTICS
+</div>
 
 <div class="grid">
 
 <div class="chart-box">
-<div class="section-title">SIZE DISTRIBUTION</div>
-<div id="chart_size" style="height:250px"></div>
+
+<div class="section-title">
+SIZE DISTRIBUTION
 </div>
+
+<div id="chart_size" style="height:250px"></div>
+
+</div>
+
 
 <div class="chart-box">
-<div class="section-title">TIME EFFICIENCY</div>
+
+<div class="section-title">
+TIME EFFICIENCY
+</div>
+
 <div id="chart_time" style="height:250px"></div>
-</div>
 
 </div>
 
 </div>
 
 </div>
+
+</div>
+
+
 
 <!-- PHOTO -->
 
@@ -279,13 +341,15 @@ TABOSAN AYU ANALYTICS LAB
 
 <div class="container">
 
-<div class="title">PHOTO GALLERY</div>
+<div class="title">
+PHOTO GALLERY
+</div>
 
 <div class="gallery">
 
-<img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5">
-<img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470">
 <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e">
+<img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470">
+<img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5">
 <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e">
 
 </div>
@@ -294,12 +358,14 @@ TABOSAN AYU ANALYTICS LAB
 
 </div>
 
+
 <footer>
 
 TABOSAN AYU ANALYTICS LAB  
 AYU FISHING DATA DASHBOARD
 
 </footer>
+
 
 <script>
 
@@ -312,6 +378,7 @@ p.classList.remove("active");
 document.getElementById(id).classList.add("active");
 
 }
+
 
 /* CHART */
 
@@ -328,8 +395,10 @@ var m=google.visualization.arrayToDataTable([
 ['9月',55]
 ]);
 
-new google.visualization.ColumnChart(document.getElementById('chart_month'))
-.draw(m,{backgroundColor:'transparent',colors:['#35e3ff']});
+new google.visualization.ColumnChart(
+document.getElementById('chart_month')
+).draw(m,{backgroundColor:'transparent',colors:['#35e3ff']});
+
 
 var r=google.visualization.arrayToDataTable([
 ['河川','釣果'],
@@ -338,8 +407,10 @@ var r=google.visualization.arrayToDataTable([
 ['白川',45]
 ]);
 
-new google.visualization.PieChart(document.getElementById('chart_river'))
-.draw(r,{backgroundColor:'transparent'});
+new google.visualization.PieChart(
+document.getElementById('chart_river')
+).draw(r,{backgroundColor:'transparent'});
+
 
 var s=google.visualization.arrayToDataTable([
 ['サイズ','匹'],
@@ -349,8 +420,10 @@ var s=google.visualization.arrayToDataTable([
 ['22+',45]
 ]);
 
-new google.visualization.ColumnChart(document.getElementById('chart_size'))
-.draw(s,{backgroundColor:'transparent',colors:['#4df0d2']});
+new google.visualization.ColumnChart(
+document.getElementById('chart_size')
+).draw(s,{backgroundColor:'transparent',colors:['#4df0d2']});
+
 
 var t=google.visualization.arrayToDataTable([
 ['時間','匹'],
@@ -358,8 +431,9 @@ var t=google.visualization.arrayToDataTable([
 ['午後',125]
 ]);
 
-new google.visualization.PieChart(document.getElementById('chart_time'))
-.draw(t,{backgroundColor:'transparent'});
+new google.visualization.PieChart(
+document.getElementById('chart_time')
+).draw(t,{backgroundColor:'transparent'});
 
 }
 
