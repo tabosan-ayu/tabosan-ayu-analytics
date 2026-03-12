@@ -105,4 +105,102 @@ margin-bottom:20px;
 }
 
 canvas{
-height:200px !i
+height:200px !important;
+max-width:900px;
+margin:auto;
+display:block;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="topbar">
+<a href="index.html">HOME</a>
+<a href="#">DATA</a>
+<a href="dashboard.html">ANALYTICS</a>
+<a href="#">PHOTO</a>
+</div>
+
+<div class="title">2026 SEASON SUMMARY</div>
+
+<div class="stats">
+
+<div class="stat">
+<h3>総釣果</h3>
+<p>245匹</p>
+</div>
+
+<div class="stat">
+<h3>釣行回数</h3>
+<p>18回</p>
+</div>
+
+<div class="stat">
+<h3>平均釣果</h3>
+<p>13.6匹</p>
+</div>
+
+<div class="stat">
+<h3>平均効率</h3>
+<p>2.4匹/h</p>
+</div>
+
+<div class="stat">
+<h3>最大サイズ</h3>
+<p>25cm</p>
+</div>
+
+</div>
+
+<div class="chartbox">
+
+<div class="charttitle">月別釣果</div>
+
+<canvas id="monthChart"></canvas>
+
+</div>
+
+<script>
+
+const ctx=document.getElementById("monthChart").getContext("2d");
+
+const gradient=ctx.createLinearGradient(0,0,0,300);
+gradient.addColorStop(0,"#45ffd0");
+gradient.addColorStop(1,"#007a6a");
+
+new Chart(ctx,{
+type:"bar",
+data:{
+labels:["6月","7月","8月","9月"],
+datasets:[{
+label:"釣果",
+data:[20,60,90,55],
+backgroundColor:gradient,
+borderRadius:6,
+hoverBackgroundColor:"#7fffd4"
+}]
+},
+options:{
+plugins:{
+legend:{labels:{color:"white"}}
+},
+scales:{
+x:{
+ticks:{color:"#9fe3ff"},
+grid:{display:false}
+},
+y:{
+ticks:{color:"#9fe3ff"},
+grid:{color:"rgba(255,255,255,0.05)"}
+}
+}
+}
+});
+
+</script>
+
+</body>
+</html>
