@@ -5,162 +5,61 @@
 <meta charset="UTF-8">
 <title>TABOSAN AYU ANALYTICS LAB</title>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 
 body{
 margin:0;
 font-family:Arial;
-background:#071826;
+background:linear-gradient(180deg,#071826,#020b14);
 color:white;
 }
+
+/* 上メニュー */
 
 .topbar{
 display:flex;
 justify-content:center;
-gap:40px;
-padding:20px;
+gap:60px;
+padding:22px;
 background:#0d2235;
+box-shadow:0 0 20px rgba(0,255,170,0.2);
 }
 
 .topbar a{
 color:#66ffcc;
 text-decoration:none;
-font-size:18px;
+font-size:24px;
+letter-spacing:2px;
 }
 
 .topbar a:hover{
 color:#33ff99;
 }
 
-.container{
-text-align:center;
-padding:40px;
-}
+/* タイトル */
 
 .title{
-font-size:32px;
-margin-bottom:30px;
+text-align:center;
+font-size:36px;
+margin-top:40px;
+margin-bottom:40px;
 color:#33ff99;
+letter-spacing:2px;
 }
+
+/* カード */
 
 .stats{
 display:grid;
 grid-template-columns:repeat(5,1fr);
-gap:20px;
-max-width:900px;
+gap:40px;
+max-width:1200px;
 margin:auto;
+padding:20px;
 }
 
 .stat{
 background:#0f2538;
-padding:25px;
-border-radius:12px;
-box-shadow:0 0 15px rgba(0,255,170,0.2);
-}
-
-.stat h3{
-margin:0;
-color:#66ffcc;
-}
-
-.stat p{
-font-size:28px;
-margin:10px 0 0 0;
-}
-
-.chart{
-margin-top:60px;
-max-width:800px;
-margin-left:auto;
-margin-right:auto;
-}
-
-</style>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-</head>
-
-<body>
-
-<div class="topbar">
-<a href="index.html">HOME</a>
-<a href="#">DATA</a>
-<a href="dashboard.html">ANALYTICS</a>
-<a href="#">PHOTO</a>
-</div>
-
-<div class="container">
-
-<div class="title">2026 SEASON SUMMARY</div>
-
-<div class="stats">
-
-<div class="stat">
-<h3>総釣果</h3>
-<p>245匹</p>
-</div>
-
-<div class="stat">
-<h3>釣行回数</h3>
-<p>18回</p>
-</div>
-
-<div class="stat">
-<h3>平均釣果</h3>
-<p>13.6匹</p>
-</div>
-
-<div class="stat">
-<h3>平均効率</h3>
-<p>2.4匹/h</p>
-</div>
-
-<div class="stat">
-<h3>最大サイズ</h3>
-<p>25cm</p>
-</div>
-
-</div>
-
-<div class="chart">
-<canvas id="monthChart"></canvas>
-</div>
-
-</div>
-
-<script>
-
-const ctx=document.getElementById('monthChart').getContext('2d');
-
-const gradient=ctx.createLinearGradient(0,0,0,300);
-gradient.addColorStop(0,'rgba(0,255,170,0.6)');
-gradient.addColorStop(1,'rgba(0,255,170,0)');
-
-new Chart(ctx,{
-type:'line',
-data:{
-labels:['6月','7月','8月','9月'],
-datasets:[{
-label:'月別釣果',
-data:[20,60,90,55],
-borderColor:'#33ff99',
-backgroundColor:gradient,
-fill:true,
-tension:0.4,
-pointRadius:5
-}]
-},
-options:{
-plugins:{legend:{labels:{color:'white'}}},
-scales:{
-x:{ticks:{color:'white'}},
-y:{ticks:{color:'white'}}
-}
-}
-});
-
-</script>
-
-</body>
-</html>
+padding:20px 30px;
