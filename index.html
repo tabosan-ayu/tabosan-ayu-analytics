@@ -21,7 +21,7 @@ color:white;
 .topbar{
 display:flex;
 justify-content:center;
-gap:80px;
+gap:90px;
 padding:22px;
 background:#081a28;
 box-shadow:0 0 30px rgba(0,255,200,0.15);
@@ -54,24 +54,24 @@ letter-spacing:3px;
 .stats{
 display:grid;
 grid-template-columns:repeat(5,1fr);
-gap:45px;
-max-width:1300px;
+gap:50px;
+max-width:1400px;
 margin:auto;
 padding:20px;
 }
 
 .stat{
 background:#0d2234;
-padding:25px 30px;
-border-radius:14px;
+padding:30px 20px;
+border-radius:16px;
 text-align:center;
-box-shadow:0 0 25px rgba(0,255,200,0.08);
+box-shadow:0 0 20px rgba(0,255,200,0.08);
 transition:0.3s;
 }
 
 .stat:hover{
 transform:translateY(-6px);
-box-shadow:0 0 35px rgba(0,255,200,0.25);
+box-shadow:0 0 40px rgba(0,255,200,0.35);
 }
 
 .stat h3{
@@ -81,25 +81,25 @@ color:#7fffd4;
 }
 
 .stat p{
-margin:10px 0 0 0;
-font-size:40px;
+margin:12px 0 0 0;
+font-size:46px;
 font-weight:bold;
 }
 
-/* グラフカード */
+/* グラフ */
 
 .chartbox{
-max-width:1300px;
+max-width:1400px;
 margin:50px auto;
 background:#0d2234;
 border-radius:18px;
-padding:35px;
+padding:40px;
 box-shadow:0 0 30px rgba(0,255,200,0.1);
 }
 
 .charttitle{
 text-align:center;
-font-size:20px;
+font-size:22px;
 color:#7fffd4;
 margin-bottom:20px;
 }
@@ -127,17 +127,101 @@ height:220px !important;
 
 <div class="stat">
 <h3>総釣果</h3>
-<p>245匹</p>
+<p id="fish">0</p>
 </div>
 
 <div class="stat">
 <h3>釣行回数</h3>
-<p>18回</p>
+<p id="trip">0</p>
 </div>
 
 <div class="stat">
 <h3>平均釣果</h3>
-<p>13.6匹</p>
+<p id="avg">0</p>
 </div>
 
-<d
+<div class="stat">
+<h3>平均効率</h3>
+<p id="eff">0</p>
+</div>
+
+<div class="stat">
+<h3>最大サイズ</h3>
+<p id="size">0</p>
+</div>
+
+</div>
+
+<div class="chartbox">
+
+<div class="charttitle">月別釣果</div>
+
+<canvas id="monthChart"></canvas>
+
+</div>
+
+<script>
+
+/* 数字アニメーション */
+
+function animate(id,target,unit="",speed=30){
+let n=0;
+let step=target/50;
+let timer=setInterval(()=>{
+n+=step;
+if(n>=target){
+n=target;
+clearInterval(timer);
+}
+document.getElementById(id).innerText=
+(Math.round(n*10)/10)+unit;
+},speed);
+}
+
+animate("fish",245,"匹");
+animate("trip",18,"回");
+animate("avg",13.6,"匹");
+animate("eff",2.4,"匹/h");
+animate("size",25,"cm");
+
+/* グラフ */
+
+const ctx=document.getElementById("monthChart").getContext("2d");
+
+const gradient=ctx.createLinearGradient(0,0,0,300);
+gradient.addColorStop(0,"#45ffd0");
+gradient.addColorStop(1,"#007a6a");
+
+new Chart(ctx,{
+type:"bar",
+data:{
+labels:["6月","7月","8月","9月"],
+datasets:[{
+label:"釣果",
+data:[20,60,90,55],
+backgroundColor:gradient,
+borderRadius:6,
+hoverBackgroundColor:"#7fffd4"
+}]
+},
+options:{
+plugins:{
+legend:{labels:{color:"white"}}
+},
+scales:{
+x:{
+ticks:{color:"#9fe3ff"},
+grid:{display:false}
+},
+y:{
+ticks:{color:"#9fe3ff"},
+grid:{color:"rgba(255,255,255,0.05)"}
+}
+}
+}
+});
+
+</script>
+
+</body>
+</html>
