@@ -21,149 +21,158 @@ background:linear-gradient(180deg,#021018,#000a12,#00070d);
 color:white;
 }
 
+/* タイトル */
+
 header{
 background:#061520;
-padding:30px;
+padding:22px;
 text-align:center;
-font-size:34px;
+font-size:28px;
 font-weight:bold;
-letter-spacing:4px;
+letter-spacing:3px;
 color:#7fffd4;
 }
+
+/* メニュー */
 
 nav{
 display:flex;
 justify-content:center;
-gap:80px;
+gap:60px;
 background:#05121a;
-padding:18px;
+padding:14px;
 border-bottom:1px solid #0a2a3a;
 }
 
 nav a{
 color:#7fe7d6;
 text-decoration:none;
-font-size:18px;
+font-size:16px;
 letter-spacing:2px;
-transition:0.2s;
 }
 
 nav a:hover{
 color:white;
 }
 
+/* メイン */
+
 .container{
-max-width:1300px;
+max-width:1100px;
 margin:auto;
-padding:60px 30px;
+padding:30px 20px;
 }
 
 .title{
 text-align:center;
-font-size:48px;
-letter-spacing:6px;
+font-size:36px;
+letter-spacing:5px;
 color:#6fffe9;
-margin-bottom:60px;
+margin-bottom:30px;
 }
+
+/* カード */
 
 .cards{
 display:grid;
 grid-template-columns:repeat(5,1fr);
-gap:25px;
-margin-bottom:60px;
+gap:18px;
+margin-bottom:30px;
 }
 
 .card{
 background:#0b2435;
-border-radius:16px;
-padding:35px 20px;
+border-radius:12px;
+padding:20px 10px;
 text-align:center;
-box-shadow:0 0 12px rgba(0,255,200,0.25);
+box-shadow:0 0 10px rgba(0,255,200,0.25);
 cursor:pointer;
-transition:0.25s;
+transition:0.2s;
 }
 
 .card:hover{
-transform:translateY(-6px) scale(1.05);
-box-shadow:0 0 25px rgba(0,255,200,0.45);
+transform:scale(1.04);
 }
 
 .card-title{
-font-size:18px;
+font-size:14px;
 color:#7fffd4;
-margin-bottom:15px;
-letter-spacing:2px;
+margin-bottom:8px;
 }
 
 .card-value{
-font-size:40px;
+font-size:28px;
 font-weight:bold;
 }
 
+/* グラフ */
+
 .chart-area{
 background:#0b2435;
-padding:40px;
-border-radius:16px;
-box-shadow:0 0 12px rgba(0,255,200,0.25);
-margin-bottom:60px;
+padding:20px;
+border-radius:12px;
+box-shadow:0 0 10px rgba(0,255,200,0.25);
+margin-bottom:25px;
 }
 
 .section-title{
 text-align:center;
-font-size:26px;
-margin-bottom:25px;
+font-size:18px;
+margin-bottom:12px;
 color:#7fffd4;
-letter-spacing:3px;
+letter-spacing:2px;
 }
 
-.latest-area{
+/* 下段 */
+
+.bottom-area{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:40px;
+gap:18px;
 }
 
 .latest{
 background:#0b2435;
-padding:30px;
-border-radius:16px;
-box-shadow:0 0 12px rgba(0,255,200,0.25);
+padding:18px;
+border-radius:12px;
+box-shadow:0 0 10px rgba(0,255,200,0.25);
+font-size:14px;
 }
 
 .latest div{
-padding:8px 0;
+padding:5px 0;
 border-bottom:1px solid #12384a;
 }
 
 .ranking{
 background:#0b2435;
-padding:30px;
-border-radius:16px;
-box-shadow:0 0 12px rgba(0,255,200,0.25);
+padding:18px;
+border-radius:12px;
+box-shadow:0 0 10px rgba(0,255,200,0.25);
+font-size:14px;
 }
 
 .ranking div{
-padding:8px 0;
+padding:5px 0;
 border-bottom:1px solid #12384a;
 }
 
 footer{
 text-align:center;
-padding:40px;
+padding:20px;
+font-size:12px;
 color:#4aa;
-font-size:14px;
-margin-top:60px;
+margin-top:20px;
 }
 
 </style>
 </head>
-
 
 <body>
 
 <header>
 TABOSAN AYU ANALYTICS LAB
 </header>
-
 
 <nav>
 <a href="#">HOME</a>
@@ -172,68 +181,61 @@ TABOSAN AYU ANALYTICS LAB
 <a href="photo.html">PHOTO</a>
 </nav>
 
-
 <div class="container">
 
 <div class="title">
 2026 SEASON SUMMARY
 </div>
 
-
 <div class="cards">
 
-<div class="card" onclick="location.href='analytics.html#total'">
+<div class="card">
 <div class="card-title">総釣果</div>
 <div class="card-value">245匹</div>
 </div>
 
-<div class="card" onclick="location.href='analytics.html#trip'">
+<div class="card">
 <div class="card-title">釣行回数</div>
 <div class="card-value">18回</div>
 </div>
 
-<div class="card" onclick="location.href='analytics.html#average'">
+<div class="card">
 <div class="card-title">平均釣果</div>
 <div class="card-value">13.6匹</div>
 </div>
 
-<div class="card" onclick="location.href='analytics.html#efficiency'">
+<div class="card">
 <div class="card-title">平均効率</div>
 <div class="card-value">2.4匹/h</div>
 </div>
 
-<div class="card" onclick="location.href='analytics.html#size'">
+<div class="card">
 <div class="card-title">最大サイズ</div>
 <div class="card-value">25cm</div>
 </div>
 
 </div>
 
-
 <div class="chart-area">
 
 <div class="section-title">MONTHLY CATCH</div>
 
-<div id="monthly_chart" style="width:100%;height:450px;"></div>
+<div id="monthly_chart" style="width:100%;height:320px;"></div>
 
 </div>
 
-
-
-<div class="latest-area">
+<div class="bottom-area">
 
 <div class="latest">
 
 <div class="section-title">LATEST FISHING</div>
 
-<div>2026.9.12　長良川中央　18匹　最大22cm</div>
-<div>2026.9.8　白川　15匹　最大21cm</div>
-<div>2026.9.2　板取川　20匹　最大23cm</div>
-<div>2026.8.28　長良川中央　14匹　最大21cm</div>
-<div>2026.8.20　板取川　17匹　最大22cm</div>
+<div>2026.9.12　長良川中央　18匹</div>
+<div>2026.9.8　白川　15匹</div>
+<div>2026.9.2　板取川　20匹</div>
+<div>2026.8.28　長良川中央　14匹</div>
 
 </div>
-
 
 <div class="ranking">
 
@@ -242,19 +244,16 @@ TABOSAN AYU ANALYTICS LAB
 <div>1位　長良川中央　120匹</div>
 <div>2位　板取川　80匹</div>
 <div>3位　白川　45匹</div>
-<div>4位　馬瀬川　30匹</div>
 
 </div>
 
 </div>
 
 </div>
-
 
 <footer>
-TABOSAN AYU ANALYTICS LAB
+TABOSAN AYU ANALYTYTICS LAB
 </footer>
-
 
 <script>
 
@@ -286,7 +285,6 @@ chart.draw(data,options);
 }
 
 </script>
-
 
 </body>
 </html>
