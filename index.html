@@ -1,6 +1,7 @@
 ```html
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
 <meta charset="UTF-8">
 <title>TABOSAN AYU ANALYTICS LAB</title>
@@ -8,28 +9,35 @@
 
 <style>
 
-body{
-font-family:Arial;
-background:linear-gradient(180deg,#04121c,#021018,#000a12);
-color:white;
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,Helvetica,sans-serif;
+background:linear-gradient(180deg,#021018,#000a12,#00070d);
+color:white;
 }
 
 header{
-background:#081018;
-padding:20px;
+background:#061520;
+padding:30px;
 text-align:center;
-font-size:28px;
+font-size:34px;
 font-weight:bold;
-letter-spacing:2px;
+letter-spacing:4px;
+color:#7fffd4;
 }
 
 nav{
 display:flex;
 justify-content:center;
-gap:60px;
-background:#07141f;
-padding:15px;
+gap:80px;
+background:#05121a;
+padding:18px;
+border-bottom:1px solid #0a2a3a;
 }
 
 nav a{
@@ -37,6 +45,7 @@ color:#7fe7d6;
 text-decoration:none;
 font-size:18px;
 letter-spacing:2px;
+transition:0.2s;
 }
 
 nav a:hover{
@@ -44,90 +53,117 @@ color:white;
 }
 
 .container{
-max-width:1200px;
+max-width:1300px;
 margin:auto;
-padding:40px 20px;
+padding:60px 30px;
 }
 
 .title{
 text-align:center;
-font-size:40px;
-letter-spacing:4px;
+font-size:48px;
+letter-spacing:6px;
 color:#6fffe9;
-margin-bottom:40px;
+margin-bottom:60px;
 }
 
 .cards{
-display:flex;
-justify-content:space-between;
-gap:20px;
-flex-wrap:wrap;
-margin-bottom:40px;
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:25px;
+margin-bottom:60px;
 }
 
 .card{
-flex:1;
-min-width:180px;
-background:#0d2335;
-border-radius:14px;
-padding:25px;
+background:#0b2435;
+border-radius:16px;
+padding:35px 20px;
 text-align:center;
-box-shadow:0 0 10px rgba(0,255,200,0.2);
+box-shadow:0 0 12px rgba(0,255,200,0.25);
 cursor:pointer;
-transition:0.2s;
+transition:0.25s;
 }
 
 .card:hover{
-transform:scale(1.05);
-box-shadow:0 0 20px rgba(0,255,200,0.4);
+transform:translateY(-6px) scale(1.05);
+box-shadow:0 0 25px rgba(0,255,200,0.45);
 }
 
 .card-title{
-color:#7fffd4;
-margin-bottom:10px;
 font-size:18px;
+color:#7fffd4;
+margin-bottom:15px;
+letter-spacing:2px;
 }
 
 .card-value{
-font-size:36px;
+font-size:40px;
 font-weight:bold;
 }
 
-.chart-box{
-background:#0d2335;
-padding:30px;
-border-radius:14px;
-box-shadow:0 0 10px rgba(0,255,200,0.2);
-margin-bottom:40px;
+.chart-area{
+background:#0b2435;
+padding:40px;
+border-radius:16px;
+box-shadow:0 0 12px rgba(0,255,200,0.25);
+margin-bottom:60px;
 }
 
 .section-title{
 text-align:center;
-font-size:22px;
-margin-bottom:20px;
+font-size:26px;
+margin-bottom:25px;
 color:#7fffd4;
+letter-spacing:3px;
+}
+
+.latest-area{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:40px;
 }
 
 .latest{
-background:#0d2335;
-padding:25px;
-border-radius:14px;
-box-shadow:0 0 10px rgba(0,255,200,0.2);
+background:#0b2435;
+padding:30px;
+border-radius:16px;
+box-shadow:0 0 12px rgba(0,255,200,0.25);
 }
 
 .latest div{
-padding:6px 0;
-border-bottom:1px solid #123;
+padding:8px 0;
+border-bottom:1px solid #12384a;
+}
+
+.ranking{
+background:#0b2435;
+padding:30px;
+border-radius:16px;
+box-shadow:0 0 12px rgba(0,255,200,0.25);
+}
+
+.ranking div{
+padding:8px 0;
+border-bottom:1px solid #12384a;
+}
+
+footer{
+text-align:center;
+padding:40px;
+color:#4aa;
+font-size:14px;
+margin-top:60px;
 }
 
 </style>
 </head>
+
 
 <body>
 
 <header>
 TABOSAN AYU ANALYTICS LAB
 </header>
+
 
 <nav>
 <a href="#">HOME</a>
@@ -136,11 +172,13 @@ TABOSAN AYU ANALYTICS LAB
 <a href="photo.html">PHOTO</a>
 </nav>
 
+
 <div class="container">
 
 <div class="title">
 2026 SEASON SUMMARY
 </div>
+
 
 <div class="cards">
 
@@ -171,22 +209,52 @@ TABOSAN AYU ANALYTICS LAB
 
 </div>
 
-<div class="chart-box">
-<div class="section-title">月別釣果</div>
-<div id="monthly_chart" style="width:900px;height:400px;margin:auto;"></div>
+
+<div class="chart-area">
+
+<div class="section-title">MONTHLY CATCH</div>
+
+<div id="monthly_chart" style="width:100%;height:450px;"></div>
+
 </div>
 
+
+
+<div class="latest-area">
+
 <div class="latest">
+
 <div class="section-title">LATEST FISHING</div>
 
 <div>2026.9.12　長良川中央　18匹　最大22cm</div>
 <div>2026.9.8　白川　15匹　最大21cm</div>
 <div>2026.9.2　板取川　20匹　最大23cm</div>
 <div>2026.8.28　長良川中央　14匹　最大21cm</div>
+<div>2026.8.20　板取川　17匹　最大22cm</div>
+
+</div>
+
+
+<div class="ranking">
+
+<div class="section-title">RIVER RANKING</div>
+
+<div>1位　長良川中央　120匹</div>
+<div>2位　板取川　80匹</div>
+<div>3位　白川　45匹</div>
+<div>4位　馬瀬川　30匹</div>
 
 </div>
 
 </div>
+
+</div>
+
+
+<footer>
+TABOSAN AYU ANALYTICS LAB
+</footer>
+
 
 <script>
 
@@ -208,7 +276,7 @@ backgroundColor:'transparent',
 legend:{textStyle:{color:'white'}},
 hAxis:{textStyle:{color:'white'}},
 vAxis:{textStyle:{color:'white'}},
-colors:['#2ee6c9']
+colors:['#30e6c5']
 };
 
 var chart=new google.visualization.ColumnChart(document.getElementById('monthly_chart'));
@@ -218,6 +286,7 @@ chart.draw(data,options);
 }
 
 </script>
+
 
 </body>
 </html>
