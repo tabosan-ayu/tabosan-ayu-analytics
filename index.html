@@ -5,63 +5,44 @@
 <meta charset="UTF-8">
 <title>TABOSAN AYU ANALYTICS LAB</title>
 
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+
 <style>
 body{
 font-family:Arial;
 background:#021018;
 color:white;
-margin:0;
 text-align:center;
+margin:0;
 }
 
 header{
 background:#061520;
 padding:20px;
 font-size:28px;
+color:#7fffd4;
 letter-spacing:3px;
-color:#7fffd4;
-}
-
-nav{
-padding:10px;
-background:#05121a;
-}
-
-nav a{
-color:#7fffd4;
-margin:0 15px;
-text-decoration:none;
-}
-
-.container{
-margin-top:40px;
 }
 
 .cards{
 display:flex;
 justify-content:center;
 gap:20px;
-flex-wrap:wrap;
+margin-top:40px;
 }
 
 .card{
 background:#0b2435;
 padding:20px;
 border-radius:10px;
-width:150px;
+width:160px;
 }
 
-.card-title{
-font-size:14px;
-color:#7fffd4;
-}
-
-.card-value{
+.value{
 font-size:28px;
 font-weight:bold;
 margin-top:5px;
 }
-
 </style>
 
 </head>
@@ -72,96 +53,76 @@ margin-top:5px;
 TABOSAN AYU ANALYTICS LAB
 </header>
 
-<nav>
-<a href="#">HOME</a>
-<a href="#">DATA</a>
-<a href="#">ANALYTICS</a>
-<a href="#">PHOTO</a>
-</nav>
-
-<div class="container">
-
 <h2>2026 SEASON SUMMARY</h2>
 
 <div class="cards">
 
 <div class="card">
-<div class="card-title">総釣果</div>
-<div class="card-value" id="totalCatch">0匹</div>
+総釣果
+<div class="value" id="catch">0</div>
 </div>
 
 <div class="card">
-<div class="card-title">釣行回数</div>
-<div class="card-value" id="totalTrips">0回</div>
+釣行回数
+<div class="value" id="trips">0</div>
 </div>
 
 <div class="card">
-<div class="card-title">平均釣果</div>
-<div class="card-value" id="avgCatch">0匹</div>
+平均
+<div class="value" id="avg">0</div>
 </div>
 
 <div class="card">
-<div class="card-title">最大サイズ</div>
-<div class="card-value" id="maxSize">0cm</div>
-</div>
-
-<div class="card">
-<div class="card-title">河川数</div>
-<div class="card-value" id="riverCount">0</div>
-</div>
-
+最大サイズ
+<div class="value" id="max">0</div>
 </div>
 
 </div>
 
 <script>
 
-const url =
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vTZhvDGwcXLjhciH5hLlnYGPzmNmUxmXySU9X-WsppJv8cmewEAO08bS0vGtwkP_5zofepEj12Ix6ZI/pub?gid=0&single=true&output=csv";
+google.charts.load('current');
 
-fetch(url)
-.then(r=>r.text())
-.then(text=>{
+google.charts.setOnLoadCallback(loadData);
 
-const rows = text.trim().split(/\r?\n/).slice(1);
+function loadData(){
 
-let totalCatch = 0;
-let trips = 0;
-let maxSize = 0;
-let rivers = new Set();
+var query = new google.visualization.Query(
+'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZhvDGwcXLjhciH5hLlnYGPzmNmUxmXySU9X-WsppJv8cmewEAO08bS0vGtwkP_5zofepEj12Ix6ZI/gviz/tq?sheet=ayu_data'
+);
 
-rows.forEach(row=>{
+query.send(function(response){
 
-const c = row.split(",");
+var data = response.getDataTable();
 
-const river = c[1];
-const catchNum = parseInt(c[4]);
-const size = parseInt(c[5]);
+var rows = data.getNumberOfRows();
 
-if(!isNaN(catchNum)){
+var totalCatch = 0;
+var maxSize = 0;
+
+for(var i=0;i<rows;i++){
+
+var catchNum = data.getValue(i,4);
+var size = data.getValue(i,5);
+
 totalCatch += catchNum;
-trips++;
-}
 
-if(!isNaN(size) && size > maxSize){
+if(size > maxSize){
 maxSize = size;
 }
 
-if(river){
-rivers.add(river);
 }
 
-});
+var avg = Math.round(totalCatch / rows);
 
-const avg = trips ? Math.round(totalCatch / trips) : 0;
-
-document.getElementById("totalCatch").textContent = totalCatch+"匹";
-document.getElementById("totalTrips").textContent = trips+"回";
-document.getElementById("avgCatch").textContent = avg+"匹";
-document.getElementById("maxSize").textContent = maxSize+"cm";
-document.getElementById("riverCount").textContent = rivers.size;
+document.getElementById("catch").innerHTML = totalCatch + "匹";
+document.getElementById("trips").innerHTML = rows + "回";
+document.getElementById("avg").innerHTML = avg + "匹";
+document.getElementById("max").innerHTML = maxSize + "cm";
 
 });
+
+}
 
 </script>
 
