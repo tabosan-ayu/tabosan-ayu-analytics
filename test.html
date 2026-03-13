@@ -20,13 +20,22 @@ fetch(sheetURL)
 .then(res => res.text())
 .then(data => {
 
-const rows = data.split("\n").slice(1);
+const rows = data.split("\n");
 
 let total = 0;
 
-rows.forEach(r=>{
-const c = r.split(",");
-total += parseInt(c[9]) || 0;
+rows.forEach((row,i)=>{
+
+if(i < 1) return;
+
+const c = row.split(",");
+
+const fish = parseInt(c[9]);
+
+if(!isNaN(fish)){
+total += fish;
+}
+
 });
 
 document.getElementById("total").innerText = total + "匹";
