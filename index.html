@@ -208,7 +208,7 @@ if(river) rivers.add(river);
 
 });
 
-const avg = Math.round(totalCatch / totalTrips);
+const avg = totalTrips ? Math.round(totalCatch / totalTrips) : 0;
 
 document.querySelectorAll(".card-value")[0].innerText = totalCatch + "匹";
 document.querySelectorAll(".card-value")[1].innerText = totalTrips + "回";
