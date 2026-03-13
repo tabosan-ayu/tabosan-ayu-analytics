@@ -1,64 +1,54 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <title>TABOSAN AYU ANALYTICS LAB</title>
 
 <style>
-
 body{
 font-family:Arial;
-background:linear-gradient(180deg,#021018,#000a12,#00070d);
+background:#021018;
 color:white;
 margin:0;
+text-align:center;
 }
 
 header{
 background:#061520;
-padding:24px;
-text-align:center;
-font-size:30px;
-letter-spacing:4px;
+padding:20px;
+font-size:28px;
+letter-spacing:3px;
 color:#7fffd4;
 }
 
 nav{
-display:flex;
-justify-content:center;
-gap:40px;
-background:#05121a;
 padding:10px;
+background:#05121a;
 }
 
 nav a{
 color:#7fffd4;
+margin:0 15px;
 text-decoration:none;
 }
 
 .container{
-max-width:1100px;
-margin:auto;
-padding:30px;
-}
-
-.title{
-text-align:center;
-font-size:36px;
-margin-bottom:30px;
+margin-top:40px;
 }
 
 .cards{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:15px;
-margin-bottom:30px;
+display:flex;
+justify-content:center;
+gap:20px;
+flex-wrap:wrap;
 }
 
 .card{
 background:#0b2435;
 padding:20px;
 border-radius:10px;
-text-align:center;
+width:150px;
 }
 
 .card-title{
@@ -67,32 +57,9 @@ color:#7fffd4;
 }
 
 .card-value{
-font-size:26px;
+font-size:28px;
 font-weight:bold;
-}
-
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:20px;
-}
-
-.chart-box{
-background:#0b2435;
-padding:20px;
-border-radius:10px;
-}
-
-.section-title{
-text-align:center;
-margin-bottom:10px;
-color:#7fffd4;
-}
-
-footer{
-text-align:center;
-padding:30px;
-color:#5ac;
+margin-top:5px;
 }
 
 </style>
@@ -114,103 +81,85 @@ TABOSAN AYU ANALYTICS LAB
 
 <div class="container">
 
-<div class="title">
-2026 SEASON SUMMARY
-</div>
+<h2>2026 SEASON SUMMARY</h2>
 
 <div class="cards">
 
 <div class="card">
 <div class="card-title">総釣果</div>
-<div class="card-value">0匹</div>
+<div class="card-value" id="totalCatch">0匹</div>
 </div>
 
 <div class="card">
 <div class="card-title">釣行回数</div>
-<div class="card-value">0回</div>
+<div class="card-value" id="totalTrips">0回</div>
 </div>
 
 <div class="card">
 <div class="card-title">平均釣果</div>
-<div class="card-value">0匹</div>
+<div class="card-value" id="avgCatch">0匹</div>
 </div>
 
 <div class="card">
 <div class="card-title">最大サイズ</div>
-<div class="card-value">0cm</div>
+<div class="card-value" id="maxSize">0cm</div>
 </div>
 
 <div class="card">
 <div class="card-title">河川数</div>
-<div class="card-value">0</div>
-</div>
-
-</div>
-
-<div class="grid">
-
-<div class="chart-box">
-<div class="section-title">MONTHLY CATCH</div>
-グラフ準備中
-</div>
-
-<div class="chart-box">
-<div class="section-title">RIVER CATCH</div>
-グラフ準備中
+<div class="card-value" id="riverCount">0</div>
 </div>
 
 </div>
 
 </div>
-
-<footer>
-TABOSAN AYU ANALYTICS LAB
-</footer>
 
 <script>
 
-const sheetURL =
+const url =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vTZhvDGwcXLjhciH5hLlnYGPzmNmUxmXySU9X-WsppJv8cmewEAO08bS0vGtwkP_5zofepEj12Ix6ZI/pub?gid=0&single=true&output=csv";
 
-fetch(sheetURL)
-.then(res => res.text())
-.then(data => {
+fetch(url)
+.then(r=>r.text())
+.then(text=>{
 
-const rows = data.split(/\r?\n/).slice(1);
+const rows = text.trim().split(/\r?\n/).slice(1);
 
 let totalCatch = 0;
-let totalTrips = 0;
+let trips = 0;
 let maxSize = 0;
 let rivers = new Set();
 
-rows.forEach(r=>{
+rows.forEach(row=>{
 
-const cols = r.split(",");
+const c = row.split(",");
 
-const river = cols[1];
-const catchNum = parseInt(cols[4]);
-const size = parseInt(cols[5]);
+const river = c[1];
+const catchNum = parseInt(c[4]);
+const size = parseInt(c[5]);
 
 if(!isNaN(catchNum)){
 totalCatch += catchNum;
-totalTrips++;
+trips++;
 }
 
-if(!isNaN(size)){
-if(size > maxSize) maxSize = size;
+if(!isNaN(size) && size > maxSize){
+maxSize = size;
 }
 
-if(river) rivers.add(river);
+if(river){
+rivers.add(river);
+}
 
 });
 
-const avg = totalTrips ? Math.round(totalCatch / totalTrips) : 0;
+const avg = trips ? Math.round(totalCatch / trips) : 0;
 
-document.querySelectorAll(".card-value")[0].innerText = totalCatch + "匹";
-document.querySelectorAll(".card-value")[1].innerText = totalTrips + "回";
-document.querySelectorAll(".card-value")[2].innerText = avg + "匹";
-document.querySelectorAll(".card-value")[3].innerText = maxSize + "cm";
-document.querySelectorAll(".card-value")[4].innerText = rivers.size;
+document.getElementById("totalCatch").textContent = totalCatch+"匹";
+document.getElementById("totalTrips").textContent = trips+"回";
+document.getElementById("avgCatch").textContent = avg+"匹";
+document.getElementById("maxSize").textContent = maxSize+"cm";
+document.getElementById("riverCount").textContent = rivers.size;
 
 });
 
