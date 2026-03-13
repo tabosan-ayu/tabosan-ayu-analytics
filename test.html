@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AYU TEST</title>
+</head>
+
+<body>
+
+<h1>総釣果</h1>
+<div id="total">読み込み中...</div>
+
+<script>
+
+const sheetURL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vTZhvDGwcXLjhciH5hLInYGPzmNmUxmXySU9X-WsppJv8cmewEA008bSOvGtwkP_5zofepEj12Ix6ZI/pub?output=csv";
+
+fetch(sheetURL)
+.then(res => res.text())
+.then(data => {
+
+const rows = data.split("\n").slice(1);
+
+let total = 0;
+
+rows.forEach(r=>{
+const c = r.split(",");
+total += parseInt(c[9]) || 0;
+});
+
+document.getElementById("total").innerText = total + "匹";
+
+});
+
+</script>
+
+</body>
+</html>
