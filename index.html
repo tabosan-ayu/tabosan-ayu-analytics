@@ -44,4 +44,189 @@ border-radius:10px;
 text-align:center;
 }
 
-.card-ti
+.card-title{
+color:#7fffd4;
+}
+
+.card-value{
+font-size:28px;
+margin-top:5px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:25px;
+margin-bottom:30px;
+}
+
+.chart-box{
+background:#0b2435;
+padding:20px;
+border-radius:10px;
+}
+
+.list-box{
+background:#0b2435;
+padding:20px;
+border-radius:10px;
+margin-bottom:20px;
+}
+
+.list-box div{
+padding:6px 0;
+border-bottom:1px solid #12384a;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+TABOSAN AYU ANALYTICS LAB
+</header>
+
+<div class="container">
+
+<div class="cards">
+
+<div class="card">
+<div class="card-title">総釣果</div>
+<div class="card-value">22匹</div>
+</div>
+
+<div class="card">
+<div class="card-title">釣行回数</div>
+<div class="card-value">3回</div>
+</div>
+
+<div class="card">
+<div class="card-title">平均釣果</div>
+<div class="card-value">7.3匹</div>
+</div>
+
+<div class="card">
+<div class="card-title">平均効率</div>
+<div class="card-value">2.27匹/h</div>
+</div>
+
+<div class="card">
+<div class="card-title">最大サイズ</div>
+<div class="card-value">25cm</div>
+</div>
+
+</div>
+
+<div class="grid">
+
+<div class="chart-box">
+<div id="chart_month" style="height:280px;"></div>
+</div>
+
+<div class="chart-box">
+<div id="chart_river" style="height:280px;"></div>
+</div>
+
+<div class="chart-box">
+<div id="chart_size" style="height:280px;"></div>
+</div>
+
+<div class="chart-box">
+<div id="chart_time" style="height:280px;"></div>
+</div>
+
+</div>
+
+<div class="grid">
+
+<div class="list-box">
+<h3>RIVER RANKING</h3>
+<div>1位 長良川 22匹</div>
+</div>
+
+<div class="list-box">
+<h3>ROD RANKING</h3>
+<div>1位 プロセレクトTF 17匹</div>
+<div>2位 スペシャルFW 5匹</div>
+</div>
+
+<div class="list-box">
+<h3>POINT RANKING</h3>
+<div>1位 白鳥 17匹</div>
+<div>2位 大和 5匹</div>
+</div>
+
+<div class="list-box">
+<h3>LATEST FISHING</h3>
+<div>6/2 長良川 白鳥 7匹</div>
+<div>6/1 長良川 白鳥 10匹</div>
+<div>6/1 長良川 大和 5匹</div>
+</div>
+
+</div>
+
+<div class="chart-box">
+<h3>FISHING MAP</h3>
+
+<iframe
+width="100%"
+height="400"
+style="border:0;border-radius:8px"
+loading="lazy"
+src="https://maps.google.com/maps?q=長良川&t=&z=9&output=embed">
+</iframe>
+
+</div>
+
+</div>
+
+<script>
+
+google.charts.load('current',{packages:['corechart']});
+google.charts.setOnLoadCallback(drawCharts);
+
+function drawCharts(){
+
+var month=google.visualization.arrayToDataTable([
+['月','釣果'],
+['6月',22]
+]);
+
+var river=google.visualization.arrayToDataTable([
+['河川','釣果'],
+['長良川',22]
+]);
+
+var size=google.visualization.arrayToDataTable([
+['サイズ','匹'],
+['20-21',5],
+['22-23',7],
+['24-25',10]
+]);
+
+var time=google.visualization.arrayToDataTable([
+['時間','匹'],
+['午前',17],
+['午後',5]
+]);
+
+new google.visualization.ColumnChart(document.getElementById('chart_month'))
+.draw(month,{backgroundColor:'transparent',colors:['#35e3ff']});
+
+new google.visualization.PieChart(document.getElementById('chart_river'))
+.draw(river,{backgroundColor:'transparent'});
+
+new google.visualization.ColumnChart(document.getElementById('chart_size'))
+.draw(size,{backgroundColor:'transparent',colors:['#4df0d2']});
+
+new google.visualization.PieChart(document.getElementById('chart_time'))
+.draw(time,{backgroundColor:'transparent'});
+
+}
+
+</script>
+
+</body>
+</html>
