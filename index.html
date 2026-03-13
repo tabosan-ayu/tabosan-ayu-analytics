@@ -171,13 +171,12 @@ TABOSAN AYU ANALYTICS LAB
 
 const sheetURL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vTZhvDGwcXLjhciH5hLlnYGPzmNmUxmXySU9X-WsppJv8cmewEAO08bS0vGtwkP_5zofepEj12Ix6ZI/pub?gid=0&single=true&output=csv";
+
 fetch(sheetURL)
 .then(res => res.text())
 .then(data => {
 
-const json = JSON.parse(data.substr(47).slice(0,-2));
-
-const rows = json.table.rows;
+const rows = data.split("\n").slice(1);
 
 let totalCatch = 0;
 let totalTrips = 0;
@@ -186,21 +185,19 @@ let rivers = new Set();
 
 rows.forEach(r=>{
 
-const river = r.c[1]?.v;
-const catchNum = r.c[4]?.v;
-const size = r.c[5]?.v;
+const cols = r.split(",");
 
-if(catchNum){
+const river = cols[1];
+const catchNum = parseInt(cols[4]);
+const size = parseInt(cols[5]);
 
+if(!isNaN(catchNum)){
 totalCatch += catchNum;
 totalTrips++;
-
 }
 
-if(size){
-
+if(!isNaN(size)){
 if(size > maxSize) maxSize = size;
-
 }
 
 if(river) rivers.add(river);
