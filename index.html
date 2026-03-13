@@ -3,9 +3,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>TABOSAN AYU ANALYTICS LAB</title>
-
-<script src="https://www.gstatic.com/charts/loader.js"></script>
+<title>TABOSAN AYU DATA</title>
 
 <style>
 body{
@@ -13,7 +11,6 @@ font-family:Arial;
 background:#021018;
 color:white;
 text-align:center;
-margin:0;
 }
 
 header{
@@ -21,27 +18,13 @@ background:#061520;
 padding:20px;
 font-size:28px;
 color:#7fffd4;
-letter-spacing:3px;
 }
 
-.cards{
-display:flex;
-justify-content:center;
-gap:20px;
-margin-top:40px;
-}
-
-.card{
-background:#0b2435;
-padding:20px;
-border-radius:10px;
-width:160px;
-}
-
-.value{
-font-size:28px;
-font-weight:bold;
-margin-top:5px;
+iframe{
+margin-top:20px;
+width:90%;
+height:600px;
+border:none;
 }
 </style>
 
@@ -50,81 +33,10 @@ margin-top:5px;
 <body>
 
 <header>
-TABOSAN AYU ANALYTICS LAB
+TABOSAN AYU DATA
 </header>
 
-<h2>2026 SEASON SUMMARY</h2>
-
-<div class="cards">
-
-<div class="card">
-総釣果
-<div class="value" id="catch">0</div>
-</div>
-
-<div class="card">
-釣行回数
-<div class="value" id="trips">0</div>
-</div>
-
-<div class="card">
-平均
-<div class="value" id="avg">0</div>
-</div>
-
-<div class="card">
-最大サイズ
-<div class="value" id="max">0</div>
-</div>
-
-</div>
-
-<script>
-
-google.charts.load('current');
-
-google.charts.setOnLoadCallback(loadData);
-
-function loadData(){
-
-var query = new google.visualization.Query(
-'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZhvDGwcXLjhciH5hLlnYGPzmNmUxmXySU9X-WsppJv8cmewEAO08bS0vGtwkP_5zofepEj12Ix6ZI/gviz/tq?sheet=ayu_data'
-);
-
-query.send(function(response){
-
-var data = response.getDataTable();
-
-var rows = data.getNumberOfRows();
-
-var totalCatch = 0;
-var maxSize = 0;
-
-for(var i=0;i<rows;i++){
-
-var catchNum = data.getValue(i,4);
-var size = data.getValue(i,5);
-
-totalCatch += catchNum;
-
-if(size > maxSize){
-maxSize = size;
-}
-
-}
-
-var avg = Math.round(totalCatch / rows);
-
-document.getElementById("catch").innerHTML = totalCatch + "匹";
-document.getElementById("trips").innerHTML = rows + "回";
-document.getElementById("avg").innerHTML = avg + "匹";
-document.getElementById("max").innerHTML = maxSize + "cm";
-
-});
-
-}
-
-</script>
+<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTZhvDGwcXLjhciH5hLlnYGPzmNmUxmXySU9X-WsppJv8cmewEAO08bS0vGtwkP_5zofepEj12Ix6ZI/pubhtml"></iframe>
 
 </body>
 </html>
