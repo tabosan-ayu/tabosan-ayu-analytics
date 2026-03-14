@@ -10,13 +10,13 @@
 
 body{
 font-family:Arial;
-background:linear-gradient(#021018,#00070d);
+background:#021018;
 color:white;
 margin:0;
 }
 
 header{
-background:#061520;
+background:#041822;
 padding:25px;
 text-align:center;
 font-size:30px;
@@ -56,17 +56,15 @@ margin-top:5px;
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:25px;
-margin-bottom:30px;
 }
 
-.chart-box{
+.chart{
 background:#0b2435;
 padding:20px;
 border-radius:10px;
 }
 
 </style>
-
 </head>
 
 <body>
@@ -106,24 +104,15 @@ TABOSAN AYU ANALYTICS LAB
 
 </div>
 
-
 <div class="grid">
 
-<div class="chart-box">
-<div id="monthChart" style="height:280px;"></div>
-</div>
+<div id="chart_month" class="chart" style="height:300px"></div>
 
-<div class="chart-box">
-<div id="riverChart" style="height:280px;"></div>
-</div>
+<div id="chart_point" class="chart" style="height:300px"></div>
 
-<div class="chart-box">
-<div id="sizeChart" style="height:280px;"></div>
-</div>
+<div id="chart_size" class="chart" style="height:300px"></div>
 
-<div class="chart-box">
-<div id="timeChart" style="height:280px;"></div>
-</div>
+<div id="chart_time" class="chart" style="height:300px"></div>
 
 </div>
 
@@ -134,90 +123,89 @@ TABOSAN AYU ANALYTICS LAB
 google.charts.load('current',{packages:['corechart']});
 google.charts.setOnLoadCallback(loadData);
 
-const SHEET="https://opensheet.elk.sh/1VW63HjLHVUwC9w6cgnAvt-oV3cItpSSY4a5Ykq2VtXk/DATA";
+const sheetURL =
+"https://opensheet.elk.sh/あなたのスプレッドシートID/DATA";
 
 function loadData(){
 
-fetch(SHEET)
+fetch(sheetURL)
 .then(res=>res.json())
 .then(data=>{
 
-let total=0;
-let maxSize=0;
-let effTotal=0;
+let totalCatch=0
+let tripCount=data.length
+let maxSize=0
+let effTotal=0
 
-let month={};
-let river={};
-let size={};
-let time={};
+let monthData={}
+let pointData={}
+let sizeData={}
+let timeData={}
 
-data.forEach(r=>{
+data.forEach(row=>{
 
-let catchNum=Number(r.匹数)||0;
+let catchNum=Number(row["匹数"])||0
 
-total+=catchNum;
+totalCatch+=catchNum
 
-let sizeNum=Number(r["最大サイズ"])||0;
+let size=Number(row["最大サイズ"])||0
+if(size>maxSize) maxSize=size
 
-if(sizeNum>maxSize)maxSize=sizeNum;
+let eff=Number(row["効率(匹/時間)"])||0
+effTotal+=eff
 
-effTotal+=Number(r["効率(匹/時間)"])||0;
+let month=row["月"]
+monthData[month]=(monthData[month]||0)+catchNum
 
-let m=r.月;
-month[m]=(month[m]||0)+catchNum;
+let point=row["ポイント"]
+pointData[point]=(pointData[point]||0)+catchNum
 
-let rv=r.河川;
-river[rv]=(river[rv]||0)+catchNum;
+let s=Math.floor(size)
+sizeData[s]=(sizeData[s]||0)+1
 
-let s=Math.floor(r["最大サイズ"]);
-size[s]=(size[s]||0)+1;
+let time=row["開始"]
+timeData[time]=(timeData[time]||0)+catchNum
 
-let t=r.開始;
-time[t]=(time[t]||0)+catchNum;
+})
 
-});
+let avgCatch=(totalCatch/tripCount).toFixed(1)
+let avgEff=(effTotal/tripCount).toFixed(2)
 
-let trips=data.length;
-let avg=(total/trips).toFixed(1);
-let eff=(effTotal/trips).toFixed(2);
+document.getElementById("totalCatch").innerText=totalCatch+"匹"
+document.getElementById("tripCount").innerText=tripCount+"回"
+document.getElementById("avgCatch").innerText=avgCatch+"匹"
+document.getElementById("avgEff").innerText=avgEff+"匹/h"
+document.getElementById("maxSize").innerText=maxSize+"cm"
 
-document.getElementById("totalCatch").innerText=total+"匹";
-document.getElementById("tripCount").innerText=trips+"回";
-document.getElementById("avgCatch").innerText=avg+"匹";
-document.getElementById("avgEff").innerText=eff+"匹/h";
-document.getElementById("maxSize").innerText=maxSize+"cm";
+drawChart("chart_month","月","釣果",monthData)
+drawChart("chart_point","ポイント","釣果",pointData)
+drawChart("chart_size","サイズ","匹",sizeData)
+drawChart("chart_time","時間","釣果",timeData)
 
-drawCharts(month,river,size,time);
-
-});
+})
 
 }
 
-function drawCharts(month,river,size,time){
+function drawChart(id,xlabel,ylabel,obj){
 
-let m=[["月","釣果"]];
-Object.keys(month).forEach(k=>m.push([k+"月",month[k]]));
+let arr=[[xlabel,ylabel]]
 
-let r=[["河川","釣果"]];
-Object.keys(river).forEach(k=>r.push([k,river[k]]));
+Object.keys(obj).forEach(k=>{
+arr.push([k,obj[k]])
+})
 
-let s=[["サイズ","匹"]];
-Object.keys(size).forEach(k=>s.push([k+"cm",size[k]]));
+let data=google.visualization.arrayToDataTable(arr)
 
-let t=[["時間","匹"]];
-Object.keys(time).forEach(k=>t.push([k,time[k]]));
+let chart=new google.visualization.ColumnChart(
+document.getElementById(id)
+)
 
-new google.visualization.ColumnChart(document.getElementById("monthChart"))
-.draw(google.visualization.arrayToDataTable(m),{backgroundColor:"transparent"});
-
-new google.visualization.PieChart(document.getElementById("riverChart"))
-.draw(google.visualization.arrayToDataTable(r),{backgroundColor:"transparent"});
-
-new google.visualization.ColumnChart(document.getElementById("sizeChart"))
-.draw(google.visualization.arrayToDataTable(s),{backgroundColor:"transparent"});
-
-new google.visualization.PieChart(document.getElementById("timeChart"))
-.draw(google.visualization.arrayToDataTable(t),{backgroundColor:"transparent"});
+chart.draw(data,{
+backgroundColor:"transparent",
+legend:{textStyle:{color:"white"}},
+hAxis:{textStyle:{color:"white"}},
+vAxis:{textStyle:{color:"white"}}
+})
 
 }
 
