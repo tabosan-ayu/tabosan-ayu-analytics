@@ -65,7 +65,6 @@ border-radius:10px;
 }
 
 </style>
-
 </head>
 
 <body>
@@ -124,9 +123,8 @@ TABOSAN AYU ANALYTICS LAB
 google.charts.load('current',{packages:['corechart']});
 google.charts.setOnLoadCallback(loadData);
 
-/* ★ここだけ自分のシートIDに変更 */
 const sheetURL =
-"https://opensheet.elk.sh/あなたのスプレッドシートID/DATA";
+"https://opensheet.elk.sh/1VW63HjLHVUwC9w6cgnAvt-oV3cItpSSY4a5Ykq2VtXk/DATA";
 
 function loadData(){
 
@@ -134,10 +132,8 @@ fetch(sheetURL)
 .then(res=>res.json())
 .then(data=>{
 
-/* 空行を除外 */
 data = data.filter(r => r["匹数"]);
 
-/* 数値計算 */
 let totalCatch=0;
 let tripCount=data.length;
 let maxSize=0;
@@ -173,8 +169,6 @@ timeData[time]=(timeData[time]||0)+catchNum;
 
 });
 
-/* カード */
-
 let avgCatch=(totalCatch/tripCount||0).toFixed(1);
 let avgEff=(effTotal/tripCount||0).toFixed(2);
 
@@ -184,18 +178,14 @@ document.getElementById("avgCatch").innerText=avgCatch+"匹";
 document.getElementById("avgEff").innerText=avgEff+"匹/h";
 document.getElementById("maxSize").innerText=maxSize+"cm";
 
-/* グラフ */
-
 drawChart("chart_month","月","釣果",monthData);
 drawChart("chart_point","ポイント","釣果",pointData);
 drawChart("chart_size","サイズ","匹",sizeData);
-drawChart("chart_time","開始時間","釣果",timeData);
+drawChart("chart_time","時間","釣果",timeData);
 
 });
 
 }
-
-/* グラフ描画 */
 
 function drawChart(id,xlabel,ylabel,obj){
 
