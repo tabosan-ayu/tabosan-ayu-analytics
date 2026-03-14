@@ -107,11 +107,8 @@ TABOSAN AYU ANALYTICS LAB
 <div class="grid">
 
 <div id="chart_month" class="chart" style="height:300px"></div>
-
 <div id="chart_point" class="chart" style="height:300px"></div>
-
 <div id="chart_size" class="chart" style="height:300px"></div>
-
 <div id="chart_time" class="chart" style="height:300px"></div>
 
 </div>
@@ -164,7 +161,7 @@ pointData[point]=(pointData[point]||0)+catchNum;
 let s=Math.floor(size);
 sizeData[s]=(sizeData[s]||0)+1;
 
-let time=row["開始"];
+let time=row["釣行時間"];
 timeData[time]=(timeData[time]||0)+catchNum;
 
 });
@@ -181,7 +178,7 @@ document.getElementById("maxSize").innerText=maxSize+"cm";
 drawChart("chart_month","月","釣果",monthData);
 drawChart("chart_point","ポイント","釣果",pointData);
 drawChart("chart_size","サイズ","匹",sizeData);
-drawChart("chart_time","時間","釣果",timeData);
+drawChart("chart_time","釣行時間","釣果",timeData);
 
 });
 
