@@ -124,7 +124,7 @@ google.charts.load('current',{packages:['corechart']});
 google.charts.setOnLoadCallback(loadData);
 
 const sheetURL =
-"https://opensheet.elk.sh/あなたのスプレッドシートID/DATA";
+"https://opensheet.elk.sh/1VW63HjLHVUwC9w6cgnAvt-oV3cItpSSY4a5Ykq2VtXk/DATA";
 
 function loadData(){
 
@@ -132,80 +132,79 @@ fetch(sheetURL)
 .then(res=>res.json())
 .then(data=>{
 
-let totalCatch=0
-let tripCount=data.length
-let maxSize=0
-let effTotal=0
+let totalCatch=0;
+let tripCount=data.length;
+let maxSize=0;
+let effTotal=0;
 
-let monthData={}
-let pointData={}
-let sizeData={}
-let timeData={}
+let monthData={};
+let pointData={};
+let sizeData={};
+let timeData={};
 
 data.forEach(row=>{
 
-let catchNum=Number(row["匹数"])||0
+let catchNum=Number(row["匹数"])||0;
+totalCatch+=catchNum;
 
-totalCatch+=catchNum
+let size=Number(row["最大サイズ"])||0;
+if(size>maxSize) maxSize=size;
 
-let size=Number(row["最大サイズ"])||0
-if(size>maxSize) maxSize=size
+let eff=Number(row["効率"])||0;
+effTotal+=eff;
 
-let eff=Number(row["効率(匹/時間)"])||0
-effTotal+=eff
+let month=row["月"];
+monthData[month]=(monthData[month]||0)+catchNum;
 
-let month=row["月"]
-monthData[month]=(monthData[month]||0)+catchNum
+let point=row["ポイント"];
+pointData[point]=(pointData[point]||0)+catchNum;
 
-let point=row["ポイント"]
-pointData[point]=(pointData[point]||0)+catchNum
+let s=Math.floor(size);
+sizeData[s]=(sizeData[s]||0)+1;
 
-let s=Math.floor(size)
-sizeData[s]=(sizeData[s]||0)+1
+let time=row["開始"];
+timeData[time]=(timeData[time]||0)+catchNum;
 
-let time=row["開始"]
-timeData[time]=(timeData[time]||0)+catchNum
+});
 
-})
+let avgCatch=(totalCatch/tripCount).toFixed(1);
+let avgEff=(effTotal/tripCount).toFixed(2);
 
-let avgCatch=(totalCatch/tripCount).toFixed(1)
-let avgEff=(effTotal/tripCount).toFixed(2)
+document.getElementById("totalCatch").innerText=totalCatch+"匹";
+document.getElementById("tripCount").innerText=tripCount+"回";
+document.getElementById("avgCatch").innerText=avgCatch+"匹";
+document.getElementById("avgEff").innerText=avgEff+"匹/h";
+document.getElementById("maxSize").innerText=maxSize+"cm";
 
-document.getElementById("totalCatch").innerText=totalCatch+"匹"
-document.getElementById("tripCount").innerText=tripCount+"回"
-document.getElementById("avgCatch").innerText=avgCatch+"匹"
-document.getElementById("avgEff").innerText=avgEff+"匹/h"
-document.getElementById("maxSize").innerText=maxSize+"cm"
+drawChart("chart_month","月","釣果",monthData);
+drawChart("chart_point","ポイント","釣果",pointData);
+drawChart("chart_size","サイズ","匹",sizeData);
+drawChart("chart_time","時間","釣果",timeData);
 
-drawChart("chart_month","月","釣果",monthData)
-drawChart("chart_point","ポイント","釣果",pointData)
-drawChart("chart_size","サイズ","匹",sizeData)
-drawChart("chart_time","時間","釣果",timeData)
-
-})
+});
 
 }
 
 function drawChart(id,xlabel,ylabel,obj){
 
-let arr=[[xlabel,ylabel]]
+let arr=[[xlabel,ylabel]];
 
 Object.keys(obj).forEach(k=>{
-arr.push([k,obj[k]])
-})
+arr.push([k,obj[k]]);
+});
 
-let data=google.visualization.arrayToDataTable(arr)
+let data=google.visualization.arrayToDataTable(arr);
 
 let chart=new google.visualization.ColumnChart(
 document.getElementById(id)
-)
+);
 
 chart.draw(data,{
 backgroundColor:"transparent",
 legend:{textStyle:{color:"white"}},
 hAxis:{textStyle:{color:"white"}},
 vAxis:{textStyle:{color:"white"}}
-})
+});
 
 }
 
