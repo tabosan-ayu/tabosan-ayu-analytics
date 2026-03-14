@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -66,18 +65,6 @@ padding:20px;
 border-radius:10px;
 }
 
-.list-box{
-background:#0b2435;
-padding:20px;
-border-radius:10px;
-margin-bottom:20px;
-}
-
-.list-box div{
-padding:6px 0;
-border-bottom:1px solid #12384a;
-}
-
 </style>
 
 </head>
@@ -94,89 +81,49 @@ TABOSAN AYU ANALYTICS LAB
 
 <div class="card">
 <div class="card-title">総釣果</div>
-<div class="card-value">22匹</div>
+<div id="totalCatch" class="card-value">-</div>
 </div>
 
 <div class="card">
 <div class="card-title">釣行回数</div>
-<div class="card-value">3回</div>
+<div id="tripCount" class="card-value">-</div>
 </div>
 
 <div class="card">
 <div class="card-title">平均釣果</div>
-<div class="card-value">7.3匹</div>
+<div id="avgCatch" class="card-value">-</div>
 </div>
 
 <div class="card">
 <div class="card-title">平均効率</div>
-<div class="card-value">2.27匹/h</div>
+<div id="avgEff" class="card-value">-</div>
 </div>
 
 <div class="card">
 <div class="card-title">最大サイズ</div>
-<div class="card-value">25cm</div>
+<div id="maxSize" class="card-value">-</div>
 </div>
 
 </div>
+
 
 <div class="grid">
 
 <div class="chart-box">
-<div id="chart_month" style="height:280px;"></div>
+<div id="monthChart" style="height:280px;"></div>
 </div>
 
 <div class="chart-box">
-<div id="chart_river" style="height:280px;"></div>
+<div id="riverChart" style="height:280px;"></div>
 </div>
 
 <div class="chart-box">
-<div id="chart_size" style="height:280px;"></div>
+<div id="sizeChart" style="height:280px;"></div>
 </div>
 
 <div class="chart-box">
-<div id="chart_time" style="height:280px;"></div>
+<div id="timeChart" style="height:280px;"></div>
 </div>
-
-</div>
-
-<div class="grid">
-
-<div class="list-box">
-<h3>RIVER RANKING</h3>
-<div>1位 長良川 22匹</div>
-</div>
-
-<div class="list-box">
-<h3>ROD RANKING</h3>
-<div>1位 プロセレクトTF 17匹</div>
-<div>2位 スペシャルFW 5匹</div>
-</div>
-
-<div class="list-box">
-<h3>POINT RANKING</h3>
-<div>1位 白鳥 17匹</div>
-<div>2位 大和 5匹</div>
-</div>
-
-<div class="list-box">
-<h3>LATEST FISHING</h3>
-<div>6/2 長良川 白鳥 7匹</div>
-<div>6/1 長良川 白鳥 10匹</div>
-<div>6/1 長良川 大和 5匹</div>
-</div>
-
-</div>
-
-<div class="chart-box">
-<h3>FISHING MAP</h3>
-
-<iframe
-width="100%"
-height="400"
-style="border:0;border-radius:8px"
-loading="lazy"
-src="https://maps.google.com/maps?q=長良川&t=&z=9&output=embed">
-</iframe>
 
 </div>
 
@@ -185,44 +132,92 @@ src="https://maps.google.com/maps?q=長良川&t=&z=9&output=embed">
 <script>
 
 google.charts.load('current',{packages:['corechart']});
-google.charts.setOnLoadCallback(drawCharts);
+google.charts.setOnLoadCallback(loadData);
 
-function drawCharts(){
+const SHEET="https://opensheet.elk.sh/1VW63HjLHVUwC9w6cgnAvt-oV3cItpSSY4a5Ykq2VtXk/DATA";
 
-var month=google.visualization.arrayToDataTable([
-['月','釣果'],
-['6月',22]
-]);
+function loadData(){
 
-var river=google.visualization.arrayToDataTable([
-['河川','釣果'],
-['長良川',22]
-]);
+fetch(SHEET)
+.then(res=>res.json())
+.then(data=>{
 
-var size=google.visualization.arrayToDataTable([
-['サイズ','匹'],
-['20-21',5],
-['22-23',7],
-['24-25',10]
-]);
+let total=0;
+let maxSize=0;
+let effTotal=0;
 
-var time=google.visualization.arrayToDataTable([
-['時間','匹'],
-['午前',17],
-['午後',5]
-]);
+let month={};
+let river={};
+let size={};
+let time={};
 
-new google.visualization.ColumnChart(document.getElementById('chart_month'))
-.draw(month,{backgroundColor:'transparent',colors:['#35e3ff']});
+data.forEach(r=>{
 
-new google.visualization.PieChart(document.getElementById('chart_river'))
-.draw(river,{backgroundColor:'transparent'});
+let catchNum=Number(r.匹数)||0;
 
-new google.visualization.ColumnChart(document.getElementById('chart_size'))
-.draw(size,{backgroundColor:'transparent',colors:['#4df0d2']});
+total+=catchNum;
 
-new google.visualization.PieChart(document.getElementById('chart_time'))
-.draw(time,{backgroundColor:'transparent'});
+let sizeNum=Number(r["最大サイズ"])||0;
+
+if(sizeNum>maxSize)maxSize=sizeNum;
+
+effTotal+=Number(r["効率(匹/時間)"])||0;
+
+let m=r.月;
+month[m]=(month[m]||0)+catchNum;
+
+let rv=r.河川;
+river[rv]=(river[rv]||0)+catchNum;
+
+let s=Math.floor(r["最大サイズ"]);
+size[s]=(size[s]||0)+1;
+
+let t=r.開始;
+time[t]=(time[t]||0)+catchNum;
+
+});
+
+let trips=data.length;
+let avg=(total/trips).toFixed(1);
+let eff=(effTotal/trips).toFixed(2);
+
+document.getElementById("totalCatch").innerText=total+"匹";
+document.getElementById("tripCount").innerText=trips+"回";
+document.getElementById("avgCatch").innerText=avg+"匹";
+document.getElementById("avgEff").innerText=eff+"匹/h";
+document.getElementById("maxSize").innerText=maxSize+"cm";
+
+drawCharts(month,river,size,time);
+
+});
+
+}
+
+function drawCharts(month,river,size,time){
+
+let m=[["月","釣果"]];
+Object.keys(month).forEach(k=>m.push([k+"月",month[k]]));
+
+let r=[["河川","釣果"]];
+Object.keys(river).forEach(k=>r.push([k,river[k]]));
+
+let s=[["サイズ","匹"]];
+Object.keys(size).forEach(k=>s.push([k+"cm",size[k]]));
+
+let t=[["時間","匹"]];
+Object.keys(time).forEach(k=>t.push([k,time[k]]));
+
+new google.visualization.ColumnChart(document.getElementById("monthChart"))
+.draw(google.visualization.arrayToDataTable(m),{backgroundColor:"transparent"});
+
+new google.visualization.PieChart(document.getElementById("riverChart"))
+.draw(google.visualization.arrayToDataTable(r),{backgroundColor:"transparent"});
+
+new google.visualization.ColumnChart(document.getElementById("sizeChart"))
+.draw(google.visualization.arrayToDataTable(s),{backgroundColor:"transparent"});
+
+new google.visualization.PieChart(document.getElementById("timeChart"))
+.draw(google.visualization.arrayToDataTable(t),{backgroundColor:"transparent"});
 
 }
 
