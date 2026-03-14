@@ -65,6 +65,7 @@ border-radius:10px;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -124,7 +125,7 @@ google.charts.load('current',{packages:['corechart']});
 google.charts.setOnLoadCallback(loadData);
 
 const sheetURL =
-"https://opensheet.elk.sh/1VW63HjLHVUwC9w6cgnAvt-oV3cItpSSY4a5Ykq2VtXk/DATA";
+"https://opensheet.elk.sh/スプレッドシートID/DATA";
 
 function loadData(){
 
@@ -145,24 +146,31 @@ let timeData={};
 data.forEach(row=>{
 
 let catchNum=Number(row["匹数"])||0;
+
 totalCatch+=catchNum;
 
 let size=Number(row["最大サイズ"])||0;
+
 if(size>maxSize) maxSize=size;
 
 let eff=Number(row["効率"])||0;
+
 effTotal+=eff;
 
 let month=row["月"];
+
 monthData[month]=(monthData[month]||0)+catchNum;
 
 let point=row["ポイント"];
+
 pointData[point]=(pointData[point]||0)+catchNum;
 
 let s=Math.floor(size);
+
 sizeData[s]=(sizeData[s]||0)+1;
 
 let time=row["開始"];
+
 timeData[time]=(timeData[time]||0)+catchNum;
 
 });
