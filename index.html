@@ -152,10 +152,10 @@ fetch(sheetURL)
 
 data=data.filter(r=>r["匹数"]);
 
-let totalCatch=0;
-let tripCount=data.length;
-let maxSize=0;
-let effTotal=0;
+let totalCatch=0
+let tripCount=data.length
+let maxSize=0
+let effTotal=0
 
 let monthData={}
 let riverData={}
@@ -214,15 +214,15 @@ document.getElementById("avgCatch").innerText=avgCatch+"匹"
 document.getElementById("avgEff").innerText=avgEff+"匹/h"
 document.getElementById("maxSize").innerText=maxSize+"cm"
 
-drawChart("chart_month","月","釣果",monthData)
+drawChart("chart_month","月別釣果",monthData)
 drawPie("chart_river","河川割合",riverData)
-drawChart("chart_point","ポイント","釣果",pointData)
-drawChart("chart_rod","竿名","釣果",rodData)
-drawChart("chart_time","時間","釣果",timeData)
-drawChart("chart_river_rank","河川ランキング","釣果",riverRank)
-drawChart("chart_weather","天候","釣果",weatherData)
-drawChart("chart_water","水位","釣果",waterData)
-drawChart("chart_eff","効率","回数",effData)
+drawChart("chart_point","ポイント別釣果",pointData)
+drawChart("chart_rod","竿ランキング",rodData)
+drawChart("chart_time","時間帯分析",timeData)
+drawChart("chart_river_rank","河川ランキング",riverRank)
+drawChart("chart_weather","天候別釣果",weatherData)
+drawChart("chart_water","水位別釣果",waterData)
+drawChart("chart_eff","効率分布",effData)
 
 showLatest(data)
 
@@ -230,22 +230,26 @@ showLatest(data)
 
 }
 
-function drawChart(id,xlabel,ylabel,obj){
+function drawChart(id,title,obj){
 
-let arr=[[xlabel,ylabel]]
+let arr=Object.entries(obj)
 
-Object.keys(obj).forEach(k=>{
-arr.push([k,obj[k]])
+arr.sort((a,b)=>b[1]-a[1])
+
+let dataArr=[[title,"値"]]
+
+arr.forEach(v=>{
+dataArr.push([v[0],v[1]])
 })
 
-let data=google.visualization.arrayToDataTable(arr)
+let data=google.visualization.arrayToDataTable(dataArr)
 
 let chart=new google.visualization.ColumnChart(
 document.getElementById(id)
 )
 
 chart.draw(data,{
-title:xlabel+"別"+ylabel,
+title:title,
 titleTextStyle:{color:"#7fffd4"},
 backgroundColor:"transparent",
 legend:{textStyle:{color:"white"}},
@@ -257,13 +261,13 @@ vAxis:{textStyle:{color:"white"}}
 
 function drawPie(id,title,obj){
 
-let arr=[["項目","値"]]
+let dataArr=[[title,"値"]]
 
-Object.keys(obj).forEach(k=>{
-arr.push([k,obj[k]])
+Object.entries(obj).forEach(v=>{
+dataArr.push(v)
 })
 
-let data=google.visualization.arrayToDataTable(arr)
+let data=google.visualization.arrayToDataTable(dataArr)
 
 let chart=new google.visualization.PieChart(
 document.getElementById(id)
