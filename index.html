@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <title>TABOSAN AYU ANALYTICS LAB</title>
 
-<script src="https://www.gstatic.com/charts/loader.js"></script>
-
 <style>
 
 body{
@@ -23,24 +21,35 @@ font-size:32px;
 color:#7fffd4;
 }
 
+nav{
+text-align:center;
+padding:10px;
+}
+
+nav a{
+color:#7fffd4;
+margin:0 15px;
+text-decoration:none;
+font-size:18px;
+}
+
 .container{
-max-width:1500px;
+max-width:1200px;
 margin:auto;
-padding:30px;
+padding:40px;
+text-align:center;
 }
 
 .cards{
 display:grid;
 grid-template-columns:repeat(5,1fr);
 gap:20px;
-margin-bottom:30px;
 }
 
 .card{
 background:#0b2435;
 padding:20px;
 border-radius:10px;
-text-align:center;
 }
 
 .card-title{
@@ -48,27 +57,8 @@ color:#7fffd4;
 }
 
 .card-value{
-font-size:28px;
+font-size:30px;
 margin-top:5px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:25px;
-}
-
-.chart{
-background:#0b2435;
-padding:20px;
-border-radius:10px;
-height:320px;
-}
-
-.latest{
-background:#0b2435;
-padding:20px;
-border-radius:10px;
 }
 
 </style>
@@ -80,7 +70,17 @@ border-radius:10px;
 TABOSAN AYU ANALYTICS LAB
 </header>
 
+<nav>
+
+<a href="index.html">HOME</a>
+
+<a href="analytics.html">ANALYTICS</a>
+
+</nav>
+
 <div class="container">
+
+<h2>2026 SEASON SUMMARY</h2>
 
 <div class="cards">
 
@@ -111,196 +111,45 @@ TABOSAN AYU ANALYTICS LAB
 
 </div>
 
-<div class="grid">
-
-<div id="chart_month" class="chart"></div>
-<div id="chart_river" class="chart"></div>
-
-<div id="chart_point" class="chart"></div>
-<div id="chart_rod" class="chart"></div>
-
-<div id="chart_time" class="chart"></div>
-<div id="chart_river_rank" class="chart"></div>
-
-<div id="chart_weather" class="chart"></div>
-<div id="chart_water" class="chart"></div>
-
-<div id="chart_eff" class="chart"></div>
-
-<div class="latest">
-<h3>最近の釣果</h3>
-<div id="latestFishing"></div>
-</div>
-
-</div>
-
 </div>
 
 <script>
 
-google.charts.load('current',{packages:['corechart']});
-google.charts.setOnLoadCallback(loadData);
-
 const sheetURL =
 "https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
-
-function loadData(){
 
 fetch(sheetURL)
 .then(res=>res.json())
 .then(data=>{
 
-data=data.filter(r=>r["匹数"]);
+data=data.filter(r=>r["匹数"])
 
-let totalCatch=0
-let tripCount=data.length
-let maxSize=0
-let effTotal=0
+let total=0
+let max=0
+let eff=0
 
-let monthData={}
-let riverData={}
-let pointData={}
-let rodData={}
-let timeData={}
-let riverRank={}
-let weatherData={}
-let waterData={}
-let effData={}
+data.forEach(r=>{
 
-data.forEach(row=>{
+let c=Number(r["匹数"])||0
+total+=c
 
-let catchNum=Number(row["匹数"])||0
-totalCatch+=catchNum
+let s=Number(r["最大サイズ"])||0
+if(s>max)max=s
 
-let size=Number(row["最大サイズ"])||0
-if(size>maxSize)maxSize=size
-
-let eff=Number(row["効率"])||0
-effTotal+=eff
-
-let month=row["月"]
-monthData[month]=(monthData[month]||0)+catchNum
-
-let river=row["河川"]
-riverData[river]=(riverData[river]||0)+catchNum
-riverRank[river]=(riverRank[river]||0)+catchNum
-
-let point=row["ポイント"]
-pointData[point]=(pointData[point]||0)+catchNum
-
-let rod=row["竿名"]
-rodData[rod]=(rodData[rod]||0)+catchNum
-
-let time=row["開始"]
-timeData[time]=(timeData[time]||0)+catchNum
-
-let weather=row["天候"]
-weatherData[weather]=(weatherData[weather]||0)+catchNum
-
-let water=row["水位"]
-waterData[water]=(waterData[water]||0)+catchNum
-
-let e=Math.floor(eff)
-effData[e]=(effData[e]||0)+1
+eff+=Number(r["効率"])||0
 
 })
 
-let avgCatch=(totalCatch/tripCount||0).toFixed(1)
-let avgEff=(effTotal/tripCount||0).toFixed(2)
+let avg=(total/data.length).toFixed(1)
+let avgEff=(eff/data.length).toFixed(2)
 
-document.getElementById("totalCatch").innerText=totalCatch+"匹"
-document.getElementById("tripCount").innerText=tripCount+"回"
-document.getElementById("avgCatch").innerText=avgCatch+"匹"
+document.getElementById("totalCatch").innerText=total+"匹"
+document.getElementById("tripCount").innerText=data.length+"回"
+document.getElementById("avgCatch").innerText=avg+"匹"
 document.getElementById("avgEff").innerText=avgEff+"匹/h"
-document.getElementById("maxSize").innerText=maxSize+"cm"
-
-drawChart("chart_month","月別釣果",monthData)
-drawPie("chart_river","河川割合",riverData)
-drawChart("chart_point","ポイント別釣果",pointData)
-drawChart("chart_rod","竿ランキング",rodData)
-drawChart("chart_time","時間帯分析",timeData)
-drawChart("chart_river_rank","河川ランキング",riverRank)
-drawChart("chart_weather","天候別釣果",weatherData)
-drawChart("chart_water","水位別釣果",waterData)
-drawChart("chart_eff","効率分布",effData)
-
-showLatest(data)
+document.getElementById("maxSize").innerText=max+"cm"
 
 })
-
-}
-
-function drawChart(id,title,obj){
-
-let arr=Object.entries(obj)
-
-arr.sort((a,b)=>b[1]-a[1])
-
-let dataArr=[[title,"値"]]
-
-arr.forEach(v=>{
-dataArr.push([v[0],v[1]])
-})
-
-let data=google.visualization.arrayToDataTable(dataArr)
-
-let chart=new google.visualization.ColumnChart(
-document.getElementById(id)
-)
-
-chart.draw(data,{
-title:title,
-titleTextStyle:{color:"#7fffd4"},
-backgroundColor:"transparent",
-legend:{textStyle:{color:"white"}},
-hAxis:{textStyle:{color:"white"}},
-vAxis:{textStyle:{color:"white"}}
-})
-
-}
-
-function drawPie(id,title,obj){
-
-let dataArr=[[title,"値"]]
-
-Object.entries(obj).forEach(v=>{
-dataArr.push(v)
-})
-
-let data=google.visualization.arrayToDataTable(dataArr)
-
-let chart=new google.visualization.PieChart(
-document.getElementById(id)
-)
-
-chart.draw(data,{
-title:title,
-titleTextStyle:{color:"#7fffd4"},
-backgroundColor:"transparent",
-legend:{textStyle:{color:"white"}}
-})
-
-}
-
-function showLatest(data){
-
-let html=""
-
-data.slice(-5).reverse().forEach(r=>{
-
-html+=`
-<p>
-${r["日付"]}　
-${r["河川"]}　
-${r["匹数"]}匹
-</p>
-`
-
-})
-
-document.getElementById("latestFishing").innerHTML=html
-
-}
 
 </script>
 
