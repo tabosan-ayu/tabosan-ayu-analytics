@@ -24,7 +24,7 @@ color:#7fffd4;
 }
 
 .container{
-max-width:1400px;
+max-width:1500px;
 margin:auto;
 padding:30px;
 }
@@ -114,20 +114,18 @@ TABOSAN AYU ANALYTICS LAB
 <div class="grid">
 
 <div id="chart_month" class="chart"></div>
-
 <div id="chart_river" class="chart"></div>
 
-<div id="chart_size" class="chart"></div>
-
 <div id="chart_point" class="chart"></div>
-
 <div id="chart_rod" class="chart"></div>
 
 <div id="chart_time" class="chart"></div>
+<div id="chart_river_rank" class="chart"></div>
+
+<div id="chart_weather" class="chart"></div>
+<div id="chart_water" class="chart"></div>
 
 <div id="chart_eff" class="chart"></div>
-
-<div id="chart_river_rank" class="chart"></div>
 
 <div class="latest">
 <h3>最近の釣果</h3>
@@ -159,118 +157,130 @@ let tripCount=data.length;
 let maxSize=0;
 let effTotal=0;
 
-let monthData={};
-let riverData={};
-let sizeData={};
-let pointData={};
-let rodData={};
-let timeData={};
-let riverRank={};
+let monthData={}
+let riverData={}
+let pointData={}
+let rodData={}
+let timeData={}
+let riverRank={}
+let weatherData={}
+let waterData={}
+let effData={}
 
 data.forEach(row=>{
 
-let catchNum=Number(row["匹数"])||0;
-totalCatch+=catchNum;
+let catchNum=Number(row["匹数"])||0
+totalCatch+=catchNum
 
-let size=Number(row["最大サイズ"])||0;
-if(size>maxSize)maxSize=size;
+let size=Number(row["最大サイズ"])||0
+if(size>maxSize)maxSize=size
 
-let eff=Number(row["効率"])||0;
-effTotal+=eff;
+let eff=Number(row["効率"])||0
+effTotal+=eff
 
-let month=row["月"];
-monthData[month]=(monthData[month]||0)+catchNum;
+let month=row["月"]
+monthData[month]=(monthData[month]||0)+catchNum
 
-let river=row["河川"];
-riverData[river]=(riverData[river]||0)+catchNum;
-riverRank[river]=(riverRank[river]||0)+catchNum;
+let river=row["河川"]
+riverData[river]=(riverData[river]||0)+catchNum
+riverRank[river]=(riverRank[river]||0)+catchNum
 
-let s=Math.floor(size);
-sizeData[s]=(sizeData[s]||0)+1;
+let point=row["ポイント"]
+pointData[point]=(pointData[point]||0)+catchNum
 
-let point=row["ポイント"];
-pointData[point]=(pointData[point]||0)+catchNum;
+let rod=row["竿名"]
+rodData[rod]=(rodData[rod]||0)+catchNum
 
-let rod=row["竿名"];
-rodData[rod]=(rodData[rod]||0)+catchNum;
+let time=row["開始"]
+timeData[time]=(timeData[time]||0)+catchNum
 
-let time=row["開始"];
-timeData[time]=(timeData[time]||0)+catchNum;
+let weather=row["天候"]
+weatherData[weather]=(weatherData[weather]||0)+catchNum
 
-});
+let water=row["水位"]
+waterData[water]=(waterData[water]||0)+catchNum
 
-let avgCatch=(totalCatch/tripCount||0).toFixed(1);
-let avgEff=(effTotal/tripCount||0).toFixed(2);
+let e=Math.floor(eff)
+effData[e]=(effData[e]||0)+1
 
-document.getElementById("totalCatch").innerText=totalCatch+"匹";
-document.getElementById("tripCount").innerText=tripCount+"回";
-document.getElementById("avgCatch").innerText=avgCatch+"匹";
-document.getElementById("avgEff").innerText=avgEff+"匹/h";
-document.getElementById("maxSize").innerText=maxSize+"cm";
+})
 
-drawChart("chart_month","月","釣果",monthData);
-drawPie("chart_river","河川割合",riverData);
-drawChart("chart_size","サイズ","匹",sizeData);
-drawChart("chart_point","ポイント","釣果",pointData);
-drawChart("chart_rod","竿名","釣果",rodData);
-drawChart("chart_time","時間","釣果",timeData);
-drawChart("chart_river_rank","河川ランキング","釣果",riverRank);
+let avgCatch=(totalCatch/tripCount||0).toFixed(1)
+let avgEff=(effTotal/tripCount||0).toFixed(2)
 
-showLatest(data);
+document.getElementById("totalCatch").innerText=totalCatch+"匹"
+document.getElementById("tripCount").innerText=tripCount+"回"
+document.getElementById("avgCatch").innerText=avgCatch+"匹"
+document.getElementById("avgEff").innerText=avgEff+"匹/h"
+document.getElementById("maxSize").innerText=maxSize+"cm"
 
-});
+drawChart("chart_month","月","釣果",monthData)
+drawPie("chart_river","河川割合",riverData)
+drawChart("chart_point","ポイント","釣果",pointData)
+drawChart("chart_rod","竿名","釣果",rodData)
+drawChart("chart_time","時間","釣果",timeData)
+drawChart("chart_river_rank","河川ランキング","釣果",riverRank)
+drawChart("chart_weather","天候","釣果",weatherData)
+drawChart("chart_water","水位","釣果",waterData)
+drawChart("chart_eff","効率","回数",effData)
+
+showLatest(data)
+
+})
 
 }
 
 function drawChart(id,xlabel,ylabel,obj){
 
-let arr=[[xlabel,ylabel]];
+let arr=[[xlabel,ylabel]]
 
 Object.keys(obj).forEach(k=>{
-arr.push([k,obj[k]]);
-});
+arr.push([k,obj[k]])
+})
 
-let data=google.visualization.arrayToDataTable(arr);
+let data=google.visualization.arrayToDataTable(arr)
 
 let chart=new google.visualization.ColumnChart(
 document.getElementById(id)
-);
+)
 
 chart.draw(data,{
 title:xlabel+"別"+ylabel,
+titleTextStyle:{color:"#7fffd4"},
 backgroundColor:"transparent",
 legend:{textStyle:{color:"white"}},
 hAxis:{textStyle:{color:"white"}},
 vAxis:{textStyle:{color:"white"}}
-});
+})
 
 }
 
 function drawPie(id,title,obj){
 
-let arr=[["項目","値"]];
+let arr=[["項目","値"]]
 
 Object.keys(obj).forEach(k=>{
-arr.push([k,obj[k]]);
-});
+arr.push([k,obj[k]])
+})
 
-let data=google.visualization.arrayToDataTable(arr);
+let data=google.visualization.arrayToDataTable(arr)
 
 let chart=new google.visualization.PieChart(
 document.getElementById(id)
-);
+)
 
 chart.draw(data,{
 title:title,
+titleTextStyle:{color:"#7fffd4"},
 backgroundColor:"transparent",
 legend:{textStyle:{color:"white"}}
-});
+})
 
 }
 
 function showLatest(data){
 
-let html="";
+let html=""
 
 data.slice(-5).reverse().forEach(r=>{
 
@@ -280,11 +290,11 @@ ${r["日付"]}　
 ${r["河川"]}　
 ${r["匹数"]}匹
 </p>
-`;
+`
 
-});
+})
 
-document.getElementById("latestFishing").innerHTML=html;
+document.getElementById("latestFishing").innerHTML=html
 
 }
 
