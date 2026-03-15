@@ -24,7 +24,7 @@ color:#7fffd4;
 }
 
 .container{
-max-width:1300px;
+max-width:1400px;
 margin:auto;
 padding:30px;
 }
@@ -63,6 +63,12 @@ background:#0b2435;
 padding:20px;
 border-radius:10px;
 height:320px;
+}
+
+.latest{
+background:#0b2435;
+padding:20px;
+border-radius:10px;
 }
 
 </style>
@@ -117,6 +123,17 @@ TABOSAN AYU ANALYTICS LAB
 
 <div id="chart_rod" class="chart"></div>
 
+<div id="chart_time" class="chart"></div>
+
+<div id="chart_eff" class="chart"></div>
+
+<div id="chart_river_rank" class="chart"></div>
+
+<div class="latest">
+<h3>最近の釣果</h3>
+<div id="latestFishing"></div>
+</div>
+
 </div>
 
 </div>
@@ -147,6 +164,8 @@ let riverData={};
 let sizeData={};
 let pointData={};
 let rodData={};
+let timeData={};
+let riverRank={};
 
 data.forEach(row=>{
 
@@ -164,6 +183,7 @@ monthData[month]=(monthData[month]||0)+catchNum;
 
 let river=row["河川"];
 riverData[river]=(riverData[river]||0)+catchNum;
+riverRank[river]=(riverRank[river]||0)+catchNum;
 
 let s=Math.floor(size);
 sizeData[s]=(sizeData[s]||0)+1;
@@ -173,6 +193,9 @@ pointData[point]=(pointData[point]||0)+catchNum;
 
 let rod=row["竿名"];
 rodData[rod]=(rodData[rod]||0)+catchNum;
+
+let time=row["開始"];
+timeData[time]=(timeData[time]||0)+catchNum;
 
 });
 
@@ -190,6 +213,10 @@ drawPie("chart_river","河川割合",riverData);
 drawChart("chart_size","サイズ","匹",sizeData);
 drawChart("chart_point","ポイント","釣果",pointData);
 drawChart("chart_rod","竿名","釣果",rodData);
+drawChart("chart_time","時間","釣果",timeData);
+drawChart("chart_river_rank","河川ランキング","釣果",riverRank);
+
+showLatest(data);
 
 });
 
@@ -238,6 +265,26 @@ title:title,
 backgroundColor:"transparent",
 legend:{textStyle:{color:"white"}}
 });
+
+}
+
+function showLatest(data){
+
+let html="";
+
+data.slice(-5).reverse().forEach(r=>{
+
+html+=`
+<p>
+${r["日付"]}　
+${r["河川"]}　
+${r["匹数"]}匹
+</p>
+`;
+
+});
+
+document.getElementById("latestFishing").innerHTML=html;
 
 }
 
