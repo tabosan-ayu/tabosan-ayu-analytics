@@ -1,1 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>TABOSAN AYU RANKING</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+body{
+font-family:Arial;
+background:#0b1e2d;
+color:white;
+margin:0;
+padding:20px;
+}
+
+h1{
+text-align:center;
+margin-bottom:30px;
+}
+
+.menu{
+text-align:center;
+margin-bottom:30px;
+}
+
+.menu a{
+color:white;
+text-decoration:none;
+margin:0 15px;
+font-size:18px;
+}
+
+.menu a:hover{
+color:#00e0ff;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:#122b40;
+}
+
+th,td{
+padding:10px;
+text-align:center;
+border-bottom:1px solid #244a6a;
+}
+
+th{
+background:#0f3c5f;
+}
+
+tr:hover{
+background:#1b3d59;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>TABOSAN AYU RANKING</h1>
+
+<div class="menu">
+<a href="index.html">HOME</a>
+<a href="ranking.html">RANKING</a>
+<a href="efficiency.html">EFFICIENCY</a>
+<a href="photo.html">PHOTO</a>
+</div>
+
+<h2>釣果ランキング</h2>
+
+<table id="rankingTable">
+<thead>
+<tr>
+<th>順位</th>
+<th>日付</th>
+<th>河川</th>
+<th>ポイント</th>
+<th>匹数</th>
+<th>最大サイズ</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+<script>
+
+const sheetURL = "https://opensheet.elk.sh/あなたのスプレッドシートID/DATA"
+
+fetch(sheetURL)
+.then(res => res.json())
+.then(data => {
+
+data.sort((a,b)=>b["匹数"]-a["匹数"])
+
+const tbody = document.querySelector("#rankingTable tbody")
+
+data.slice(0,20).forEach((row,i)=>{
+
+const tr=document.createElement("tr")
+
+tr.innerHTML=`
+<td>${i+1}</td>
+<td>${row["日付"]}</td>
+<td>${row["河川"]}</td>
+<td>${row["ポイント"]}</td>
+<td>${row["匹数"]}</td>
+<td>${row["最大サイズ"]}</td>
+`
+
+tbody.appendChild(tr)
+
+})
+
+})
+
+</script>
+
+</body>
+</html>
