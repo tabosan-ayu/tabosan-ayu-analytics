@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <title>TABOSAN AYU RANKING</title>
 
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -33,28 +35,32 @@ nav a{
 color:white;
 margin:0 15px;
 text-decoration:none;
+padding:6px 12px;
+border-radius:6px;
+}
+
+nav a.active{
+background:#0b2435;
+color:#7fffd4;
 }
 
 .container{
-max-width:1200px;
+max-width:1400px;
 margin:auto;
 padding:30px;
 }
 
-table{
-width:100%;
-border-collapse:collapse;
-margin-bottom:40px;
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:25px;
 }
 
-th,td{
-padding:12px;
-border-bottom:1px solid #0b2c3f;
-text-align:center;
-}
-
-th{
-color:#7fffd4;
+.chart{
+background:#0b2435;
+padding:20px;
+border-radius:10px;
+height:320px;
 }
 
 </style>
@@ -68,44 +74,39 @@ TABOSAN AYU RANKING
 
 <nav>
 <a href="index.html">HOME</a>
-<a href="ranking.html">RANKING</a>
+<a href="ranking.html" class="active">RANKING</a>
 <a href="efficiency.html">EFFICIENCY</a>
 <a href="photo.html">PHOTO</a>
 </nav>
 
 <div class="container">
 
-<h2>釣果ランキング</h2>
+<div class="grid">
 
-<table id="catchRank">
-<tr>
-<th>順位</th>
-<th>匹数</th>
-<th>日付</th>
-<th>河川</th>
-<th>ポイント</th>
-</tr>
-</table>
+<div id="chart_catch" class="chart"></div>
+<div id="chart_size" class="chart"></div>
 
+<div id="chart_river" class="chart"></div>
+<div id="chart_point" class="chart"></div>
 
-<h2>平均サイズランキング</h2>
+<div id="chart_rod" class="chart"></div>
+<div id="chart_weather" class="chart"></div>
 
-<table id="sizeRank">
-<tr>
-<th>順位</th>
-<th>平均サイズ</th>
-<th>日付</th>
-<th>河川</th>
-</tr>
-</table>
+<div id="chart_water" class="chart"></div>
 
 </div>
 
+</div>
 
 <script>
 
+google.charts.load('current',{packages:['corechart']});
+google.charts.setOnLoadCallback(loadData);
+
 const sheetURL =
 "https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
+
+function loadData(){
 
 fetch(sheetURL)
 .then(res=>res.json())
@@ -113,50 +114,81 @@ fetch(sheetURL)
 
 data=data.filter(r=>r["匹数"])
 
+let catchRank={}
+let sizeRank={}
+let riverData={}
+let pointData={}
+let rodData={}
+let weatherData={}
+let waterData={}
 
-//釣果ランキング
-let catchRank=[...data]
-.sort((a,b)=>b["匹数"]-a["匹数"])
-.slice(0,10)
+data.forEach(row=>{
 
-let catchTable=document.getElementById("catchRank")
+let catchNum=Number(row["匹数"])||0
+let size=Number(row["平均サイズ"])||0
 
-catchRank.forEach((r,i)=>{
+catchRank[row["日付"]]=(catchRank[row["日付"]]||0)+catchNum
+sizeRank[row["日付"]]=(sizeRank[row["日付"]]||0)+size
 
-let row=catchTable.insertRow()
+let river=row["河川"]
+riverData[river]=(riverData[river]||0)+catchNum
 
-row.innerHTML=`
-<td>${i+1}</td>
-<td>${r["匹数"]}</td>
-<td>${r["日付"]}</td>
-<td>${r["河川"]}</td>
-<td>${r["ポイント"]}</td>
-`
+let point=row["ポイント"]
+pointData[point]=(pointData[point]||0)+catchNum
 
-})
+let rod=row["竿名"]
+rodData[rod]=(rodData[rod]||0)+catchNum
 
+let weather=row["天候"]
+weatherData[weather]=(weatherData[weather]||0)+catchNum
 
-//平均サイズランキング
-let sizeRank=[...data]
-.sort((a,b)=>b["平均サイズ"]-a["平均サイズ"])
-.slice(0,10)
-
-let sizeTable=document.getElementById("sizeRank")
-
-sizeRank.forEach((r,i)=>{
-
-let row=sizeTable.insertRow()
-
-row.innerHTML=`
-<td>${i+1}</td>
-<td>${r["平均サイズ"]}cm</td>
-<td>${r["日付"]}</td>
-<td>${r["河川"]}</td>
-`
+let water=row["水位"]
+waterData[water]=(waterData[water]||0)+catchNum
 
 })
 
+drawChart("chart_catch","釣果ランキング",catchRank)
+drawChart("chart_size","平均サイズランキング",sizeRank)
+drawChart("chart_river","河川ランキング",riverData)
+drawChart("chart_point","ポイントランキング",pointData)
+drawChart("chart_rod","竿名ランキング",rodData)
+drawChart("chart_weather","天候ランキング",weatherData)
+drawChart("chart_water","水位ランキング",waterData)
+
 })
+
+}
+
+function drawChart(id,title,obj){
+
+let arr=Object.entries(obj)
+
+arr.sort((a,b)=>b[1]-a[1])
+
+arr=arr.slice(0,5)
+
+let dataArr=[[title,"値"]]
+
+arr.forEach(v=>{
+dataArr.push([v[0],v[1]])
+})
+
+let data=google.visualization.arrayToDataTable(dataArr)
+
+let chart=new google.visualization.ColumnChart(
+document.getElementById(id)
+)
+
+chart.draw(data,{
+title:title,
+titleTextStyle:{color:"#7fffd4"},
+backgroundColor:"transparent",
+legend:{textStyle:{color:"white"}},
+hAxis:{textStyle:{color:"white"}},
+vAxis:{textStyle:{color:"white"}}
+})
+
+}
 
 </script>
 
