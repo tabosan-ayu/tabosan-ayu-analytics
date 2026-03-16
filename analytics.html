@@ -7,106 +7,191 @@
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 <style>
+
 body{
-  font-family: Arial;
-  background: #021018;
-  color: white;
-  margin: 0;
+font-family:Arial;
+background:#021018;
+color:white;
+margin:0;
 }
 
 header{
-  background: #041822;
-  padding: 25px;
-  text-align: center;
-  font-size: 32px;
-  color: #7fffd4;
+background:#041822;
+padding:25px;
+text-align:center;
+font-size:32px;
+color:#7fffd4;
+}
+
+nav{
+text-align:center;
+padding:15px;
+background:#03151f;
+}
+
+nav a{
+color:white;
+margin:0 15px;
+text-decoration:none;
+padding:6px 12px;
+border-radius:6px;
+}
+
+nav a.active{
+background:#0b2435;
+color:#7fffd4;
 }
 
 .container{
-  width: 90%;
-  margin: auto;
-  padding: 30px 0;
+max-width:1400px;
+margin:auto;
+padding:30px;
 }
 
 .grid{
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 25px;
-  overflow-x: auto;
-  padding-bottom: 10px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:25px;
 }
 
 .chart{
-  background: #0b2435;
-  padding: 20px;
-  border-radius: 10px;
-  min-width: 300px;
-  flex: 0 0 auto;
-  height: 320px;
+background:#0b2435;
+padding:20px;
+border-radius:10px;
+height:320px;
 }
+
 </style>
 </head>
+
 <body>
 
 <header>
 TABOSAN AYU EFFICIENCY
 </header>
 
+<nav>
+<a href="index.html">HOME</a>
+<a href="ranking.html">RANKING</a>
+<a href="efficiency.html" class="active">EFFICIENCY</a>
+<a href="photo.html">PHOTO</a>
+</nav>
+
 <div class="container">
-  <div class="grid">
-    <div id="chart_eff_river" class="chart"></div>
-    <div id="chart_eff_point" class="chart"></div>
-    <div id="chart_eff_rod" class="chart"></div>
-    <div id="chart_eff_weather" class="chart"></div>
-    <div id="chart_eff_water" class="chart"></div>
-  </div>
+
+<div class="grid">
+
+<div id="chart_river_eff" class="chart"></div>
+<div id="chart_point_eff" class="chart"></div>
+
+<div id="chart_weather_eff" class="chart"></div>
+<div id="chart_water_eff" class="chart"></div>
+
+</div>
+
 </div>
 
 <script>
+
 google.charts.load('current',{packages:['corechart']});
 google.charts.setOnLoadCallback(loadData);
 
-const sheetURL = "https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
+const sheetURL =
+"https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
 
 function loadData(){
-  fetch(sheetURL).then(res=>res.json()).then(data=>{
-    data = data.filter(r=>r["効率"]);
-    
-    let riverData={}, pointData={}, rodData={}, weatherData={}, waterData={};
 
-    data.forEach(r=>{
-      let eff = Number(r["効率"])||0;
-      riverData[r["河川"]] = Math.max(riverData[r["河川"]]||0, eff);
-      pointData[r["ポイント"]] = Math.max(pointData[r["ポイント"]]||0, eff);
-      rodData[r["竿名"]] = Math.max(rodData[r["竿名"]]||0, eff);
-      weatherData[r["天候"]] = Math.max(weatherData[r["天候"]]||0, eff);
-      waterData[r["水位"]] = Math.max(waterData[r["水位"]]||0, eff);
-    });
+fetch(sheetURL)
+.then(res=>res.json())
+.then(data=>{
 
-    drawChart("chart_eff_river","河川効率ランキング",riverData);
-    drawChart("chart_eff_point","ポイント効率ランキング",pointData);
-    drawChart("chart_eff_rod","竿効率ランキング",rodData);
-    drawChart("chart_eff_weather","天候効率ランキング",weatherData);
-    drawChart("chart_eff_water","水位効率ランキング",waterData);
-  });
+data=data.filter(r=>r["効率"])
+
+let river={}
+let point={}
+let weather={}
+let water={}
+
+let riverCount={}
+let pointCount={}
+let weatherCount={}
+let waterCount={}
+
+data.forEach(row=>{
+
+let eff=Number(row["効率"])||0
+
+let r=row["河川"]
+river[r]=(river[r]||0)+eff
+riverCount[r]=(riverCount[r]||0)+1
+
+let p=row["ポイント"]
+point[p]=(point[p]||0)+eff
+pointCount[p]=(pointCount[p]||0)+1
+
+let w=row["天候"]
+weather[w]=(weather[w]||0)+eff
+weatherCount[w]=(weatherCount[w]||0)+1
+
+let wa=row["水位"]
+water[wa]=(water[wa]||0)+eff
+waterCount[wa]=(waterCount[wa]||0)+1
+
+})
+
+calcAvg(river,riverCount)
+calcAvg(point,pointCount)
+calcAvg(weather,weatherCount)
+calcAvg(water,waterCount)
+
+drawChart("chart_river_eff","河川効率",river)
+drawChart("chart_point_eff","ポイント効率",point)
+drawChart("chart_weather_eff","天候効率",weather)
+drawChart("chart_water_eff","水位効率",water)
+
+})
+
+}
+
+function calcAvg(obj,count){
+
+for(let k in obj){
+
+obj[k]=obj[k]/count[k]
+
+}
+
 }
 
 function drawChart(id,title,obj){
-  let arr = Object.entries(obj);
-  arr.sort((a,b)=>b[1]-a[1]);
-  let dataArr = [[title,"効率"]];
-  arr.forEach(v=>dataArr.push([v[0],v[1]]));
-  let data = google.visualization.arrayToDataTable(dataArr);
-  let chart = new google.visualization.ColumnChart(document.getElementById(id));
-  chart.draw(data,{
-    title:title,
-    titleTextStyle:{color:"#7fffd4"},
-    backgroundColor:"transparent",
-    legend:{textStyle:{color:"white"}},
-    hAxis:{textStyle:{color:"white"}},
-    vAxis:{textStyle:{color:"white"}}
-  });
+
+let arr=Object.entries(obj)
+
+arr.sort((a,b)=>b[1]-a[1])
+
+let dataArr=[[title,"効率"]]
+
+arr.forEach(v=>{
+dataArr.push([v[0],Number(v[1].toFixed(2))])
+})
+
+let data=google.visualization.arrayToDataTable(dataArr)
+
+let chart=new google.visualization.ColumnChart(
+document.getElementById(id)
+)
+
+chart.draw(data,{
+title:title,
+titleTextStyle:{color:"#7fffd4"},
+backgroundColor:"transparent",
+legend:{textStyle:{color:"white"}},
+hAxis:{textStyle:{color:"white"}},
+vAxis:{textStyle:{color:"white"}}
+})
+
 }
+
 </script>
 
 </body>
