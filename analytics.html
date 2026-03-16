@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>TABOSAN AYU ANALYTICS</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+
+<style>
+
+body{
+font-family:Arial;
+background:#021018;
+color:white;
+margin:0;
+}
+
+header{
+text-align:center;
+padding:25px;
+font-size:28px;
+letter-spacing:4px;
+color:#7fffd4;
+background:#061520;
+}
+
+nav{
+text-align:center;
+padding:10px;
+background:#061520;
+}
+
+nav a{
+color:white;
+margin:0 15px;
+text-decoration:none;
+font-size:14px;
+}
+
+.container{
+width:90%;
+margin:auto;
+margin-top:30px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:30px;
+}
+
+.card{
+background:#0c2a3d;
+padding:20px;
+border-radius:10px;
+}
+
+.chart{
+height:350px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+TABOSAN AYU ANALYTICS
+</header>
+
+<nav>
+<a href="index.html">HOME</a>
+<a href="ranking.html">RANKING</a>
+<a href="efficiency.html">EFFICIENCY</a>
+<a href="photo.html">PHOTO</a>
+</nav>
+
+<div class="container">
+
+<div class="card">
+<h3>河川別釣果</h3>
+<div id="riverChart" class="chart"></div>
+</div>
+
+<div class="card">
+<h3>月別釣果</h3>
+<div id="monthChart" class="chart"></div>
+</div>
+
+<div class="card">
+<h3>竿別釣果</h3>
+<div id="rodChart" class="chart"></div>
+</div>
+
+<div class="card">
+<h3>天候別釣果</h3>
+<div id="weatherChart" class="chart"></div>
+</div>
+
+</div>
+
+<script>
+
+google.charts.load('current',{'packages':['corechart']});
+google.charts.setOnLoadCallback(drawCharts);
+
+function drawCharts(){
+
+var river = google.visualization.arrayToDataTable([
+['River','Catch'],
+['長良川',120],
+['板取川',80],
+['益田川',60],
+['郡上',30]
+]);
+
+var month = google.visualization.arrayToDataTable([
+['Month','Catch'],
+['6月',20],
+['7月',90],
+['8月',110],
+['9月',50]
+]);
+
+var rod = google.visualization.arrayToDataTable([
+['Rod','Catch'],
+['プロトギア',130],
+['スペシャル',90],
+['FW',40]
+]);
+
+var weather = google.visualization.arrayToDataTable([
+['Weather','Catch'],
+['晴',150],
+['曇',70],
+['雨',20]
+]);
+
+var options={
+backgroundColor:'transparent',
+legend:{textStyle:{color:'white'}},
+hAxis:{textStyle:{color:'white'}},
+vAxis:{textStyle:{color:'white'}}
+};
+
+new google.visualization.ColumnChart(document.getElementById('riverChart')).draw(river,options);
+new google.visualization.ColumnChart(document.getElementById('monthChart')).draw(month,options);
+new google.visualization.ColumnChart(document.getElementById('rodChart')).draw(rod,options);
+new google.visualization.ColumnChart(document.getElementById('weatherChart')).draw(weather,options);
+
+}
+
+</script>
+
+</body>
+</html>
