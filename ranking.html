@@ -73,7 +73,6 @@ nav a.active{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:25px;
-  overflow-x:auto;
 }
 
 .chart{
@@ -107,35 +106,39 @@ TABOSAN AYU RANKING
 <div class="container">
 
 <div class="cards">
-  <div class="card">
-    <div class="card-title">総釣果</div>
-    <div id="totalCatch" class="card-value">-</div>
-  </div>
-  <div class="card">
-    <div class="card-title">釣行回数</div>
-    <div id="tripCount" class="card-value">-</div>
-  </div>
-  <div class="card">
-    <div class="card-title">平均釣果</div>
-    <div id="avgCatch" class="card-value">-</div>
-  </div>
-  <div class="card">
-    <div class="card-title">平均効率</div>
-    <div id="avgEff" class="card-value">-</div>
-  </div>
-  <div class="card">
-    <div class="card-title">平均サイズ</div>
-    <div id="avgSize" class="card-value">-</div>
-  </div>
+<div class="card">
+<div class="card-title">総釣果</div>
+<div id="totalCatch" class="card-value">-</div>
+</div>
+
+<div class="card">
+<div class="card-title">釣行回数</div>
+<div id="tripCount" class="card-value">-</div>
+</div>
+
+<div class="card">
+<div class="card-title">平均釣果</div>
+<div id="avgCatch" class="card-value">-</div>
+</div>
+
+<div class="card">
+<div class="card-title">平均効率</div>
+<div id="avgEff" class="card-value">-</div>
+</div>
+
+<div class="card">
+<div class="card-title">平均サイズ</div>
+<div id="avgSize" class="card-value">-</div>
+</div>
 </div>
 
 <div class="grid">
-  <div id="chart_month" class="chart"></div>
-  <div id="chart_river" class="chart"></div>
-  <div id="chart_point" class="chart"></div>
-  <div id="chart_weather" class="chart"></div>
-  <div id="chart_water" class="chart"></div>
-  <div id="chart_rod" class="chart"></div>
+<div id="chart_month" class="chart"></div>
+<div id="chart_riverSize" class="chart"></div>
+<div id="chart_point" class="chart"></div>
+<div id="chart_weather" class="chart"></div>
+<div id="chart_water" class="chart"></div>
+<div id="chart_rod" class="chart"></div>
 </div>
 
 </div>
@@ -147,86 +150,66 @@ google.charts.setOnLoadCallback(loadData);
 const sheetURL = "https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
 
 function loadData(){
-  fetch(sheetURL)
-  .then(res=>res.json())
-  .then(data=>{
-    data = data.filter(r=>r["匹数"])
+fetch(sheetURL)
+.then(res=>res.json())
+.then(data=>{
+  data = data.filter(r=>r["匹数"]);
+  
+  let totalCatch=0, tripCount=data.length, effTotal=0, sizeTotal=0;
+  let monthData={}, riverSizeData={}, pointData={}, rodData={}, weatherData={}, waterData={};
 
-    let totalCatch = 0
-    let tripCount = data.length
-    let effTotal = 0
-    let sizeTotal = 0
+  data.forEach(row=>{
+    let catchNum=Number(row["匹数"])||0;
+    totalCatch+=catchNum;
 
-    let monthData = {}
-    let riverSizeData = {}
-    let pointData = {}
-    let rodData = {}
-    let weatherData = {}
-    let waterData = {}
+    let eff=Number(row["効率"])||0;
+    effTotal+=eff;
 
-    let riverCount = {}
+    let size=Number(row["平均サイズ"])||0;
+    sizeTotal+=size;
 
-    data.forEach(row=>{
-      let catchNum = Number(row["匹数"])||0
-      totalCatch += catchNum
+    let month=row["月"];
+    monthData[month]=(monthData[month]||0)+catchNum;
 
-      let eff = Number(row["効率"])||0
-      effTotal += eff
+    let river=row["河川"];
+    riverSizeData[river]=(riverSizeData[river]||0)+size; // 河川別平均サイズ
 
-      let size = Number(row["平均サイズ"])||0
-      sizeTotal += size
+    let point=row["ポイント"];
+    pointData[point]=(pointData[point]||0)+catchNum;
 
-      let month = row["月"]
-      monthData[month] = (monthData[month]||0) + catchNum
+    let rod=row["竿名"];
+    rodData[rod]=(rodData[rod]||0)+catchNum;
 
-      let river = row["河川"]
-      riverSizeData[river] = (riverSizeData[river]||0) + size
-      riverCount[river] = (riverCount[river]||0) + 1
+    let weather=row["天候"];
+    weatherData[weather]=(weatherData[weather]||0)+catchNum;
 
-      let point = row["ポイント"]
-      pointData[point] = (pointData[point]||0) + catchNum
+    let water=row["水位"];
+    waterData[water]=(waterData[water]||0)+catchNum;
+  });
 
-      let rod = row["竿名"]
-      rodData[rod] = (rodData[rod]||0) + catchNum
+  document.getElementById("totalCatch").innerText=totalCatch+"匹";
+  document.getElementById("tripCount").innerText=tripCount+"回";
+  document.getElementById("avgCatch").innerText=(totalCatch/tripCount||0).toFixed(1)+"匹";
+  document.getElementById("avgEff").innerText=(effTotal/tripCount||0).toFixed(2)+"匹/h";
+  document.getElementById("avgSize").innerText=(sizeTotal/tripCount||0).toFixed(1)+"cm";
 
-      let weather = row["天候"]
-      weatherData[weather] = (weatherData[weather]||0) + catchNum
+  drawChart("chart_month","月別釣果",monthData);
+  drawChart("chart_riverSize","河川別平均サイズ",riverSizeData);
+  drawChart("chart_point","ポイント別釣果ランキング",pointData);
+  drawChart("chart_weather","天候別釣果ランキング",weatherData);
+  drawChart("chart_water","水位別釣果ランキング",waterData);
+  drawChart("chart_rod","竿別釣果ランキング",rodData);
+});
 
-      let water = row["水位"]
-      waterData[water] = (waterData[water]||0) + catchNum
-    })
-
-    let avgCatch = (totalCatch/tripCount||0).toFixed(1)
-    let avgEff = (effTotal/tripCount||0).toFixed(2)
-    let avgSize = (sizeTotal/tripCount||0).toFixed(1)
-
-    document.getElementById("totalCatch").innerText=totalCatch+"匹"
-    document.getElementById("tripCount").innerText=tripCount+"回"
-    document.getElementById("avgCatch").innerText=avgCatch+"匹"
-    document.getElementById("avgEff").innerText=avgEff+"匹/h"
-    document.getElementById("avgSize").innerText=avgSize+"cm"
-
-    // 河川の平均サイズを計算
-    Object.keys(riverSizeData).forEach(river=>{
-      riverSizeData[river] = (riverSizeData[river]/riverCount[river]).toFixed(1)
-    })
-
-    drawChart("chart_month","月別釣果ランキング",monthData)
-    drawChart("chart_river","河川別平均サイズランキング",riverSizeData)
-    drawChart("chart_point","ポイント別釣果ランキング",pointData)
-    drawChart("chart_weather","天候別釣果ランキング",weatherData)
-    drawChart("chart_water","水位別釣果ランキング",waterData)
-    drawChart("chart_rod","竿別釣果ランキング",rodData)
-  })
 }
 
 function drawChart(id,title,obj){
-  let arr=Object.entries(obj)
-  arr.sort((a,b)=>b[1]-a[1])
-  let dataArr=[[title,"値"]]
-  arr.forEach(v=>{dataArr.push([v[0],v[1]])})
-  let data=google.visualization.arrayToDataTable(dataArr)
-  let chart=new google.visualization.ColumnChart(document.getElementById(id))
+  let arr=Object.entries(obj);
+  arr.sort((a,b)=>b[1]-a[1]);
+  let dataArr=[[title,"値"]];
+  arr.forEach(v=>dataArr.push([v[0],v[1]]));
+  let data=google.visualization.arrayToDataTable(dataArr);
+  let chart=new google.visualization.ColumnChart(document.getElementById(id));
   chart.draw(data,{
     title:title,
     titleTextStyle:{color:"#7fffd4"},
@@ -234,7 +217,7 @@ function drawChart(id,title,obj){
     legend:{textStyle:{color:"white"}},
     hAxis:{textStyle:{color:"white"}},
     vAxis:{textStyle:{color:"white"}}
-  })
+  });
 }
 </script>
 
