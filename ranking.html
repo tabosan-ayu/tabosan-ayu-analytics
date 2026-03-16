@@ -19,7 +19,6 @@ header{
 text-align:center;
 padding:25px;
 font-size:28px;
-letter-spacing:3px;
 background:#061520;
 }
 
@@ -33,7 +32,6 @@ nav a{
 color:white;
 margin:0 15px;
 text-decoration:none;
-font-size:14px;
 }
 
 .container{
@@ -71,7 +69,6 @@ TABOSAN AYU RANKING
 <nav>
 <a href="index.html">HOME</a>
 <a href="ranking.html">RANKING</a>
-<a href="analytics.html">ANALYTICS</a>
 <a href="efficiency.html">EFFICIENCY</a>
 <a href="photo.html">PHOTO</a>
 </nav>
@@ -80,76 +77,77 @@ TABOSAN AYU RANKING
 
 <h2>釣果ランキング</h2>
 
-<table>
+<table id="catchTable">
 <tr>
 <th>順位</th>
+<th>匹数</th>
 <th>日付</th>
 <th>河川</th>
 <th>ポイント</th>
-<th>匹数</th>
 </tr>
-
-<tr>
-<td>1</td>
-<td>2024/7/20</td>
-<td>長良川</td>
-<td>瀬肩</td>
-<td>48</td>
-</tr>
-
-<tr>
-<td>2</td>
-<td>2024/8/12</td>
-<td>板取川</td>
-<td>トロ</td>
-<td>41</td>
-</tr>
-
-<tr>
-<td>3</td>
-<td>2024/7/30</td>
-<td>長良川</td>
-<td>瀬</td>
-<td>36</td>
-</tr>
-
 </table>
-
 
 <h2>平均サイズランキング</h2>
 
-<table>
+<table id="sizeTable">
 <tr>
 <th>順位</th>
+<th>平均サイズ</th>
 <th>日付</th>
 <th>河川</th>
-<th>平均サイズ</th>
 </tr>
-
-<tr>
-<td>1</td>
-<td>2024/8/20</td>
-<td>長良川</td>
-<td>23.1cm</td>
-</tr>
-
-<tr>
-<td>2</td>
-<td>2024/7/28</td>
-<td>板取川</td>
-<td>22.4cm</td>
-</tr>
-
-<tr>
-<td>3</td>
-<td>2024/8/5</td>
-<td>長良川</td>
-<td>22.0cm</td>
-</tr>
-
 </table>
 
 </div>
+
+<script>
+
+const url="https://opensheet.elk.sh/YOUR_SHEET_ID/DATA"
+
+fetch(url)
+.then(res=>res.json())
+.then(data=>{
+
+//釣果ランキング
+let catchRank=[...data].sort((a,b)=>b["匹数"]-a["匹数"]).slice(0,10)
+
+let catchTable=document.getElementById("catchTable")
+
+catchRank.forEach((d,i)=>{
+
+let row=catchTable.insertRow()
+
+row.innerHTML=`
+<td>${i+1}</td>
+<td>${d["匹数"]}</td>
+<td>${d["日付"]}</td>
+<td>${d["河川"]}</td>
+<td>${d["ポイント"]}</td>
+`
+
+})
+
+//平均サイズランキング
+let sizeRank=[...data].sort((a,b)=>b["平均サイズ"]-a["平均サイズ"]).slice(0,10)
+
+let sizeTable=document.getElementById("sizeTable")
+
+sizeRank.forEach((d,i)=>{
+
+let row=sizeTable.insertRow()
+
+row.innerHTML=`
+<td>${i+1}</td>
+<td>${d["平均サイズ"]}</td>
+<td>${d["日付"]}</td>
+<td>${d["河川"]}</td>
+`
+
+})
+
+})
+
+</script>
 
 </body>
 </html>
