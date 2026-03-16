@@ -33,10 +33,6 @@ margin:0 15px;
 font-size:18px;
 }
 
-.menu a:hover{
-color:#00e0ff;
-}
-
 table{
 width:100%;
 border-collapse:collapse;
@@ -53,10 +49,6 @@ th{
 background:#0f3c5f;
 }
 
-tr:hover{
-background:#1b3d59;
-}
-
 </style>
 </head>
 
@@ -71,56 +63,26 @@ background:#1b3d59;
 <a href="photo.html">PHOTO</a>
 </div>
 
-<h2>釣果ランキング</h2>
+<h2>ランキング（準備中）</h2>
 
-<table id="rankingTable">
-<thead>
+<table>
 <tr>
 <th>順位</th>
 <th>日付</th>
 <th>河川</th>
-<th>ポイント</th>
 <th>匹数</th>
 <th>最大サイズ</th>
 </tr>
-</thead>
 
-<tbody></tbody>
+<tr>
+<td>1</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
 
 </table>
-
-<script>
-
-const sheetURL = "https://opensheet.elk.sh/あなたのスプレッドシートID/DATA"
-
-fetch(sheetURL)
-.then(res => res.json())
-.then(data => {
-
-data.sort((a,b)=>b["匹数"]-a["匹数"])
-
-const tbody = document.querySelector("#rankingTable tbody")
-
-data.slice(0,20).forEach((row,i)=>{
-
-const tr=document.createElement("tr")
-
-tr.innerHTML=`
-<td>${i+1}</td>
-<td>${row["日付"]}</td>
-<td>${row["河川"]}</td>
-<td>${row["ポイント"]}</td>
-<td>${row["匹数"]}</td>
-<td>${row["最大サイズ"]}</td>
-`
-
-tbody.appendChild(tr)
-
-})
-
-})
-
-</script>
 
 </body>
 </html>
