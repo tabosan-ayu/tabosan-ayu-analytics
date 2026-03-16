@@ -2,65 +2,77 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>TABOSAN AYU RANKING</title>
+<title>TABOSAN AYU ANALYTICS LAB</title>
 
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
 <style>
-
 body{
-font-family:Arial;
-background:#021018;
-color:white;
-margin:0;
+  font-family: Arial;
+  background: #021018;
+  color: white;
+  margin: 0;
 }
 
 header{
-background:#041822;
-padding:25px;
-text-align:center;
-font-size:32px;
-color:#7fffd4;
-}
-
-nav{
-text-align:center;
-padding:15px;
-background:#03151f;
-}
-
-nav a{
-color:white;
-margin:0 15px;
-text-decoration:none;
-padding:6px 12px;
-border-radius:6px;
-}
-
-nav a.active{
-background:#0b2435;
-color:#7fffd4;
+  background: #041822;
+  padding: 25px;
+  text-align: center;
+  font-size: 32px;
+  color: #7fffd4;
 }
 
 .container{
-max-width:1400px;
-margin:auto;
-padding:30px;
+  width: 90%;       /* 画面幅 90% */
+  margin: auto;
+  padding: 30px 0;
+}
+
+.cards{
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  overflow-x: auto;  /* 横スライド対応 */
+  padding-bottom: 10px;
+}
+
+.card{
+  background: #0b2435;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  min-width: 180px; /* 横スライド時の幅 */
+  flex: 0 0 auto;
+}
+
+.card-title{
+  color: #7fffd4;
+}
+
+.card-value{
+  font-size: 28px;
+  margin-top: 5px;
 }
 
 .grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:25px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 25px;
+  overflow-x: auto;  /* 横スクロール */
+  padding-bottom: 10px;
 }
 
-.chart{
-background:#0b2435;
-padding:20px;
-border-radius:10px;
-height:320px;
+.chart, .latest{
+  background: #0b2435;
+  padding: 20px;
+  border-radius: 10px;
+  min-width: 300px; /* 横スクロール用 */
+  flex: 0 0 auto;
+  height: 320px;
+}
+
+.latest{
+  height: auto;
 }
 
 </style>
@@ -69,127 +81,132 @@ height:320px;
 <body>
 
 <header>
-TABOSAN AYU RANKING
+TABOSAN AYU ANALYTICS LAB
 </header>
-
-<nav>
-<a href="index.html">HOME</a>
-<a href="ranking.html" class="active">RANKING</a>
-<a href="efficiency.html">EFFICIENCY</a>
-<a href="photo.html">PHOTO</a>
-</nav>
 
 <div class="container">
 
+<div class="cards">
+  <div class="card"><div class="card-title">総釣果</div><div id="totalCatch" class="card-value">-</div></div>
+  <div class="card"><div class="card-title">釣行回数</div><div id="tripCount" class="card-value">-</div></div>
+  <div class="card"><div class="card-title">平均釣果</div><div id="avgCatch" class="card-value">-</div></div>
+  <div class="card"><div class="card-title">平均効率</div><div id="avgEff" class="card-value">-</div></div>
+  <div class="card"><div class="card-title">平均サイズ</div><div id="avgSize" class="card-value">-</div></div>
+</div>
+
 <div class="grid">
-
-<div id="chart_catch" class="chart"></div>
-<div id="chart_size" class="chart"></div>
-
-<div id="chart_river" class="chart"></div>
-<div id="chart_point" class="chart"></div>
-
-<div id="chart_rod" class="chart"></div>
-<div id="chart_weather" class="chart"></div>
-
-<div id="chart_water" class="chart"></div>
-
+  <div id="chart_month" class="chart"></div>
+  <div id="chart_river" class="chart"></div>
+  <div id="chart_point" class="chart"></div>
+  <div id="chart_rod" class="chart"></div>
+  <div id="chart_river_rank" class="chart"></div>
+  <div id="chart_weather" class="chart"></div>
+  <div id="chart_water" class="chart"></div>
+  <div class="latest">
+    <h3>最近の釣果</h3>
+    <div id="latestFishing"></div>
+  </div>
 </div>
 
 </div>
 
 <script>
-
 google.charts.load('current',{packages:['corechart']});
 google.charts.setOnLoadCallback(loadData);
 
-const sheetURL =
-"https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
+const sheetURL = "https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
 
 function loadData(){
+  fetch(sheetURL)
+  .then(res=>res.json())
+  .then(data=>{
+    data=data.filter(r=>r["匹数"]);
 
-fetch(sheetURL)
-.then(res=>res.json())
-.then(data=>{
+    let totalCatch=0, tripCount=data.length, effTotal=0, sizeTotal=0;
+    let monthData={}, riverData={}, pointData={}, rodData={}, riverRank={}, weatherData={}, waterData={};
 
-data=data.filter(r=>r["匹数"])
+    data.forEach(row=>{
+      let catchNum=Number(row["匹数"])||0;
+      totalCatch+=catchNum;
+      let eff=Number(row["効率"])||0;
+      effTotal+=eff;
+      let size=Number(row["平均サイズ"])||0;
+      sizeTotal+=size;
 
-let catchRank={}
-let sizeRank={}
-let riverData={}
-let pointData={}
-let rodData={}
-let weatherData={}
-let waterData={}
+      let month=row["月"];
+      monthData[month]=(monthData[month]||0)+catchNum;
+      let river=row["河川"];
+      riverData[river]=(riverData[river]||0)+catchNum;
+      riverRank[river]=(riverRank[river]||0)+catchNum;
+      let point=row["ポイント"];
+      pointData[point]=(pointData[point]||0)+catchNum;
+      let rod=row["竿名"];
+      rodData[rod]=(rodData[rod]||0)+catchNum;
+      let weather=row["天候"];
+      weatherData[weather]=(weatherData[weather]||0)+catchNum;
+      let water=row["水位"];
+      waterData[water]=(waterData[water]||0)+catchNum;
+    });
 
-data.forEach(row=>{
+    let avgCatch=(totalCatch/tripCount||0).toFixed(1);
+    let avgEff=(effTotal/tripCount||0).toFixed(2);
+    let avgSize=(sizeTotal/tripCount||0).toFixed(1);
 
-let catchNum=Number(row["匹数"])||0
-let size=Number(row["平均サイズ"])||0
+    document.getElementById("totalCatch").innerText=totalCatch+"匹";
+    document.getElementById("tripCount").innerText=tripCount+"回";
+    document.getElementById("avgCatch").innerText=avgCatch+"匹";
+    document.getElementById("avgEff").innerText=avgEff+"匹/h";
+    document.getElementById("avgSize").innerText=avgSize+"cm";
 
-catchRank[row["日付"]]=(catchRank[row["日付"]]||0)+catchNum
-sizeRank[row["日付"]]=(sizeRank[row["日付"]]||0)+size
+    drawChart("chart_month","月別釣果",monthData);
+    drawPie("chart_river","河川割合",riverData);
+    drawChart("chart_point","ポイント別釣果",pointData);
+    drawChart("chart_rod","竿ランキング",rodData);
+    drawChart("chart_river_rank","河川ランキング",riverRank);
+    drawChart("chart_weather","天候別釣果",weatherData);
+    drawChart("chart_water","水位別釣果",waterData);
 
-let river=row["河川"]
-riverData[river]=(riverData[river]||0)+catchNum
-
-let point=row["ポイント"]
-pointData[point]=(pointData[point]||0)+catchNum
-
-let rod=row["竿名"]
-rodData[rod]=(rodData[rod]||0)+catchNum
-
-let weather=row["天候"]
-weatherData[weather]=(weatherData[weather]||0)+catchNum
-
-let water=row["水位"]
-waterData[water]=(waterData[water]||0)+catchNum
-
-})
-
-drawChart("chart_catch","釣果ランキング",catchRank)
-drawChart("chart_size","平均サイズランキング",sizeRank)
-drawChart("chart_river","河川ランキング",riverData)
-drawChart("chart_point","ポイントランキング",pointData)
-drawChart("chart_rod","竿名ランキング",rodData)
-drawChart("chart_weather","天候ランキング",weatherData)
-drawChart("chart_water","水位ランキング",waterData)
-
-})
-
+    showLatest(data);
+  })
 }
 
 function drawChart(id,title,obj){
-
-let arr=Object.entries(obj)
-
-arr.sort((a,b)=>b[1]-a[1])
-
-arr=arr.slice(0,5)
-
-let dataArr=[[title,"値"]]
-
-arr.forEach(v=>{
-dataArr.push([v[0],v[1]])
-})
-
-let data=google.visualization.arrayToDataTable(dataArr)
-
-let chart=new google.visualization.ColumnChart(
-document.getElementById(id)
-)
-
-chart.draw(data,{
-title:title,
-titleTextStyle:{color:"#7fffd4"},
-backgroundColor:"transparent",
-legend:{textStyle:{color:"white"}},
-hAxis:{textStyle:{color:"white"}},
-vAxis:{textStyle:{color:"white"}}
-})
-
+  let arr=Object.entries(obj);
+  arr.sort((a,b)=>b[1]-a[1]);
+  let dataArr=[[title,"値"]];
+  arr.forEach(v=>dataArr.push([v[0],v[1]]));
+  let data=google.visualization.arrayToDataTable(dataArr);
+  let chart=new google.visualization.ColumnChart(document.getElementById(id));
+  chart.draw(data,{
+    title:title,
+    titleTextStyle:{color:"#7fffd4"},
+    backgroundColor:"transparent",
+    legend:{textStyle:{color:"white"}},
+    hAxis:{textStyle:{color:"white"}},
+    vAxis:{textStyle:{color:"white"}}
+  });
 }
 
+function drawPie(id,title,obj){
+  let dataArr=[[title,"値"]];
+  Object.entries(obj).forEach(v=>dataArr.push(v));
+  let data=google.visualization.arrayToDataTable(dataArr);
+  let chart=new google.visualization.PieChart(document.getElementById(id));
+  chart.draw(data,{
+    title:title,
+    titleTextStyle:{color:"#7fffd4"},
+    backgroundColor:"transparent",
+    legend:{textStyle:{color:"white"}}
+  });
+}
+
+function showLatest(data){
+  let html="";
+  data.slice(-5).reverse().forEach(r=>{
+    html+=`<p>${r["日付"]}　${r["河川"]}　${r["匹数"]}匹</p>`;
+  });
+  document.getElementById("latestFishing").innerHTML=html;
+}
 </script>
 
 </body>
