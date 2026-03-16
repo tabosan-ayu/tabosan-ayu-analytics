@@ -9,55 +9,54 @@
 <style>
 
 body{
-  font-family:Arial;
-  background:#021018;
-  color:white;
-  margin:0;
+font-family:Arial;
+background:#021018;
+color:white;
+margin:0;
 }
 
 header{
-  background:#041822;
-  padding:25px;
-  text-align:center;
-  font-size:32px;
-  color:#7fffd4;
+background:#041822;
+padding:25px;
+text-align:center;
+font-size:32px;
+color:#7fffd4;
 }
 
 nav{
-  text-align:center;
-  background:#041822;
-  padding:10px 0;
+text-align:center;
+background:#041822;
+padding:10px 0;
 }
 
 nav a{
-  color:white;
-  margin:0 15px;
-  text-decoration:none;
-  font-weight:bold;
+color:white;
+margin:0 15px;
+text-decoration:none;
+font-weight:bold;
 }
 
 nav a.active{
-  color:#7fffd4;
+color:#7fffd4;
 }
 
 .container{
-  max-width:1500px;
-  margin:auto;
-  padding:30px;
+max-width:1500px;
+margin:auto;
+padding:30px;
 }
 
 .grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:25px;
-  overflow-x:auto;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:25px;
 }
 
 .chart{
-  background:#0b2435;
-  padding:20px;
-  border-radius:10px;
-  height:320px;
+background:#0b2435;
+padding:20px;
+border-radius:10px;
+height:320px;
 }
 
 </style>
@@ -79,12 +78,17 @@ TABOSAN AYU RANKING
 <div class="container">
 
 <div class="grid">
-  <div id="chart_month" class="chart"></div>
-  <div id="chart_river_size" class="chart"></div>
-  <div id="chart_point" class="chart"></div>
-  <div id="chart_weather" class="chart"></div>
-  <div id="chart_water" class="chart"></div>
-  <div id="chart_rod" class="chart"></div>
+
+<div id="chart_point" class="chart"></div>
+<div id="chart_river_size" class="chart"></div>
+
+<div id="chart_weather" class="chart"></div>
+<div id="chart_water" class="chart"></div>
+
+<div id="chart_rod" class="chart"></div>
+
+</div>
+
 </div>
 
 <script>
@@ -92,78 +96,91 @@ TABOSAN AYU RANKING
 google.charts.load('current',{packages:['corechart']});
 google.charts.setOnLoadCallback(loadData);
 
-const sheetURL = "https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
+const sheetURL="https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
 
 function loadData(){
-  fetch(sheetURL)
-    .then(res=>res.json())
-    .then(data=>{
 
-      data = data.filter(r=>r["匹数"]);
+fetch(sheetURL)
+.then(res=>res.json())
+.then(data=>{
 
-      let pointData={}, riverSizeData={}, weatherData={}, waterData={}, rodData={};
+data=data.filter(r=>r["匹数"])
 
-      data.forEach(row=>{
-        let catchNum = Number(row["匹数"])||0;
-        let size = Number(row["平均サイズ"])||0;
+let pointData={}
+let riverSizeData={}
+let weatherData={}
+let waterData={}
+let rodData={}
 
-        // 河川平均サイズ
-        let river = row["河川"];
-        if(!riverSizeData[river]){
-          riverSizeData[river] = {sum:0,count:0};
-        }
-        riverSizeData[river].sum += size;
-        riverSizeData[river].count++;
+data.forEach(row=>{
 
-        // ポイント別釣果
-        let point = row["ポイント"];
-        pointData[point] = (pointData[point]||0)+catchNum;
+let catchNum=Number(row["匹数"])||0
+let size=Number(row["平均サイズ"])||0
 
-        // 天候別
-        let weather = row["天候"];
-        weatherData[weather] = (weatherData[weather]||0)+catchNum;
+// ポイント
+let point=row["ポイント"]
+pointData[point]=(pointData[point]||0)+catchNum
 
-        // 水位別
-        let water = row["水位"];
-        waterData[water] = (waterData[water]||0)+catchNum;
+// 河川サイズ
+let river=row["河川"]
+if(!riverSizeData[river]){
+riverSizeData[river]={sum:0,count:0}
+}
+riverSizeData[river].sum+=size
+riverSizeData[river].count++
 
-        // 竿別
-        let rod = row["竿名"];
-        rodData[rod] = (rodData[rod]||0)+catchNum;
-      });
+// 天候
+let weather=row["天候"]
+weatherData[weather]=(weatherData[weather]||0)+catchNum
 
-      // 河川平均サイズは平均に変換
-      let riverAvgSize = {};
-      Object.entries(riverSizeData).forEach(([k,v])=>{
-        riverAvgSize[k] = v.sum / v.count;
-      });
+// 水位
+let water=row["水位"]
+waterData[water]=(waterData[water]||0)+catchNum
 
-      drawChart("chart_month","月別釣果",pointData); // ここは月別釣果の列を使うなら変更可
-      drawChart("chart_river_size","河川平均サイズ",riverAvgSize);
-      drawChart("chart_point","ポイント別釣果ランキング",pointData);
-      drawChart("chart_weather","天候別釣果ランキング",weatherData);
-      drawChart("chart_water","水位別釣果ランキング",waterData);
-      drawChart("chart_rod","竿別釣果ランキング",rodData);
+// 竿
+let rod=row["竿名"]
+rodData[rod]=(rodData[rod]||0)+catchNum
 
-    });
+})
+
+// 河川平均サイズ
+let riverAvgSize={}
+Object.entries(riverSizeData).forEach(([k,v])=>{
+riverAvgSize[k]=v.sum/v.count
+})
+
+// グラフ表示
+drawChart("chart_point","ポイント別釣果ランキング",pointData)
+drawChart("chart_river_size","河川平均サイズ",riverAvgSize)
+drawChart("chart_weather","天候別釣果ランキング",weatherData)
+drawChart("chart_water","水位別釣果ランキング",waterData)
+drawChart("chart_rod","竿別釣果ランキング",rodData)
+
+})
+
 }
 
 function drawChart(id,title,obj){
-  let arr = Object.entries(obj);
-  arr.sort((a,b)=>b[1]-a[1]);
-  let dataArr = [[title,"値"]];
-  arr.forEach(v=>dataArr.push([v[0],v[1]]));
-  let data = google.visualization.arrayToDataTable(dataArr);
 
-  let chart = new google.visualization.ColumnChart(document.getElementById(id));
-  chart.draw(data,{
-    title:title,
-    titleTextStyle:{color:"#7fffd4"},
-    backgroundColor:"transparent",
-    legend:{textStyle:{color:"white"}},
-    hAxis:{textStyle:{color:"white"}},
-    vAxis:{textStyle:{color:"white"}}
-  });
+let arr=Object.entries(obj)
+arr.sort((a,b)=>b[1]-a[1])
+
+let dataArr=[[title,"値"]]
+arr.forEach(v=>dataArr.push([v[0],v[1]]))
+
+let data=google.visualization.arrayToDataTable(dataArr)
+
+let chart=new google.visualization.ColumnChart(document.getElementById(id))
+
+chart.draw(data,{
+title:title,
+titleTextStyle:{color:"#7fffd4"},
+backgroundColor:"transparent",
+legend:{textStyle:{color:"white"}},
+hAxis:{textStyle:{color:"white"}},
+vAxis:{textStyle:{color:"white"}}
+})
+
 }
 
 </script>
