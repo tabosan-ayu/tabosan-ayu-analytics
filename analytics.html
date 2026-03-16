@@ -2,153 +2,111 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>TABOSAN AYU ANALYTICS</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TABOSAN AYU EFFICIENCY</title>
 
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 <style>
-
 body{
-font-family:Arial;
-background:#021018;
-color:white;
-margin:0;
+  font-family: Arial;
+  background: #021018;
+  color: white;
+  margin: 0;
 }
 
 header{
-text-align:center;
-padding:25px;
-font-size:28px;
-letter-spacing:4px;
-color:#7fffd4;
-background:#061520;
-}
-
-nav{
-text-align:center;
-padding:10px;
-background:#061520;
-}
-
-nav a{
-color:white;
-margin:0 15px;
-text-decoration:none;
-font-size:14px;
+  background: #041822;
+  padding: 25px;
+  text-align: center;
+  font-size: 32px;
+  color: #7fffd4;
 }
 
 .container{
-width:90%;
-margin:auto;
-margin-top:30px;
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:30px;
+  width: 90%;
+  margin: auto;
+  padding: 30px 0;
 }
 
-.card{
-background:#0c2a3d;
-padding:20px;
-border-radius:10px;
+.grid{
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 25px;
+  overflow-x: auto;
+  padding-bottom: 10px;
 }
 
 .chart{
-height:350px;
+  background: #0b2435;
+  padding: 20px;
+  border-radius: 10px;
+  min-width: 300px;
+  flex: 0 0 auto;
+  height: 320px;
 }
-
 </style>
 </head>
-
 <body>
 
 <header>
-TABOSAN AYU ANALYTICS
+TABOSAN AYU EFFICIENCY
 </header>
 
-<nav>
-<a href="index.html">HOME</a>
-<a href="ranking.html">RANKING</a>
-<a href="efficiency.html">EFFICIENCY</a>
-<a href="photo.html">PHOTO</a>
-</nav>
-
 <div class="container">
-
-<div class="card">
-<h3>河川別釣果</h3>
-<div id="riverChart" class="chart"></div>
-</div>
-
-<div class="card">
-<h3>月別釣果</h3>
-<div id="monthChart" class="chart"></div>
-</div>
-
-<div class="card">
-<h3>竿別釣果</h3>
-<div id="rodChart" class="chart"></div>
-</div>
-
-<div class="card">
-<h3>天候別釣果</h3>
-<div id="weatherChart" class="chart"></div>
-</div>
-
+  <div class="grid">
+    <div id="chart_eff_river" class="chart"></div>
+    <div id="chart_eff_point" class="chart"></div>
+    <div id="chart_eff_rod" class="chart"></div>
+    <div id="chart_eff_weather" class="chart"></div>
+    <div id="chart_eff_water" class="chart"></div>
+  </div>
 </div>
 
 <script>
+google.charts.load('current',{packages:['corechart']});
+google.charts.setOnLoadCallback(loadData);
 
-google.charts.load('current',{'packages':['corechart']});
-google.charts.setOnLoadCallback(drawCharts);
+const sheetURL = "https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
 
-function drawCharts(){
+function loadData(){
+  fetch(sheetURL).then(res=>res.json()).then(data=>{
+    data = data.filter(r=>r["効率"]);
+    
+    let riverData={}, pointData={}, rodData={}, weatherData={}, waterData={};
 
-var river = google.visualization.arrayToDataTable([
-['River','Catch'],
-['長良川',120],
-['板取川',80],
-['益田川',60],
-['郡上',30]
-]);
+    data.forEach(r=>{
+      let eff = Number(r["効率"])||0;
+      riverData[r["河川"]] = Math.max(riverData[r["河川"]]||0, eff);
+      pointData[r["ポイント"]] = Math.max(pointData[r["ポイント"]]||0, eff);
+      rodData[r["竿名"]] = Math.max(rodData[r["竿名"]]||0, eff);
+      weatherData[r["天候"]] = Math.max(weatherData[r["天候"]]||0, eff);
+      waterData[r["水位"]] = Math.max(waterData[r["水位"]]||0, eff);
+    });
 
-var month = google.visualization.arrayToDataTable([
-['Month','Catch'],
-['6月',20],
-['7月',90],
-['8月',110],
-['9月',50]
-]);
-
-var rod = google.visualization.arrayToDataTable([
-['Rod','Catch'],
-['プロトギア',130],
-['スペシャル',90],
-['FW',40]
-]);
-
-var weather = google.visualization.arrayToDataTable([
-['Weather','Catch'],
-['晴',150],
-['曇',70],
-['雨',20]
-]);
-
-var options={
-backgroundColor:'transparent',
-legend:{textStyle:{color:'white'}},
-hAxis:{textStyle:{color:'white'}},
-vAxis:{textStyle:{color:'white'}}
-};
-
-new google.visualization.ColumnChart(document.getElementById('riverChart')).draw(river,options);
-new google.visualization.ColumnChart(document.getElementById('monthChart')).draw(month,options);
-new google.visualization.ColumnChart(document.getElementById('rodChart')).draw(rod,options);
-new google.visualization.ColumnChart(document.getElementById('weatherChart')).draw(weather,options);
-
+    drawChart("chart_eff_river","河川効率ランキング",riverData);
+    drawChart("chart_eff_point","ポイント効率ランキング",pointData);
+    drawChart("chart_eff_rod","竿効率ランキング",rodData);
+    drawChart("chart_eff_weather","天候効率ランキング",weatherData);
+    drawChart("chart_eff_water","水位効率ランキング",waterData);
+  });
 }
 
+function drawChart(id,title,obj){
+  let arr = Object.entries(obj);
+  arr.sort((a,b)=>b[1]-a[1]);
+  let dataArr = [[title,"効率"]];
+  arr.forEach(v=>dataArr.push([v[0],v[1]]));
+  let data = google.visualization.arrayToDataTable(dataArr);
+  let chart = new google.visualization.ColumnChart(document.getElementById(id));
+  chart.draw(data,{
+    title:title,
+    titleTextStyle:{color:"#7fffd4"},
+    backgroundColor:"transparent",
+    legend:{textStyle:{color:"white"}},
+    hAxis:{textStyle:{color:"white"}},
+    vAxis:{textStyle:{color:"white"}}
+  });
+}
 </script>
 
 </body>
