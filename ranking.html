@@ -10,39 +10,49 @@
 
 body{
 font-family:Arial;
-background:#0b1e2d;
+background:#081c2c;
 color:white;
 margin:0;
-padding:20px;
 }
 
-h1{
+header{
 text-align:center;
-margin-bottom:30px;
+padding:25px;
+font-size:28px;
+letter-spacing:3px;
+background:#061520;
 }
 
-.menu{
+nav{
 text-align:center;
-margin-bottom:30px;
+padding:10px;
+background:#061520;
 }
 
-.menu a{
+nav a{
 color:white;
-text-decoration:none;
 margin:0 15px;
-font-size:18px;
+text-decoration:none;
+font-size:14px;
+}
+
+.container{
+width:90%;
+margin:auto;
+margin-top:30px;
 }
 
 table{
 width:100%;
 border-collapse:collapse;
-background:#122b40;
+margin-bottom:40px;
+background:#0c2a3d;
 }
 
 th,td{
 padding:10px;
-text-align:center;
 border-bottom:1px solid #244a6a;
+text-align:center;
 }
 
 th{
@@ -54,35 +64,92 @@ background:#0f3c5f;
 
 <body>
 
-<h1>TABOSAN AYU RANKING</h1>
+<header>
+TABOSAN AYU RANKING
+</header>
 
-<div class="menu">
+<nav>
 <a href="index.html">HOME</a>
 <a href="ranking.html">RANKING</a>
+<a href="analytics.html">ANALYTICS</a>
 <a href="efficiency.html">EFFICIENCY</a>
 <a href="photo.html">PHOTO</a>
-</div>
+</nav>
 
-<h2>ランキング（準備中）</h2>
+<div class="container">
+
+<h2>釣果ランキング</h2>
 
 <table>
 <tr>
 <th>順位</th>
 <th>日付</th>
 <th>河川</th>
+<th>ポイント</th>
 <th>匹数</th>
-<th>最大サイズ</th>
 </tr>
 
 <tr>
 <td>1</td>
-<td>-</td>
-<td>-</td>
-<td>-</td>
-<td>-</td>
+<td>2024/7/20</td>
+<td>長良川</td>
+<td>瀬肩</td>
+<td>48</td>
+</tr>
+
+<tr>
+<td>2</td>
+<td>2024/8/12</td>
+<td>板取川</td>
+<td>トロ</td>
+<td>41</td>
+</tr>
+
+<tr>
+<td>3</td>
+<td>2024/7/30</td>
+<td>長良川</td>
+<td>瀬</td>
+<td>36</td>
 </tr>
 
 </table>
+
+
+<h2>平均サイズランキング</h2>
+
+<table>
+<tr>
+<th>順位</th>
+<th>日付</th>
+<th>河川</th>
+<th>平均サイズ</th>
+</tr>
+
+<tr>
+<td>1</td>
+<td>2024/8/20</td>
+<td>長良川</td>
+<td>23.1cm</td>
+</tr>
+
+<tr>
+<td>2</td>
+<td>2024/7/28</td>
+<td>板取川</td>
+<td>22.4cm</td>
+</tr>
+
+<tr>
+<td>3</td>
+<td>2024/8/5</td>
+<td>長良川</td>
+<td>22.0cm</td>
+</tr>
+
+</table>
+
+</div>
 
 </body>
 </html>
