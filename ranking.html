@@ -10,22 +10,23 @@
 
 body{
 font-family:Arial;
-background:#081c2c;
+background:#021018;
 color:white;
 margin:0;
 }
 
 header{
-text-align:center;
+background:#041822;
 padding:25px;
-font-size:28px;
-background:#061520;
+text-align:center;
+font-size:32px;
+color:#7fffd4;
 }
 
 nav{
 text-align:center;
-padding:10px;
-background:#061520;
+padding:15px;
+background:#03151f;
 }
 
 nav a{
@@ -35,26 +36,25 @@ text-decoration:none;
 }
 
 .container{
-width:90%;
+max-width:1200px;
 margin:auto;
-margin-top:30px;
+padding:30px;
 }
 
 table{
 width:100%;
 border-collapse:collapse;
 margin-bottom:40px;
-background:#0c2a3d;
 }
 
 th,td{
-padding:10px;
-border-bottom:1px solid #244a6a;
+padding:12px;
+border-bottom:1px solid #0b2c3f;
 text-align:center;
 }
 
 th{
-background:#0f3c5f;
+color:#7fffd4;
 }
 
 </style>
@@ -77,7 +77,7 @@ TABOSAN AYU RANKING
 
 <h2>釣果ランキング</h2>
 
-<table id="catchTable">
+<table id="catchRank">
 <tr>
 <th>順位</th>
 <th>匹数</th>
@@ -87,9 +87,10 @@ TABOSAN AYU RANKING
 </tr>
 </table>
 
+
 <h2>平均サイズランキング</h2>
 
-<table id="sizeTable">
+<table id="sizeRank">
 <tr>
 <th>順位</th>
 <th>平均サイズ</th>
@@ -100,47 +101,57 @@ TABOSAN AYU RANKING
 
 </div>
 
+
 <script>
 
-const url="https://opensheet.elk.sh/YOUR_SHEET_ID/DATA"
+const sheetURL =
+"https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
 
-fetch(url)
+fetch(sheetURL)
 .then(res=>res.json())
 .then(data=>{
 
+data=data.filter(r=>r["匹数"])
+
+
 //釣果ランキング
-let catchRank=[...data].sort((a,b)=>b["匹数"]-a["匹数"]).slice(0,10)
+let catchRank=[...data]
+.sort((a,b)=>b["匹数"]-a["匹数"])
+.slice(0,10)
 
-let catchTable=document.getElementById("catchTable")
+let catchTable=document.getElementById("catchRank")
 
-catchRank.forEach((d,i)=>{
+catchRank.forEach((r,i)=>{
 
 let row=catchTable.insertRow()
 
 row.innerHTML=`
 <td>${i+1}</td>
-<td>${d["匹数"]}</td>
-<td>${d["日付"]}</td>
-<td>${d["河川"]}</td>
-<td>${d["ポイント"]}</td>
+<td>${r["匹数"]}</td>
+<td>${r["日付"]}</td>
+<td>${r["河川"]}</td>
+<td>${r["ポイント"]}</td>
 `
 
 })
 
+
 //平均サイズランキング
-let sizeRank=[...data].sort((a,b)=>b["平均サイズ"]-a["平均サイズ"]).slice(0,10)
+let sizeRank=[...data]
+.sort((a,b)=>b["平均サイズ"]-a["平均サイズ"])
+.slice(0,10)
 
-let sizeTable=document.getElementById("sizeTable")
+let sizeTable=document.getElementById("sizeRank")
 
-sizeRank.forEach((d,i)=>{
+sizeRank.forEach((r,i)=>{
 
 let row=sizeTable.insertRow()
 
 row.innerHTML=`
 <td>${i+1}</td>
-<td>${d["平均サイズ"]}</td>
-<td>${d["日付"]}</td>
-<td>${d["河川"]}</td>
+<td>${r["平均サイズ"]}cm</td>
+<td>${r["日付"]}</td>
+<td>${r["河川"]}</td>
 `
 
 })
