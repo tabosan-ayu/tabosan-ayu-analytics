@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>TABOSAN AYU EFFICIENCY</title>
+<title>TABOSAN AYU RANKING</title>
 
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 
@@ -88,13 +88,13 @@ nav a.active{
 <body>
 
 <header>
-TABOSAN AYU EFFICIENCY
+TABOSAN AYU RANKING
 </header>
 
 <nav>
 <a href="index.html">HOME</a>
-<a href="ranking.html">RANKING</a>
-<a href="efficiency.html" class="active">EFFICIENCY</a>
+<a href="ranking.html" class="active">RANKING</a>
+<a href="efficiency.html">EFFICIENCY</a>
 <a href="photo.html">PHOTO</a>
 </nav>
 
@@ -109,6 +109,7 @@ TABOSAN AYU EFFICIENCY
 </div>
 
 <div class="grid">
+<div id="chart_month" class="chart"></div>
 <div id="chart_river" class="chart"></div>
 <div id="chart_point" class="chart"></div>
 <div id="chart_rod" class="chart"></div>
@@ -131,7 +132,7 @@ fetch(sheetURL)
 data = data.filter(r=>r["匹数"]);
 
 let totalCatch=0, tripCount=data.length, effTotal=0, sizeTotal=0;
-let riverData={}, pointData={}, rodData={}, weatherData={}, waterData={};
+let monthData={}, riverData={}, pointData={}, rodData={}, weatherData={}, waterData={};
 
 data.forEach(row=>{
   let catchNum = Number(row["匹数"])||0;
@@ -143,20 +144,23 @@ data.forEach(row=>{
   let size = Number(row["平均サイズ"])||0;
   sizeTotal += size;
 
+  let month = row["月"];
+  monthData[month]=(monthData[month]||0)+catchNum;
+
   let river = row["河川"];
-  riverData[river]=(riverData[river]||0)+eff;
+  riverData[river]=(riverData[river]||0)+catchNum;
 
   let point = row["ポイント"];
-  pointData[point]=(pointData[point]||0)+eff;
+  pointData[point]=(pointData[point]||0)+catchNum;
 
   let rod = row["竿名"];
-  rodData[rod]=(rodData[rod]||0)+eff;
+  rodData[rod]=(rodData[rod]||0)+catchNum;
 
   let weather = row["天候"];
-  weatherData[weather]=(weatherData[weather]||0)+eff;
+  weatherData[weather]=(weatherData[weather]||0)+catchNum;
 
   let water = row["水位"];
-  waterData[water]=(waterData[water]||0)+eff;
+  waterData[water]=(waterData[water]||0)+catchNum;
 });
 
 document.getElementById("totalCatch").innerText=totalCatch+"匹";
@@ -165,11 +169,12 @@ document.getElementById("avgCatch").innerText=(totalCatch/tripCount||0).toFixed(
 document.getElementById("avgEff").innerText=(effTotal/tripCount||0).toFixed(2)+"匹/h";
 document.getElementById("avgSize").innerText=(sizeTotal/tripCount||0).toFixed(1)+"cm";
 
-drawChart("chart_river","河川効率トップ5",riverData);
-drawChart("chart_point","ポイント効率トップ5",pointData);
-drawChart("chart_rod","竿名効率トップ5",rodData);
-drawChart("chart_weather","天候効率トップ5",weatherData);
-drawChart("chart_water","水位効率トップ5",waterData);
+drawChart("chart_month","月別釣果",monthData);
+drawChart("chart_river","河川平均サイズ",riverData);
+drawChart("chart_point","ポイント別釣果",pointData);
+drawChart("chart_rod","竿名ランキング",rodData);
+drawChart("chart_weather","天候別釣果",weatherData);
+drawChart("chart_water","水位別釣果",waterData);
 
 });
 
@@ -177,7 +182,7 @@ drawChart("chart_water","水位効率トップ5",waterData);
 
 function drawChart(id,title,obj){
 let arr=Object.entries(obj).sort((a,b)=>b[1]-a[1]);
-let dataArr=[[title,"効率"]];
+let dataArr=[[title,"値"]];
 arr.forEach(v=>dataArr.push([v[0],v[1]]));
 let data=google.visualization.arrayToDataTable(dataArr);
 let chart=new google.visualization.ColumnChart(document.getElementById(id));
