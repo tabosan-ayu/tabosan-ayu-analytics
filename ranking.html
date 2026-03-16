@@ -45,6 +45,30 @@ nav a.active{
   padding:30px;
 }
 
+.cards{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:20px;
+  margin-bottom:30px;
+  overflow-x:auto;
+}
+
+.card{
+  background:#0b2435;
+  padding:20px;
+  border-radius:10px;
+  text-align:center;
+}
+
+.card-title{
+  color:#7fffd4;
+}
+
+.card-value{
+  font-size:28px;
+  margin-top:5px;
+}
+
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -57,6 +81,12 @@ nav a.active{
   padding:20px;
   border-radius:10px;
   height:320px;
+}
+
+.latest{
+  background:#0b2435;
+  padding:20px;
+  border-radius:10px;
 }
 </style>
 </head>
@@ -76,12 +106,36 @@ TABOSAN AYU RANKING
 
 <div class="container">
 
+<div class="cards">
+  <div class="card">
+    <div class="card-title">総釣果</div>
+    <div id="totalCatch" class="card-value">-</div>
+  </div>
+  <div class="card">
+    <div class="card-title">釣行回数</div>
+    <div id="tripCount" class="card-value">-</div>
+  </div>
+  <div class="card">
+    <div class="card-title">平均釣果</div>
+    <div id="avgCatch" class="card-value">-</div>
+  </div>
+  <div class="card">
+    <div class="card-title">平均効率</div>
+    <div id="avgEff" class="card-value">-</div>
+  </div>
+  <div class="card">
+    <div class="card-title">平均サイズ</div>
+    <div id="avgSize" class="card-value">-</div>
+  </div>
+</div>
+
 <div class="grid">
-  <div id="chart_river_rank" class="chart"></div>
+  <div id="chart_month" class="chart"></div>
+  <div id="chart_river" class="chart"></div>
   <div id="chart_point" class="chart"></div>
-  <div id="chart_rod" class="chart"></div>
   <div id="chart_weather" class="chart"></div>
   <div id="chart_water" class="chart"></div>
+  <div id="chart_rod" class="chart"></div>
 </div>
 
 </div>
@@ -98,54 +152,71 @@ function loadData(){
   .then(data=>{
     data = data.filter(r=>r["匹数"])
 
-    let riverRank = {}
+    let totalCatch = 0
+    let tripCount = data.length
+    let effTotal = 0
+    let sizeTotal = 0
+
+    let monthData = {}
+    let riverSizeData = {}
     let pointData = {}
     let rodData = {}
     let weatherData = {}
     let waterData = {}
-    let riverSize = {}
+
+    let riverCount = {}
 
     data.forEach(row=>{
       let catchNum = Number(row["匹数"])||0
+      totalCatch += catchNum
 
-      // 河川ランキング
+      let eff = Number(row["効率"])||0
+      effTotal += eff
+
+      let size = Number(row["平均サイズ"])||0
+      sizeTotal += size
+
+      let month = row["月"]
+      monthData[month] = (monthData[month]||0) + catchNum
+
       let river = row["河川"]
-      riverRank[river] = (riverRank[river]||0) + catchNum
+      riverSizeData[river] = (riverSizeData[river]||0) + size
+      riverCount[river] = (riverCount[river]||0) + 1
 
-      // ポイントランキング
       let point = row["ポイント"]
       pointData[point] = (pointData[point]||0) + catchNum
 
-      // 竿名ランキング
       let rod = row["竿名"]
       rodData[rod] = (rodData[rod]||0) + catchNum
 
-      // 天候ランキング
       let weather = row["天候"]
       weatherData[weather] = (weatherData[weather]||0) + catchNum
 
-      // 水位ランキング
       let water = row["水位"]
       waterData[water] = (waterData[water]||0) + catchNum
-
-      // 河川別平均サイズ
-      let size = Number(row["平均サイズ"])||0
-      riverSize[river] = riverSize[river] || {total:0, count:0}
-      riverSize[river].total += size
-      riverSize[river].count += 1
     })
 
-    // 河川平均サイズランキングに変換
-    let avgSizeData = {}
-    for(let r in riverSize){
-      avgSizeData[r] = (riverSize[r].total / riverSize[r].count).toFixed(1)
-    }
+    let avgCatch = (totalCatch/tripCount||0).toFixed(1)
+    let avgEff = (effTotal/tripCount||0).toFixed(2)
+    let avgSize = (sizeTotal/tripCount||0).toFixed(1)
 
-    drawChart("chart_river_rank","河川平均サイズ",avgSizeData)
-    drawChart("chart_point","ポイント別釣果",pointData)
-    drawChart("chart_rod","竿ランキング",rodData)
-    drawChart("chart_weather","天候別釣果",weatherData)
-    drawChart("chart_water","水位別釣果",waterData)
+    document.getElementById("totalCatch").innerText=totalCatch+"匹"
+    document.getElementById("tripCount").innerText=tripCount+"回"
+    document.getElementById("avgCatch").innerText=avgCatch+"匹"
+    document.getElementById("avgEff").innerText=avgEff+"匹/h"
+    document.getElementById("avgSize").innerText=avgSize+"cm"
+
+    // 河川の平均サイズを計算
+    Object.keys(riverSizeData).forEach(river=>{
+      riverSizeData[river] = (riverSizeData[river]/riverCount[river]).toFixed(1)
+    })
+
+    drawChart("chart_month","月別釣果ランキング",monthData)
+    drawChart("chart_river","河川別平均サイズランキング",riverSizeData)
+    drawChart("chart_point","ポイント別釣果ランキング",pointData)
+    drawChart("chart_weather","天候別釣果ランキング",weatherData)
+    drawChart("chart_water","水位別釣果ランキング",waterData)
+    drawChart("chart_rod","竿別釣果ランキング",rodData)
   })
 }
 
