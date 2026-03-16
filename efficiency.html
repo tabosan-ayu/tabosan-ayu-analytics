@@ -19,7 +19,7 @@ header{
 background:#041822;
 padding:25px;
 text-align:center;
-font-size:32px;
+font-size:30px;
 color:#7fffd4;
 }
 
@@ -81,11 +81,11 @@ TABOSAN AYU EFFICIENCY
 
 <div class="grid">
 
-<div id="chart_river_eff" class="chart"></div>
-<div id="chart_point_eff" class="chart"></div>
+<div id="riverEff" class="chart"></div>
+<div id="pointEff" class="chart"></div>
 
-<div id="chart_weather_eff" class="chart"></div>
-<div id="chart_water_eff" class="chart"></div>
+<div id="weatherEff" class="chart"></div>
+<div id="waterEff" class="chart"></div>
 
 </div>
 
@@ -107,63 +107,54 @@ fetch(sheetURL)
 
 data=data.filter(r=>r["効率"])
 
-let river={}
-let point={}
-let weather={}
-let water={}
+let river={}, point={}, weather={}, water={}
+let rc={}, pc={}, wc={}, wc2={}
 
-let riverCount={}
-let pointCount={}
-let weatherCount={}
-let waterCount={}
+data.forEach(r=>{
 
-data.forEach(row=>{
+let eff = Number(r["効率"]) || 0
 
-let eff=Number(row["効率"])||0
+let riverName=r["河川"]
+river[riverName]=(river[riverName]||0)+eff
+rc[riverName]=(rc[riverName]||0)+1
 
-let r=row["河川"]
-river[r]=(river[r]||0)+eff
-riverCount[r]=(riverCount[r]||0)+1
+let pointName=r["ポイント"]
+point[pointName]=(point[pointName]||0)+eff
+pc[pointName]=(pc[pointName]||0)+1
 
-let p=row["ポイント"]
-point[p]=(point[p]||0)+eff
-pointCount[p]=(pointCount[p]||0)+1
+let weatherName=r["天候"]
+weather[weatherName]=(weather[weatherName]||0)+eff
+wc[weatherName]=(wc[weatherName]||0)+1
 
-let w=row["天候"]
-weather[w]=(weather[w]||0)+eff
-weatherCount[w]=(weatherCount[w]||0)+1
-
-let wa=row["水位"]
-water[wa]=(water[wa]||0)+eff
-waterCount[wa]=(waterCount[wa]||0)+1
+let waterName=r["水位"]
+water[waterName]=(water[waterName]||0)+eff
+wc2[waterName]=(wc2[waterName]||0)+1
 
 })
 
-calcAvg(river,riverCount)
-calcAvg(point,pointCount)
-calcAvg(weather,weatherCount)
-calcAvg(water,waterCount)
+avg(river,rc)
+avg(point,pc)
+avg(weather,wc)
+avg(water,wc2)
 
-drawChart("chart_river_eff","河川効率",river)
-drawChart("chart_point_eff","ポイント効率",point)
-drawChart("chart_weather_eff","天候効率",weather)
-drawChart("chart_water_eff","水位効率",water)
+draw("riverEff","河川効率",river)
+draw("pointEff","ポイント効率",point)
+draw("weatherEff","天候効率",weather)
+draw("waterEff","水位効率",water)
 
 })
 
 }
 
-function calcAvg(obj,count){
+function avg(obj,count){
 
 for(let k in obj){
-
 obj[k]=obj[k]/count[k]
-
 }
 
 }
 
-function drawChart(id,title,obj){
+function draw(id,title,obj){
 
 let arr=Object.entries(obj)
 
