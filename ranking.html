@@ -79,12 +79,22 @@ TABOSAN AYU RANKING
 
 <div class="grid">
 
+<!-- ① 河川 -->
+<div id="chart_river_total" class="chart"></div>
+
+<!-- ② ポイント -->
 <div id="chart_point" class="chart"></div>
+
+<!-- ③ 河川サイズ -->
 <div id="chart_river_size" class="chart"></div>
 
+<!-- ④ 天候 -->
 <div id="chart_weather" class="chart"></div>
+
+<!-- ⑤ 水位 -->
 <div id="chart_water" class="chart"></div>
 
+<!-- ⑥ 竿 -->
 <div id="chart_rod" class="chart"></div>
 
 </div>
@@ -106,6 +116,7 @@ fetch(sheetURL)
 
 data=data.filter(r=>r["匹数"])
 
+let riverTotal={}
 let pointData={}
 let riverSizeData={}
 let weatherData={}
@@ -117,12 +128,15 @@ data.forEach(row=>{
 let catchNum=Number(row["匹数"])||0
 let size=Number(row["平均サイズ"])||0
 
+// 河川
+let river=row["河川"]
+riverTotal[river]=(riverTotal[river]||0)+catchNum
+
 // ポイント
 let point=row["ポイント"]
 pointData[point]=(pointData[point]||0)+catchNum
 
 // 河川サイズ
-let river=row["河川"]
 if(!riverSizeData[river]){
 riverSizeData[river]={sum:0,count:0}
 }
@@ -143,18 +157,19 @@ rodData[rod]=(rodData[rod]||0)+catchNum
 
 })
 
-// 河川平均サイズ
+// 平均サイズ
 let riverAvgSize={}
 Object.entries(riverSizeData).forEach(([k,v])=>{
 riverAvgSize[k]=v.sum/v.count
 })
 
-// グラフ表示
-drawChart("chart_point","ポイント別釣果ランキング",pointData)
+// 描画
+drawChart("chart_river_total","河川別釣果",riverTotal)
+drawChart("chart_point","ポイント別釣果",pointData)
 drawChart("chart_river_size","河川平均サイズ",riverAvgSize)
-drawChart("chart_weather","天候別釣果ランキング",weatherData)
-drawChart("chart_water","水位別釣果ランキング",waterData)
-drawChart("chart_rod","竿別釣果ランキング",rodData)
+drawChart("chart_weather","天候別釣果",weatherData)
+drawChart("chart_water","水位別釣果",waterData)
+drawChart("chart_rod","竿別釣果",rodData)
 
 })
 
