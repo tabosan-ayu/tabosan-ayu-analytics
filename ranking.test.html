@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>TABOSAN AYU RANKING</title>
+
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+
+<style>
+
+body{
+font-family:Arial;
+background:#021018;
+color:white;
+margin:0;
+}
+
+header{
+background:#041822;
+padding:25px;
+text-align:center;
+font-size:32px;
+color:#7fffd4;
+}
+
+nav{
+text-align:center;
+background:#041822;
+padding:10px 0;
+}
+
+nav a{
+color:white;
+margin:0 15px;
+text-decoration:none;
+font-weight:bold;
+}
+
+nav a.active{
+color:#7fffd4;
+}
+
+.container{
+max-width:1500px;
+margin:auto;
+padding:30px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:25px;
+}
+
+.chart{
+background:#0b2435;
+padding:20px;
+border-radius:10px;
+height:320px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+TABOSAN AYU RANKING
+</header>
+
+<nav>
+<a href="index.html">HOME</a>
+<a href="ranking.html" class="active">RANKING</a>
+<a href="efficiency.html">EFFICIENCY</a>
+<a href="photo.html">PHOTO</a>
+</nav>
+
+<div class="container">
+
+<div class="grid">
+
+<!-- ① 河川 -->
+<div id="chart_river_total" class="chart"></div>
+
+<!-- ② ポイント -->
+<div id="chart_point" class="chart"></div>
+
+<!-- ③ 河川サイズ -->
+<div id="chart_river_size" class="chart"></div>
+
+<!-- ④ 天候 -->
+<div id="chart_weather" class="chart"></div>
+
+<!-- ⑤ 水位 -->
+<div id="chart_water" class="chart"></div>
+
+<!-- ⑥ 竿 -->
+<div id="chart_rod" class="chart"></div>
+
+</div>
+
+</div>
+
+<script>
+
+google.charts.load('current',{packages:['corechart']});
+google.charts.setOnLoadCallback(loadData);
+
+const sheetURL="https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
+
+function loadData(){
+
+fetch(sheetURL)
+.then(res=>res.json())
+.then(data=>{
+
+data=data.filter(r=>r["匹数"])
+
+let riverTotal={}
+let pointData={}
+let riverSizeData={}
+let weatherData={}
+let waterData={}
+let rodData={}
+
+data.forEach(row=>{
+
+let catchNum=Number(row["匹数"])||0
+let size=Number(row["平均サイズ"])||0
+
+// 河川
+let river=row["河川"]
+riverTotal[river]=(riverTotal[river]||0)+catchNum
+
+// ポイント
+let point=row["ポイント"]
+pointData[point]=(pointData[point]||0)+catchNum
+
+// 河川サイズ
+if(!riverSizeData[river]){
+riverSizeData[river]={sum:0,count:0}
+}
+riverSizeData[river].sum+=size
+riverSizeData[river].count++
+
+// 天候
+let weather=row["天候"]
+weatherData[weather]=(weatherData[weather]||0)+catchNum
+
+// 水位
+let water=row["水位"]
+waterData[water]=(waterData[water]||0)+catchNum
+
+// 竿
+let rod=row["竿名"]
+rodData[rod]=(rodData[rod]||0)+catchNum
+
+})
+
+// 平均サイズ
+let riverAvgSize={}
+Object.entries(riverSizeData).forEach(([k,v])=>{
+riverAvgSize[k]=v.sum/v.count
+})
+
+// 描画
+drawChart("chart_river_total","河川別釣果ランキング",riverTotal)
+drawChart("chart_point","ポイント別釣果ランキング",pointData)
+drawChart("chart_river_size","河川平均サイズ",riverAvgSize)
+drawChart("chart_weather","天候別釣果ランキング",weatherData)
+drawChart("chart_water","水位別釣果ランキング",waterData)
+drawChart("chart_rod","竿別釣果ランキング",rodData)
+
+})
+
+}
+
+function drawChart(id,title,obj){
+
+let arr=Object.entries(obj)
+arr.sort((a,b)=>b[1]-a[1])
+
+let dataArr=[[title,"値"]]
+arr.forEach(v=>dataArr.push([v[0],v[1]]))
+
+let data=google.visualization.arrayToDataTable(dataArr)
+
+let chart=new google.visualization.ColumnChart(document.getElementById(id))
+
+chart.draw(data,{
+title:title,
+titleTextStyle:{color:"#7fffd4"},
+backgroundColor:"transparent",
+legend:{textStyle:{color:"white"}},
+hAxis:{textStyle:{color:"white"}},
+vAxis:{textStyle:{color:"white"}}
+})
+
+}
+
+</script>
+
+</body>
+</html>
