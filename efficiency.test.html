@@ -7,12 +7,8 @@
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 <style>
-body{
-font-family:Arial;
-background:#021018;
-color:white;
-margin:0;
-}
+body{font-family:Arial;background:#021018;color:white;margin:0;}
+
 header{
 background:#041822;
 padding:25px;
@@ -20,11 +16,13 @@ text-align:center;
 font-size:30px;
 color:#7fffd4;
 }
+
 nav{
 text-align:center;
 padding:15px;
 background:#03151f;
 }
+
 nav a{
 color:white;
 margin:0 15px;
@@ -32,20 +30,24 @@ text-decoration:none;
 padding:6px 12px;
 border-radius:6px;
 }
+
 nav a.active{
 background:#0b2435;
 color:#7fffd4;
 }
+
 .container{
 max-width:1400px;
 margin:auto;
 padding:30px;
 }
+
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:25px;
 }
+
 .chart{
 background:#0b2435;
 padding:20px;
@@ -76,10 +78,13 @@ height:320px;
 <div id="weatherEff" class="chart"></div>
 <div id="waterEff" class="chart"></div>
 
-<!-- 追加 -->
-<div id="weatherWater" class="chart"></div>
-<div id="riverWater" class="chart"></div>
+<!-- 追加① 天候×水位 -->
+<div id="weatherWaterEff" class="chart"></div>
 
+<!-- 追加② 河川×水位 -->
+<div id="riverWaterEff" class="chart"></div>
+
+<!-- 追加③ 河川×平均サイズ -->
 <div id="riverSize" class="chart"></div>
 
 </div>
@@ -105,7 +110,7 @@ data=data.filter(r=>r["効率"])
 let river={}, point={}, weather={}, water={}
 let rc={}, pc={}, wc={}, wc2={}
 
-// 追加データ
+// 追加用
 let weatherWater={}, wwCount={}
 let riverWater={}, rwCount={}
 let riverSize={}, rsCount={}
@@ -133,17 +138,17 @@ wc[weatherName]=(wc[weatherName]||0)+1
 water[waterName]=(water[waterName]||0)+eff
 wc2[waterName]=(wc2[waterName]||0)+1
 
-// 天候×水位
-let ww = weatherName + " × " + waterName
-weatherWater[ww]=(weatherWater[ww]||0)+eff
-wwCount[ww]=(wwCount[ww]||0)+1
+// ① 天候×水位
+let wwKey = weatherName + "×" + waterName
+weatherWater[wwKey]=(weatherWater[wwKey]||0)+eff
+wwCount[wwKey]=(wwCount[wwKey]||0)+1
 
-// 河川×水位
-let rw = riverName + " × " + waterName
-riverWater[rw]=(riverWater[rw]||0)+eff
-rwCount[rw]=(rwCount[rw]||0)+1
+// ② 河川×水位
+let rwKey = riverName + "×" + waterName
+riverWater[rwKey]=(riverWater[rwKey]||0)+eff
+rwCount[rwKey]=(rwCount[rwKey]||0)+1
 
-// 河川×サイズ
+// ③ 河川×平均サイズ
 riverSize[riverName]=(riverSize[riverName]||0)+size
 rsCount[riverName]=(rsCount[riverName]||0)+1
 
@@ -164,8 +169,8 @@ draw("pointEff","ポイント効率",point)
 draw("weatherEff","天候効率",weather)
 draw("waterEff","水位効率",water)
 
-draw("weatherWater","天候×水位効率",weatherWater)
-draw("riverWater","河川×水位効率",riverWater)
+draw("weatherWaterEff","天候×水位",weatherWater)
+draw("riverWaterEff","河川×水位",riverWater)
 draw("riverSize","河川平均サイズ",riverSize)
 
 })
@@ -185,7 +190,7 @@ arr.sort((a,b)=>b[1]-a[1])
 
 let dataArr=[[title,"値"]]
 
-arr.forEach(v=>{
+arr.slice(0,10).forEach(v=>{
 dataArr.push([v[0],Number(v[1].toFixed(2))])
 })
 
