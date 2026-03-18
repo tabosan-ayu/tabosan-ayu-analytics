@@ -7,31 +7,25 @@
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 <style>
-
-body{
-font-family:Arial;
-background:#021018;
-color:white;
-margin:0;
-}
+body{font-family:Arial;background:#021018;color:white;margin:0;}
 
 header{
 background:#041822;
 padding:25px;
 text-align:center;
-font-size:32px;
+font-size:34px;
 color:#7fffd4;
 }
 
 nav{
 text-align:center;
 background:#041822;
-padding:10px 0;
+padding:12px 0;
 }
 
 nav a{
 color:white;
-margin:0 15px;
+margin:0 18px;
 text-decoration:none;
 font-weight:bold;
 }
@@ -49,55 +43,61 @@ padding:30px;
 .cards{
 display:grid;
 grid-template-columns:repeat(5,1fr);
-gap:20px;
-margin-bottom:30px;
-overflow-x:auto;
+gap:22px;
+margin-bottom:35px;
 }
 
 .card{
 background:#0b2435;
-padding:20px;
-border-radius:10px;
+padding:22px;
+border-radius:12px;
 text-align:center;
 }
 
 .card-title{
 color:#7fffd4;
+font-size:14px;
 }
 
 .card-value{
-font-size:28px;
-margin-top:5px;
+font-size:32px;
+font-weight:bold;
 }
 
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:25px;
-overflow-x:auto;
+gap:28px;
 }
 
 .chart{
 background:#0b2435;
-padding:20px;
-border-radius:10px;
-height:320px;
+padding:22px;
+border-radius:12px;
+height:340px;
 }
 
 .latest{
 background:#0b2435;
-padding:20px;
-border-radius:10px;
+padding:22px;
+border-radius:12px;
 }
 
+.latest h3{
+font-size:20px;
+color:#7fffd4;
+}
+
+.latest p{
+font-size:18px;
+margin:6px 0;
+}
 </style>
 </head>
 
 <body>
 
-<header>
-TABOSAN AYU ANALYTICS LAB
-</header>
+<header>TABOSAN AYU ANALYTICS LAB</header>
 
 <nav>
 <a href="index.html" class="active">HOME</a>
@@ -109,40 +109,28 @@ TABOSAN AYU ANALYTICS LAB
 <div class="container">
 
 <div class="cards">
-
-<div class="card">
-<div class="card-title">総釣果</div>
-<div id="totalCatch" class="card-value">-</div>
-</div>
-
-<div class="card">
-<div class="card-title">釣行回数</div>
-<div id="tripCount" class="card-value">-</div>
-</div>
-
-<div class="card">
-<div class="card-title">平均釣果</div>
-<div id="avgCatch" class="card-value">-</div>
-</div>
-
-<div class="card">
-<div class="card-title">平均効率</div>
-<div id="avgEff" class="card-value">-</div>
-</div>
-
-<div class="card">
-<div class="card-title">平均サイズ</div>
-<div id="avgSize" class="card-value">-</div>
-</div>
-
+<div class="card"><div class="card-title">総釣果</div><div id="totalCatch" class="card-value">-</div></div>
+<div class="card"><div class="card-title">釣行回数</div><div id="tripCount" class="card-value">-</div></div>
+<div class="card"><div class="card-title">平均釣果</div><div id="avgCatch" class="card-value">-</div></div>
+<div class="card"><div class="card-title">平均効率</div><div id="avgEff" class="card-value">-</div></div>
+<div class="card"><div class="card-title">平均サイズ</div><div id="avgSize" class="card-value">-</div></div>
 </div>
 
 <div class="grid">
 
-<div id="chart_month" class="chart"></div>
+<div id="chart_month_total" class="chart"></div>
 <div id="chart_river" class="chart"></div>
-<div id="chart_point" class="chart"></div>
 
+<div id="chart_month_trip" class="chart"></div>
+<div id="chart_month_avgCatch" class="chart"></div>
+
+<div id="chart_month_avgEff" class="chart"></div>
+<div id="chart_month_avgSize" class="chart"></div>
+
+<!-- 竿使用回数（円グラフ） -->
+<div id="chart_rod" class="chart"></div>
+
+<!-- 最近の釣果 -->
 <div class="latest">
 <h3>最近の釣果</h3>
 <div id="latestFishing"></div>
@@ -157,88 +145,104 @@ TABOSAN AYU ANALYTICS LAB
 google.charts.load('current',{packages:['corechart']});
 google.charts.setOnLoadCallback(loadData);
 
-const sheetURL = "https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
+const sheetURL="https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
 
 function loadData(){
 fetch(sheetURL)
 .then(res=>res.json())
 .then(data=>{
 
-data = data.filter(r=>r["匹数"])
+data=data.filter(r=>r["匹数"])
 
-let totalCatch = 0
-let tripCount = data.length
-let effTotal = 0
-let sizeTotal = 0
+let totalCatch=0, tripCount=data.length, effTotal=0, sizeTotal=0
 
-let monthData = {}
-let riverData = {}
-let pointData = {}
+let monthTotal={}, monthTrip={}, monthCatch={}, monthEff={}, monthSize={}
+let riverData={}, rodData={}
 
-data.forEach(row=>{
-let catchNum = Number(row["匹数"])||0
-totalCatch += catchNum
+data.forEach(r=>{
 
-let eff = Number(row["効率"])||0
-effTotal += eff
+let month=r["月"]
+let catchNum=Number(r["匹数"])||0
+let eff=Number(r["効率"])||0
+let size=Number(r["平均サイズ"])||0
+let river=r["河川"]
+let rod=r["竿名"]
 
-let size = Number(row["平均サイズ"])||0
-sizeTotal += size
+totalCatch+=catchNum
+effTotal+=eff
+sizeTotal+=size
 
-let month = row["月"]
-monthData[month]=(monthData[month]||0)+catchNum
+monthTotal[month]=(monthTotal[month]||0)+catchNum
+monthTrip[month]=(monthTrip[month]||0)+1
+monthCatch[month]=(monthCatch[month]||0)+catchNum
+monthEff[month]=(monthEff[month]||0)+eff
+monthSize[month]=(monthSize[month]||0)+size
 
-let river = row["河川"]
 riverData[river]=(riverData[river]||0)+catchNum
+rodData[rod]=(rodData[rod]||0)+1
 
-let point = row["ポイント"]
-pointData[point]=(pointData[point]||0)+catchNum
 })
 
-let avgCatch = (totalCatch/tripCount||0).toFixed(1)
-let avgEff = (effTotal/tripCount||0).toFixed(2)
-let avgSize = (sizeTotal/tripCount||0).toFixed(1)
+let avgCatchMonth={}, avgEffMonth={}, avgSizeMonth={}
+
+Object.keys(monthTrip).forEach(m=>{
+avgCatchMonth[m]=monthCatch[m]/monthTrip[m]
+avgEffMonth[m]=monthEff[m]/monthTrip[m]
+avgSizeMonth[m]=monthSize[m]/monthTrip[m]
+})
 
 document.getElementById("totalCatch").innerText=totalCatch+"匹"
 document.getElementById("tripCount").innerText=tripCount+"回"
-document.getElementById("avgCatch").innerText=avgCatch+"匹"
-document.getElementById("avgEff").innerText=avgEff+"匹/h"
-document.getElementById("avgSize").innerText=avgSize+"cm"
+document.getElementById("avgCatch").innerText=(totalCatch/tripCount).toFixed(1)+"匹"
+document.getElementById("avgEff").innerText=(effTotal/tripCount).toFixed(2)+"匹/h"
+document.getElementById("avgSize").innerText=(sizeTotal/tripCount).toFixed(1)+"cm"
 
-drawChart("chart_month","月別釣果",monthData)
+drawChart("chart_month_total","月別釣果",monthTotal,"匹")
+drawChart("chart_month_trip","月別釣行回数",monthTrip,"回")
+drawChart("chart_month_avgCatch","月別平均釣果",avgCatchMonth,"匹")
+drawChart("chart_month_avgEff","月別平均効率",avgEffMonth,"匹/h")
+drawChart("chart_month_avgSize","月別平均サイズ",avgSizeMonth,"cm")
+
 drawPie("chart_river","河川割合",riverData)
-drawChart("chart_point","ポイント別釣果",pointData)
+drawPie("chart_rod","竿使用回数",rodData)
 
 showLatest(data)
 
 })
 }
 
-function drawChart(id,title,obj){
+function drawChart(id,title,obj,unit){
 let arr=Object.entries(obj)
-arr.sort((a,b)=>b[1]-a[1])
-let dataArr=[[title,"値"]]
-arr.forEach(v=>{dataArr.push([v[0],v[1]])})
+arr.sort((a,b)=>a[0]-b[0])
+
+let dataArr=[[title,unit]]
+arr.forEach(v=>dataArr.push([v[0],v[1]]))
+
 let data=google.visualization.arrayToDataTable(dataArr)
+
 let chart=new google.visualization.ColumnChart(document.getElementById(id))
+
 chart.draw(data,{
 title:title,
-titleTextStyle:{color:"#7fffd4"},
+titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
 backgroundColor:"transparent",
-legend:{textStyle:{color:"white"}},
+legend:{position:"none"},
 hAxis:{textStyle:{color:"white"}},
-vAxis:{textStyle:{color:"white"}}
+vAxis:{textStyle:{color:"white"},title:unit}
 })
 }
 
 function drawPie(id,title,obj){
-let dataArr=[[title,"値"]]
-Object.entries(obj).forEach(v=>{dataArr.push(v)})
+let dataArr=[[title,"割合"]]
+Object.entries(obj).forEach(v=>dataArr.push(v))
+
 let data=google.visualization.arrayToDataTable(dataArr)
+
 let chart=new google.visualization.PieChart(document.getElementById(id))
+
 chart.draw(data,{
 title:title,
-titleTextStyle:{color:"#7fffd4"},
+titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
 backgroundColor:"transparent",
 legend:{textStyle:{color:"white"}}
 })
