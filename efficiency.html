@@ -7,13 +7,7 @@
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 <style>
-
-body{
-font-family:Arial;
-background:#021018;
-color:white;
-margin:0;
-}
+body{font-family:Arial;background:#021018;color:white;margin:0;}
 
 header{
 background:#041822;
@@ -60,15 +54,12 @@ padding:20px;
 border-radius:10px;
 height:320px;
 }
-
 </style>
 </head>
 
 <body>
 
-<header>
-TABOSAN AYU EFFICIENCY
-</header>
+<header>TABOSAN AYU EFFICIENCY</header>
 
 <nav>
 <a href="index.html">HOME</a>
@@ -86,6 +77,15 @@ TABOSAN AYU EFFICIENCY
 
 <div id="weatherEff" class="chart"></div>
 <div id="waterEff" class="chart"></div>
+
+<!-- 追加① 天候×水位 -->
+<div id="weatherWaterEff" class="chart"></div>
+
+<!-- 追加② 河川×水位 -->
+<div id="riverWaterEff" class="chart"></div>
+
+<!-- 追加③ 河川×平均サイズ -->
+<div id="riverSize" class="chart"></div>
 
 </div>
 
@@ -110,59 +110,87 @@ data=data.filter(r=>r["効率"])
 let river={}, point={}, weather={}, water={}
 let rc={}, pc={}, wc={}, wc2={}
 
+// 追加用
+let weatherWater={}, wwCount={}
+let riverWater={}, rwCount={}
+let riverSize={}, rsCount={}
+
 data.forEach(r=>{
 
 let eff = Number(r["効率"]) || 0
+let size = Number(r["平均サイズ"]) || 0
 
 let riverName=r["河川"]
+let pointName=r["ポイント"]
+let weatherName=r["天候"]
+let waterName=r["水位"]
+
+// 既存
 river[riverName]=(river[riverName]||0)+eff
 rc[riverName]=(rc[riverName]||0)+1
 
-let pointName=r["ポイント"]
 point[pointName]=(point[pointName]||0)+eff
 pc[pointName]=(pc[pointName]||0)+1
 
-let weatherName=r["天候"]
 weather[weatherName]=(weather[weatherName]||0)+eff
 wc[weatherName]=(wc[weatherName]||0)+1
 
-let waterName=r["水位"]
 water[waterName]=(water[waterName]||0)+eff
 wc2[waterName]=(wc2[waterName]||0)+1
 
+// ① 天候×水位
+let wwKey = weatherName + "×" + waterName
+weatherWater[wwKey]=(weatherWater[wwKey]||0)+eff
+wwCount[wwKey]=(wwCount[wwKey]||0)+1
+
+// ② 河川×水位
+let rwKey = riverName + "×" + waterName
+riverWater[rwKey]=(riverWater[rwKey]||0)+eff
+rwCount[rwKey]=(rwCount[rwKey]||0)+1
+
+// ③ 河川×平均サイズ
+riverSize[riverName]=(riverSize[riverName]||0)+size
+rsCount[riverName]=(rsCount[riverName]||0)+1
+
 })
 
+// 平均化
 avg(river,rc)
 avg(point,pc)
 avg(weather,wc)
 avg(water,wc2)
+avg(weatherWater,wwCount)
+avg(riverWater,rwCount)
+avg(riverSize,rsCount)
 
+// 描画
 draw("riverEff","河川効率",river)
 draw("pointEff","ポイント効率",point)
 draw("weatherEff","天候効率",weather)
 draw("waterEff","水位効率",water)
+
+draw("weatherWaterEff","天候×水位効率",weatherWater)
+draw("riverWaterEff","河川×水位効率",riverWater)
+draw("riverSize","河川平均サイズ効率",riverSize)
 
 })
 
 }
 
 function avg(obj,count){
-
 for(let k in obj){
 obj[k]=obj[k]/count[k]
 }
-
 }
 
 function draw(id,title,obj){
 
 let arr=Object.entries(obj)
-
 arr.sort((a,b)=>b[1]-a[1])
 
-let dataArr=[[title,"効率"]]
+let dataArr=[[title,"値"]]
 
-arr.forEach(v=>{
+arr.slice(0,10).forEach(v=>{
 dataArr.push([v[0],Number(v[1].toFixed(2))])
 })
 
