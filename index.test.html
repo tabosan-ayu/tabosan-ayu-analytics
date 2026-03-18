@@ -191,11 +191,14 @@ document.getElementById("avgCatch").innerText=(totalCatch/tripCount).toFixed(1)+
 document.getElementById("avgEff").innerText=(effTotal/tripCount).toFixed(2)+"匹/h"
 document.getElementById("avgSize").innerText=(sizeTotal/tripCount).toFixed(1)+"cm"
 
-drawChart("chart_month_total","月別釣果",monthTotal,"匹")
-drawChart("chart_month_trip","月別釣行回数",monthTrip,"回")
-drawChart("chart_month_avgCatch","月別平均釣果",avgCatchMonth,"匹")
-drawChart("chart_month_avgEff","月別平均効率",avgEffMonth,"匹/h")
-drawChart("chart_month_avgSize","月別平均サイズ",avgSizeMonth,"cm")
+// 棒グラフ
+drawBar("chart_month_total","月別釣果",monthTotal,"#4da3ff","匹")
+drawBar("chart_month_trip","月別釣行回数",monthTrip,"#4da3ff","回")
+drawBar("chart_month_avgCatch","月別平均釣果",avgCatchMonth,"#4da3ff","匹")
+
+// 折れ線グラフ
+drawLine("chart_month_avgEff","月別平均効率",avgEffMonth,"#00ff9f","匹/h")
+drawLine("chart_month_avgSize","月別平均サイズ",avgSizeMonth,"#ffb347","cm")
 
 drawPie("chart_river","河川割合",riverData)
 
@@ -204,50 +207,53 @@ showLatest(data)
 })
 }
 
-function drawChart(id,title,obj,unit){
-let arr=Object.entries(obj)
-arr.sort((a,b)=>a[0]-b[0])
-
-let dataArr=[[title,unit]] // ← 修正済み
-
+function drawBar(id,title,obj,color,unit){
+let arr=Object.entries(obj).sort((a,b)=>a[0]-b[0])
+let dataArr=[[title,unit]]
 arr.forEach(v=>dataArr.push([v[0],v[1]]))
-
 let data=google.visualization.arrayToDataTable(dataArr)
 
 let chart=new google.visualization.ColumnChart(document.getElementById(id))
-
 chart.draw(data,{
 title:title,
-titleTextStyle:{
-color:"#7fffd4",
-fontSize:18,
-bold:true
-},
+titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
 backgroundColor:"transparent",
-legend:{position:"none"}, // ← 非表示
+legend:{position:"none"},
+colors:[color],
 hAxis:{textStyle:{color:"white"}},
-vAxis:{
-textStyle:{color:"white"},
-title:unit
+vAxis:{textStyle:{color:"white"},title:unit}
+})
 }
+
+function drawLine(id,title,obj,color,unit){
+let arr=Object.entries(obj).sort((a,b)=>a[0]-b[0])
+let dataArr=[[title,unit]]
+arr.forEach(v=>dataArr.push([v[0],v[1]]))
+let data=google.visualization.arrayToDataTable(dataArr)
+
+let chart=new google.visualization.LineChart(document.getElementById(id))
+chart.draw(data,{
+title:title,
+titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
+backgroundColor:"transparent",
+legend:{position:"none"},
+colors:[color],
+lineWidth:3,
+pointSize:6,
+hAxis:{textStyle:{color:"white"}},
+vAxis:{textStyle:{color:"white"},title:unit}
 })
 }
 
 function drawPie(id,title,obj){
 let dataArr=[[title,"割合"]]
 Object.entries(obj).forEach(v=>dataArr.push(v))
-
 let data=google.visualization.arrayToDataTable(dataArr)
 
 let chart=new google.visualization.PieChart(document.getElementById(id))
-
 chart.draw(data,{
 title:title,
-titleTextStyle:{
-color:"#7fffd4",
-fontSize:18,
-bold:true
-},
+titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
 backgroundColor:"transparent",
 legend:{textStyle:{color:"white"}}
 })
