@@ -79,22 +79,12 @@ TABOSAN AYU RANKING
 
 <div class="grid">
 
-<!-- ① 河川 -->
 <div id="chart_river_total" class="chart"></div>
-
-<!-- ② ポイント -->
 <div id="chart_point" class="chart"></div>
 
-<!-- ③ 河川サイズ -->
-<div id="chart_river_size" class="chart"></div>
-
-<!-- ④ 天候 -->
 <div id="chart_weather" class="chart"></div>
-
-<!-- ⑤ 水位 -->
 <div id="chart_water" class="chart"></div>
 
-<!-- ⑥ 竿 -->
 <div id="chart_rod" class="chart"></div>
 
 </div>
@@ -118,7 +108,6 @@ data=data.filter(r=>r["匹数"])
 
 let riverTotal={}
 let pointData={}
-let riverSizeData={}
 let weatherData={}
 let waterData={}
 let rodData={}
@@ -126,7 +115,6 @@ let rodData={}
 data.forEach(row=>{
 
 let catchNum=Number(row["匹数"])||0
-let size=Number(row["平均サイズ"])||0
 
 // 河川
 let river=row["河川"]
@@ -135,13 +123,6 @@ riverTotal[river]=(riverTotal[river]||0)+catchNum
 // ポイント
 let point=row["ポイント"]
 pointData[point]=(pointData[point]||0)+catchNum
-
-// 河川サイズ
-if(!riverSizeData[river]){
-riverSizeData[river]={sum:0,count:0}
-}
-riverSizeData[river].sum+=size
-riverSizeData[river].count++
 
 // 天候
 let weather=row["天候"]
@@ -157,30 +138,23 @@ rodData[rod]=(rodData[rod]||0)+catchNum
 
 })
 
-// 平均サイズ
-let riverAvgSize={}
-Object.entries(riverSizeData).forEach(([k,v])=>{
-riverAvgSize[k]=v.sum/v.count
-})
-
 // 描画
-drawChart("chart_river_total","河川別釣果",riverTotal)
-drawChart("chart_point","ポイント別釣果",pointData)
-drawChart("chart_river_size","河川平均サイズ",riverAvgSize)
-drawChart("chart_weather","天候別釣果",weatherData)
-drawChart("chart_water","水位別釣果",waterData)
-drawChart("chart_rod","竿別釣果",rodData)
+drawChart("chart_river_total","河川別釣果",riverTotal,"匹")
+drawChart("chart_point","ポイント別釣果",pointData,"匹")
+drawChart("chart_weather","天候別釣果",weatherData,"匹")
+drawChart("chart_water","水位別釣果",waterData,"匹")
+drawChart("chart_rod","竿別釣果",rodData,"匹")
 
 })
 
 }
 
-function drawChart(id,title,obj){
+function drawChart(id,title,obj,unit){
 
 let arr=Object.entries(obj)
 arr.sort((a,b)=>b[1]-a[1])
 
-let dataArr=[[title,"値"]]
+let dataArr=[[title,unit]]
 arr.forEach(v=>dataArr.push([v[0],v[1]]))
 
 let data=google.visualization.arrayToDataTable(dataArr)
@@ -193,7 +167,10 @@ titleTextStyle:{color:"#7fffd4"},
 backgroundColor:"transparent",
 legend:{textStyle:{color:"white"}},
 hAxis:{textStyle:{color:"white"}},
-vAxis:{textStyle:{color:"white"}}
+vAxis:{
+textStyle:{color:"white"},
+title:unit
+}
 })
 
 }
