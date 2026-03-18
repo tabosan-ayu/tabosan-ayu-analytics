@@ -127,11 +127,8 @@ margin:6px 0;
 <div id="chart_month_avgEff" class="chart"></div>
 <div id="chart_month_avgSize" class="chart"></div>
 
-<!-- 竿ランキング -->
-<div class="latest">
-<h3>竿使用回数ランキング</h3>
-<div id="rodRanking"></div>
-</div>
+<!-- 竿使用回数（円グラフ） -->
+<div id="chart_rod" class="chart"></div>
 
 <!-- 最近の釣果 -->
 <div class="latest">
@@ -160,8 +157,7 @@ data=data.filter(r=>r["匹数"])
 let totalCatch=0, tripCount=data.length, effTotal=0, sizeTotal=0
 
 let monthTotal={}, monthTrip={}, monthCatch={}, monthEff={}, monthSize={}
-let riverData={}
-let rodCount={}
+let riverData={}, rodData={}
 
 data.forEach(r=>{
 
@@ -183,11 +179,10 @@ monthEff[month]=(monthEff[month]||0)+eff
 monthSize[month]=(monthSize[month]||0)+size
 
 riverData[river]=(riverData[river]||0)+catchNum
-rodCount[rod]=(rodCount[rod]||0)+1
+rodData[rod]=(rodData[rod]||0)+1
 
 })
 
-// 平均
 let avgCatchMonth={}, avgEffMonth={}, avgSizeMonth={}
 
 Object.keys(monthTrip).forEach(m=>{
@@ -196,14 +191,12 @@ avgEffMonth[m]=monthEff[m]/monthTrip[m]
 avgSizeMonth[m]=monthSize[m]/monthTrip[m]
 })
 
-// 表示
 document.getElementById("totalCatch").innerText=totalCatch+"匹"
 document.getElementById("tripCount").innerText=tripCount+"回"
 document.getElementById("avgCatch").innerText=(totalCatch/tripCount).toFixed(1)+"匹"
 document.getElementById("avgEff").innerText=(effTotal/tripCount).toFixed(2)+"匹/h"
 document.getElementById("avgSize").innerText=(sizeTotal/tripCount).toFixed(1)+"cm"
 
-// グラフ
 drawChart("chart_month_total","月別釣果",monthTotal,"匹")
 drawChart("chart_month_trip","月別釣行回数",monthTrip,"回")
 drawChart("chart_month_avgCatch","月別平均釣果",avgCatchMonth,"匹")
@@ -211,19 +204,8 @@ drawChart("chart_month_avgEff","月別平均効率",avgEffMonth,"匹/h")
 drawChart("chart_month_avgSize","月別平均サイズ",avgSizeMonth,"cm")
 
 drawPie("chart_river","河川割合",riverData)
+drawPie("chart_rod","竿使用回数",rodData)
 
-// 竿ランキング
-let rodArr=Object.entries(rodCount)
-rodArr.sort((a,b)=>b[1]-a[1])
-
-let rodHTML=""
-rodArr.slice(0,5).forEach((r,i)=>{
-rodHTML+=`<p>${i+1}位　${r[0]}　${r[1]}回</p>`
-})
-
-document.getElementById("rodRanking").innerHTML=rodHTML
-
-// 最近の釣果
 showLatest(data)
 
 })
