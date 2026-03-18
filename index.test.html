@@ -15,7 +15,6 @@ padding:25px;
 text-align:center;
 font-size:34px;
 color:#7fffd4;
-letter-spacing:1px;
 }
 
 nav{
@@ -29,7 +28,6 @@ color:white;
 margin:0 18px;
 text-decoration:none;
 font-weight:bold;
-font-size:14px;
 }
 
 nav a.active{
@@ -42,7 +40,6 @@ margin:auto;
 padding:30px;
 }
 
-/* カード強化 */
 .cards{
 display:grid;
 grid-template-columns:repeat(5,1fr);
@@ -55,7 +52,6 @@ background:#0b2435;
 padding:22px;
 border-radius:12px;
 text-align:center;
-box-shadow:0 0 10px rgba(0,255,200,0.08);
 }
 
 .card-title{
@@ -65,11 +61,9 @@ font-size:14px;
 
 .card-value{
 font-size:32px;
-margin-top:6px;
 font-weight:bold;
 }
 
-/* グラフ余白改善 */
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -81,10 +75,8 @@ background:#0b2435;
 padding:22px;
 border-radius:12px;
 height:340px;
-box-shadow:0 0 10px rgba(0,255,200,0.05);
 }
 
-/* 最近の釣果強化 */
 .latest{
 background:#0b2435;
 padding:22px;
@@ -93,14 +85,12 @@ border-radius:12px;
 
 .latest h3{
 font-size:20px;
-margin-bottom:10px;
 color:#7fffd4;
 }
 
 .latest p{
 font-size:18px;
 margin:6px 0;
-letter-spacing:0.5px;
 }
 </style>
 </head>
@@ -217,10 +207,15 @@ showLatest(data)
 function drawChart(id,title,obj,unit){
 let arr=Object.entries(obj)
 arr.sort((a,b)=>a[0]-b[0])
-let dataArr=[[title,"値"]]
+
+let dataArr=[[title,unit]] // ← 修正済み
+
 arr.forEach(v=>dataArr.push([v[0],v[1]]))
+
 let data=google.visualization.arrayToDataTable(dataArr)
+
 let chart=new google.visualization.ColumnChart(document.getElementById(id))
+
 chart.draw(data,{
 title:title,
 titleTextStyle:{
@@ -229,7 +224,7 @@ fontSize:18,
 bold:true
 },
 backgroundColor:"transparent",
-legend:{textStyle:{color:"white"}},
+legend:{position:"none"}, // ← 非表示
 hAxis:{textStyle:{color:"white"}},
 vAxis:{
 textStyle:{color:"white"},
@@ -239,10 +234,13 @@ title:unit
 }
 
 function drawPie(id,title,obj){
-let dataArr=[[title,"値"]]
+let dataArr=[[title,"割合"]]
 Object.entries(obj).forEach(v=>dataArr.push(v))
+
 let data=google.visualization.arrayToDataTable(dataArr)
+
 let chart=new google.visualization.PieChart(document.getElementById(id))
+
 chart.draw(data,{
 title:title,
 titleTextStyle:{
