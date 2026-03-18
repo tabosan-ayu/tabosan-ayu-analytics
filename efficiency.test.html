@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>TABOSAN AYU EFFICIENCY</title>
+
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+
+<style>
+body{
+font-family:Arial;
+background:#021018;
+color:white;
+margin:0;
+}
+header{
+background:#041822;
+padding:25px;
+text-align:center;
+font-size:30px;
+color:#7fffd4;
+}
+nav{
+text-align:center;
+padding:15px;
+background:#03151f;
+}
+nav a{
+color:white;
+margin:0 15px;
+text-decoration:none;
+padding:6px 12px;
+border-radius:6px;
+}
+nav a.active{
+background:#0b2435;
+color:#7fffd4;
+}
+.container{
+max-width:1400px;
+margin:auto;
+padding:30px;
+}
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:25px;
+}
+.chart{
+background:#0b2435;
+padding:20px;
+border-radius:10px;
+height:320px;
+}
+</style>
+</head>
+
+<body>
+
+<header>TABOSAN AYU EFFICIENCY</header>
+
+<nav>
+<a href="index.html">HOME</a>
+<a href="ranking.html">RANKING</a>
+<a href="efficiency.html" class="active">EFFICIENCY</a>
+<a href="photo.html">PHOTO</a>
+</nav>
+
+<div class="container">
+
+<div class="grid">
+
+<div id="riverEff" class="chart"></div>
+<div id="pointEff" class="chart"></div>
+
+<div id="weatherEff" class="chart"></div>
+<div id="waterEff" class="chart"></div>
+
+<!-- 追加 -->
+<div id="weatherWater" class="chart"></div>
+<div id="riverWater" class="chart"></div>
+
+<div id="riverSize" class="chart"></div>
+
+</div>
+
+</div>
+
+<script>
+
+google.charts.load('current',{packages:['corechart']});
+google.charts.setOnLoadCallback(loadData);
+
+const sheetURL =
+"https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
+
+function loadData(){
+
+fetch(sheetURL)
+.then(res=>res.json())
+.then(data=>{
+
+data=data.filter(r=>r["効率"])
+
+let river={}, point={}, weather={}, water={}
+let rc={}, pc={}, wc={}, wc2={}
+
+// 追加データ
+let weatherWater={}, wwCount={}
+let riverWater={}, rwCount={}
+let riverSize={}, rsCount={}
+
+data.forEach(r=>{
+
+let eff = Number(r["効率"]) || 0
+let size = Number(r["平均サイズ"]) || 0
+
+let riverName=r["河川"]
+let pointName=r["ポイント"]
+let weatherName=r["天候"]
+let waterName=r["水位"]
+
+// 既存
+river[riverName]=(river[riverName]||0)+eff
+rc[riverName]=(rc[riverName]||0)+1
+
+point[pointName]=(point[pointName]||0)+eff
+pc[pointName]=(pc[pointName]||0)+1
+
+weather[weatherName]=(weather[weatherName]||0)+eff
+wc[weatherName]=(wc[weatherName]||0)+1
+
+water[waterName]=(water[waterName]||0)+eff
+wc2[waterName]=(wc2[waterName]||0)+1
+
+// 天候×水位
+let ww = weatherName + " × " + waterName
+weatherWater[ww]=(weatherWater[ww]||0)+eff
+wwCount[ww]=(wwCount[ww]||0)+1
+
+// 河川×水位
+let rw = riverName + " × " + waterName
+riverWater[rw]=(riverWater[rw]||0)+eff
+rwCount[rw]=(rwCount[rw]||0)+1
+
+// 河川×サイズ
+riverSize[riverName]=(riverSize[riverName]||0)+size
+rsCount[riverName]=(rsCount[riverName]||0)+1
+
+})
+
+// 平均化
+avg(river,rc)
+avg(point,pc)
+avg(weather,wc)
+avg(water,wc2)
+avg(weatherWater,wwCount)
+avg(riverWater,rwCount)
+avg(riverSize,rsCount)
+
+// 描画
+draw("riverEff","河川効率",river)
+draw("pointEff","ポイント効率",point)
+draw("weatherEff","天候効率",weather)
+draw("waterEff","水位効率",water)
+
+draw("weatherWater","天候×水位効率",weatherWater)
+draw("riverWater","河川×水位効率",riverWater)
+draw("riverSize","河川平均サイズ",riverSize)
+
+})
+
+}
+
+function avg(obj,count){
+for(let k in obj){
+obj[k]=obj[k]/count[k]
+}
+}
+
+function draw(id,title,obj){
+
+let arr=Object.entries(obj)
+arr.sort((a,b)=>b[1]-a[1])
+
+let dataArr=[[title,"値"]]
+
+arr.forEach(v=>{
+dataArr.push([v[0],Number(v[1].toFixed(2))])
+})
+
+let data=google.visualization.arrayToDataTable(dataArr)
+
+let chart=new google.visualization.ColumnChart(
+document.getElementById(id)
+)
+
+chart.draw(data,{
+title:title,
+titleTextStyle:{color:"#7fffd4"},
+backgroundColor:"transparent",
+legend:{textStyle:{color:"white"}},
+hAxis:{textStyle:{color:"white"}},
+vAxis:{textStyle:{color:"white"}}
+})
+
+}
+
+</script>
+
+</body>
+</html>
