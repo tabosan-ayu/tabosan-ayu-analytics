@@ -7,10 +7,17 @@
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 <style>
-body{font-family:Arial;background:#021018;color:white;margin:0;}
 
+body{
+font-family:Arial;
+background:#061a26;
+color:white;
+margin:0;
+}
+
+/* ヘッダー */
 header{
-background:#041822;
+background:linear-gradient(90deg,#041822,#063048);
 padding:25px;
 text-align:center;
 font-size:34px;
@@ -34,12 +41,14 @@ nav a.active{
 color:#7fffd4;
 }
 
+/* コンテナ */
 .container{
 max-width:1500px;
 margin:auto;
 padding:30px;
 }
 
+/* カード */
 .cards{
 display:grid;
 grid-template-columns:repeat(5,1fr);
@@ -48,10 +57,16 @@ margin-bottom:35px;
 }
 
 .card{
-background:#0b2435;
 padding:22px;
 border-radius:12px;
 text-align:center;
+background:linear-gradient(135deg,#0b2435,#123a55);
+box-shadow:0 0 10px rgba(0,255,200,0.1);
+transition:0.3s;
+}
+
+.card:hover{
+transform:scale(1.05);
 }
 
 .card-title{
@@ -64,6 +79,7 @@ font-size:32px;
 font-weight:bold;
 }
 
+/* グリッド */
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -77,6 +93,7 @@ border-radius:12px;
 height:340px;
 }
 
+/* 最近 */
 .latest{
 background:#0b2435;
 padding:22px;
@@ -92,6 +109,7 @@ color:#7fffd4;
 font-size:18px;
 margin:6px 0;
 }
+
 </style>
 </head>
 
@@ -157,23 +175,23 @@ let riverData={}
 
 data.forEach(r=>{
 
-let month=r["月"]
-let catchNum=Number(r["匹数"])||0
-let eff=Number(r["効率"])||0
-let size=Number(r["平均サイズ"])||0
+let m=r["月"]
+let c=Number(r["匹数"])||0
+let e=Number(r["効率"])||0
+let s=Number(r["平均サイズ"])||0
 let river=r["河川"]
 
-totalCatch+=catchNum
-effTotal+=eff
-sizeTotal+=size
+totalCatch+=c
+effTotal+=e
+sizeTotal+=s
 
-monthTotal[month]=(monthTotal[month]||0)+catchNum
-monthTrip[month]=(monthTrip[month]||0)+1
-monthCatch[month]=(monthCatch[month]||0)+catchNum
-monthEff[month]=(monthEff[month]||0)+eff
-monthSize[month]=(monthSize[month]||0)+size
+monthTotal[m]=(monthTotal[m]||0)+c
+monthTrip[m]=(monthTrip[m]||0)+1
+monthCatch[m]=(monthCatch[m]||0)+c
+monthEff[m]=(monthEff[m]||0)+e
+monthSize[m]=(monthSize[m]||0)+s
 
-riverData[river]=(riverData[river]||0)+catchNum
+riverData[river]=(riverData[river]||0)+c
 
 })
 
@@ -191,12 +209,10 @@ document.getElementById("avgCatch").innerText=(totalCatch/tripCount).toFixed(1)+
 document.getElementById("avgEff").innerText=(effTotal/tripCount).toFixed(2)+"匹/h"
 document.getElementById("avgSize").innerText=(sizeTotal/tripCount).toFixed(1)+"cm"
 
-// 棒グラフ
 drawBar("chart_month_total","月別釣果",monthTotal,"#4da3ff","匹")
-drawBar("chart_month_trip","月別釣行回数",monthTrip,"#4da3ff","回")
+drawBar("chart_month_trip","月別釣行回数",monthTrip,"#9b6bff","回")
 drawBar("chart_month_avgCatch","月別平均釣果",avgCatchMonth,"#4da3ff","匹")
 
-// 折れ線グラフ
 drawLine("chart_month_avgEff","月別平均効率",avgEffMonth,"#00ff9f","匹/h")
 drawLine("chart_month_avgSize","月別平均サイズ",avgSizeMonth,"#ffb347","cm")
 
@@ -216,7 +232,7 @@ let data=google.visualization.arrayToDataTable(dataArr)
 let chart=new google.visualization.ColumnChart(document.getElementById(id))
 chart.draw(data,{
 title:title,
-titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
+titleTextStyle:{color:"#7fffd4",fontSize:18},
 backgroundColor:"transparent",
 legend:{position:"none"},
 colors:[color],
@@ -234,12 +250,12 @@ let data=google.visualization.arrayToDataTable(dataArr)
 let chart=new google.visualization.LineChart(document.getElementById(id))
 chart.draw(data,{
 title:title,
-titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
+titleTextStyle:{color:"#7fffd4",fontSize:18},
 backgroundColor:"transparent",
 legend:{position:"none"},
 colors:[color],
-lineWidth:3,
-pointSize:6,
+lineWidth:4,
+pointSize:7,
 hAxis:{textStyle:{color:"white"}},
 vAxis:{textStyle:{color:"white"},title:unit}
 })
@@ -253,7 +269,7 @@ let data=google.visualization.arrayToDataTable(dataArr)
 let chart=new google.visualization.PieChart(document.getElementById(id))
 chart.draw(data,{
 title:title,
-titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
+titleTextStyle:{color:"#7fffd4",fontSize:18},
 backgroundColor:"transparent",
 legend:{textStyle:{color:"white"}}
 })
