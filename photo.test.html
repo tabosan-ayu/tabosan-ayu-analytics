@@ -35,7 +35,7 @@ text-decoration:none;
 }
 
 .container{
-max-width:1000px;
+max-width:1100px;
 margin:auto;
 padding:40px;
 }
@@ -43,7 +43,8 @@ padding:40px;
 .gallery{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
+gap:15px;
+margin-bottom:40px;
 }
 
 .gallery img{
@@ -55,6 +56,14 @@ transition:0.3s;
 
 .gallery img:hover{
 transform:scale(1.05);
+}
+
+.date-title{
+font-size:22px;
+margin:20px 0 10px;
+color:#7fffd4;
+border-left:5px solid #7fffd4;
+padding-left:10px;
 }
 
 .modal{
@@ -87,8 +96,7 @@ max-height:90%;
 </nav>
 
 <div class="container">
-<h2>AYU GALLERY</h2>
-<div class="gallery" id="gallery"></div>
+<div id="gallery"></div>
 </div>
 
 <div class="modal" id="modal">
@@ -104,14 +112,33 @@ fetch(sheetURL)
 .then(res=>res.json())
 .then(data=>{
 
-let html="";
+let groups = {};
 
+// 日付ごとに分類
 data.forEach(r=>{
-let img=r["画像URL"];
+let date = r["日付"];
+let img = r["画像URL"];
+
 if(img){
-html += `<img src="${img}">`;
+if(!groups[date]) groups[date]=[];
+groups[date].push(img);
 }
 });
+
+// HTML生成
+let html="";
+
+for(let date in groups){
+
+html += `<div class="date-title">${date}</div>`;
+html += `<div class="gallery">`;
+
+groups[date].forEach(img=>{
+html += `<img src="${img}">`;
+});
+
+html += `</div>`;
+}
 
 document.getElementById("gallery").innerHTML=html;
 
