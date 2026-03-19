@@ -138,7 +138,7 @@ Object.entries(riverSizeData).forEach(([k,v])=>{
 riverAvgSize[k]=v.sum/v.count
 })
 
-// ★ここだけ変更（unit対応）
+// 単位つきで描画
 drawChart("chart_river_total","河川別釣果",riverTotal,"匹")
 drawChart("chart_point","ポイント別釣果",pointData,"匹")
 drawChart("chart_river_size","河川平均サイズ",riverAvgSize,"cm")
@@ -150,7 +150,6 @@ drawChart("chart_rod","竿別釣果",rodData,"匹")
 
 }
 
-// ★ここだけ変更（unit追加）
 function drawChart(id,title,obj,unit){
 
 let arr=Object.entries(obj)
@@ -167,7 +166,7 @@ chart.draw(data,{
 title:title,
 titleTextStyle:{color:"#7fffd4"},
 backgroundColor:"transparent",
-legend:{position:"none"},
+legend:{textStyle:{color:"white"}}, // ←凡例あり
 hAxis:{textStyle:{color:"white"}},
 vAxis:{textStyle:{color:"white"},title:unit}
 })
