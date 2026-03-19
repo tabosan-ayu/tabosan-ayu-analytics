@@ -78,10 +78,7 @@ height:320px;
 <div id="weatherEff" class="chart"></div>
 <div id="waterEff" class="chart"></div>
 
-<!-- 天候×水位 -->
 <div id="weatherWaterEff" class="chart"></div>
-
-<!-- 河川×水位 -->
 <div id="riverWaterEff" class="chart"></div>
 
 </div>
@@ -107,7 +104,6 @@ data=data.filter(r=>r["効率"])
 let river={}, point={}, weather={}, water={}
 let rc={}, pc={}, wc={}, wc2={}
 
-// 追加用
 let weatherWater={}, wwCount={}
 let riverWater={}, rwCount={}
 
@@ -120,7 +116,6 @@ let pointName=r["ポイント"]
 let weatherName=r["天候"]
 let waterName=r["水位"]
 
-// 既存
 river[riverName]=(river[riverName]||0)+eff
 rc[riverName]=(rc[riverName]||0)+1
 
@@ -133,19 +128,16 @@ wc[weatherName]=(wc[weatherName]||0)+1
 water[waterName]=(water[waterName]||0)+eff
 wc2[waterName]=(wc2[waterName]||0)+1
 
-// 天候×水位
 let wwKey = weatherName + "×" + waterName
 weatherWater[wwKey]=(weatherWater[wwKey]||0)+eff
 wwCount[wwKey]=(wwCount[wwKey]||0)+1
 
-// 河川×水位
 let rwKey = riverName + "×" + waterName
 riverWater[rwKey]=(riverWater[rwKey]||0)+eff
 rwCount[rwKey]=(rwCount[rwKey]||0)+1
 
 })
 
-// 平均化
 avg(river,rc)
 avg(point,pc)
 avg(weather,wc)
@@ -153,7 +145,6 @@ avg(water,wc2)
 avg(weatherWater,wwCount)
 avg(riverWater,rwCount)
 
-// 描画
 draw("riverEff","河川効率",river)
 draw("pointEff","ポイント効率",point)
 draw("weatherEff","天候効率",weather)
@@ -177,7 +168,7 @@ function draw(id,title,obj){
 let arr=Object.entries(obj)
 arr.sort((a,b)=>b[1]-a[1])
 
-let dataArr=[["",""]]
+let dataArr=[[title,"匹/h"]]
 
 arr.slice(0,10).forEach(v=>{
 dataArr.push([v[0],Number(v[1].toFixed(2))])
@@ -195,7 +186,7 @@ titleTextStyle:{color:"#7fffd4"},
 backgroundColor:"transparent",
 legend:{textStyle:{color:"white"}},
 hAxis:{textStyle:{color:"white"}},
-vAxis:{textStyle:{color:"white"}}
+vAxis:{textStyle:{color:"white"},title:"匹/h"}
 })
 
 }
