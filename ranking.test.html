@@ -7,13 +7,7 @@
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 <style>
-
-body{
-font-family:Arial;
-background:#021018;
-color:white;
-margin:0;
-}
+body{font-family:Arial;background:#021018;color:white;margin:0;}
 
 header{
 background:#041822;
@@ -58,15 +52,12 @@ padding:20px;
 border-radius:10px;
 height:320px;
 }
-
 </style>
 </head>
 
 <body>
 
-<header>
-TABOSAN AYU RANKING
-</header>
+<header>TABOSAN AYU RANKING</header>
 
 <nav>
 <a href="index.html">HOME</a>
@@ -82,9 +73,10 @@ TABOSAN AYU RANKING
 <div id="chart_river_total" class="chart"></div>
 <div id="chart_point" class="chart"></div>
 
+<div id="chart_river_size" class="chart"></div>
 <div id="chart_weather" class="chart"></div>
-<div id="chart_water" class="chart"></div>
 
+<div id="chart_water" class="chart"></div>
 <div id="chart_rod" class="chart"></div>
 
 </div>
@@ -108,6 +100,7 @@ data=data.filter(r=>r["匹数"])
 
 let riverTotal={}
 let pointData={}
+let riverSizeData={}
 let weatherData={}
 let waterData={}
 let rodData={}
@@ -115,32 +108,40 @@ let rodData={}
 data.forEach(row=>{
 
 let catchNum=Number(row["匹数"])||0
+let size=Number(row["平均サイズ"])||0
 
-// 河川
 let river=row["河川"]
 riverTotal[river]=(riverTotal[river]||0)+catchNum
 
-// ポイント
 let point=row["ポイント"]
 pointData[point]=(pointData[point]||0)+catchNum
 
-// 天候
+if(!riverSizeData[river]){
+riverSizeData[river]={sum:0,count:0}
+}
+riverSizeData[river].sum+=size
+riverSizeData[river].count++
+
 let weather=row["天候"]
 weatherData[weather]=(weatherData[weather]||0)+catchNum
 
-// 水位
 let water=row["水位"]
 waterData[water]=(waterData[water]||0)+catchNum
 
-// 竿
 let rod=row["竿名"]
 rodData[rod]=(rodData[rod]||0)+catchNum
 
 })
 
-// 描画
+let riverAvgSize={}
+Object.entries(riverSizeData).forEach(([k,v])=>{
+riverAvgSize[k]=v.sum/v.count
+})
+
+// ★ここだけ変更（unit対応）
 drawChart("chart_river_total","河川別釣果",riverTotal,"匹")
 drawChart("chart_point","ポイント別釣果",pointData,"匹")
+drawChart("chart_river_size","河川平均サイズ",riverAvgSize,"cm")
 drawChart("chart_weather","天候別釣果",weatherData,"匹")
 drawChart("chart_water","水位別釣果",waterData,"匹")
 drawChart("chart_rod","竿別釣果",rodData,"匹")
@@ -149,6 +150,7 @@ drawChart("chart_rod","竿別釣果",rodData,"匹")
 
 }
 
+// ★ここだけ変更（unit追加）
 function drawChart(id,title,obj,unit){
 
 let arr=Object.entries(obj)
@@ -165,12 +167,9 @@ chart.draw(data,{
 title:title,
 titleTextStyle:{color:"#7fffd4"},
 backgroundColor:"transparent",
-legend:{textStyle:{color:"white"}},
+legend:{position:"none"},
 hAxis:{textStyle:{color:"white"}},
-vAxis:{
-textStyle:{color:"white"},
-title:unit
-}
+vAxis:{textStyle:{color:"white"},title:unit}
 })
 
 }
