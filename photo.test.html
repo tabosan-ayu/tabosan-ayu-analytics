@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>AYU PHOTO</title>
+
+<style>
+body{
+font-family:Arial;
+background:#021018;
+color:white;
+margin:0;
+}
+
+header{
+text-align:center;
+padding:25px;
+font-size:28px;
+letter-spacing:4px;
+color:#7fffd4;
+background:#061520;
+}
+
+nav{
+display:flex;
+justify-content:center;
+gap:40px;
+background:#05121a;
+padding:10px;
+}
+
+nav a{
+color:#7fffd4;
+text-decoration:none;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:40px;
+}
+
+.gallery{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+}
+
+.gallery img{
+width:100%;
+border-radius:10px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.gallery img:hover{
+transform:scale(1.05);
+}
+
+.modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.9);
+justify-content:center;
+align-items:center;
+}
+
+.modal img{
+max-width:90%;
+max-height:90%;
+}
+</style>
+</head>
+
+<body>
+
+<header>TABOSAN AYU PHOTO</header>
+
+<nav>
+<a href="index.html">HOME</a>
+<a href="data.html">DATA</a>
+<a href="photo.html">PHOTO</a>
+</nav>
+
+<div class="container">
+<h2>AYU GALLERY</h2>
+<div class="gallery" id="gallery"></div>
+</div>
+
+<div class="modal" id="modal">
+<img id="modalImg">
+</div>
+
+<script>
+
+const sheetURL =
+"https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATARAW";
+
+fetch(sheetURL)
+.then(res=>res.json())
+.then(data=>{
+
+let html="";
+
+data.forEach(r=>{
+let img=r["画像URL"];
+if(img){
+html += `<img src="${img}">`;
+}
+});
+
+document.getElementById("gallery").innerHTML=html;
+
+// モーダル
+const images=document.querySelectorAll(".gallery img");
+const modal=document.getElementById("modal");
+const modalImg=document.getElementById("modalImg");
+
+images.forEach(img=>{
+img.onclick=function(){
+modal.style.display="flex";
+modalImg.src=this.src;
+}
+});
+
+modal.onclick=function(){
+modal.style.display="none";
+}
+
+});
+
+</script>
+
+</body>
+</html>
