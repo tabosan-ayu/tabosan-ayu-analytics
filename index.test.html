@@ -13,7 +13,7 @@ header{
 background:#041822;
 padding:25px;
 text-align:center;
-font-size:40px;
+font-size:34px;
 color:#7fffd4;
 }
 
@@ -28,7 +28,6 @@ color:white;
 margin:0 18px;
 text-decoration:none;
 font-weight:bold;
-font-size:20px;
 }
 
 nav a.active{
@@ -57,11 +56,11 @@ text-align:center;
 
 .card-title{
 color:#7fffd4;
-font-size:18px;
+font-size:14px;
 }
 
 .card-value{
-font-size:28px;
+font-size:32px;
 font-weight:bold;
 }
 
@@ -85,12 +84,12 @@ border-radius:12px;
 }
 
 .latest h3{
-font-size:26px;
+font-size:20px;
 color:#7fffd4;
 }
 
 .latest p{
-font-size:22px;
+font-size:18px;
 margin:6px 0;
 }
 </style>
@@ -128,14 +127,17 @@ margin:6px 0;
 <div id="chart_month_avgEff" class="chart"></div>
 <div id="chart_month_avgSize" class="chart"></div>
 
+<!-- 竿使用回数（円グラフ） -->
 <div id="chart_rod" class="chart"></div>
 
+<!-- 最近の釣果 -->
 <div class="latest">
 <h3>最近の釣果</h3>
 <div id="latestFishing"></div>
 </div>
 
 </div>
+
 </div>
 
 <script>
@@ -224,23 +226,12 @@ chart.draw(data,{
 title:title,
 titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
 backgroundColor:"transparent",
-
-// ▼棒グラフだけ変更
-legend:{
-  position:"top",
-  alignment:"end",
-  textStyle:{color:"#7fffd4", fontSize:14}
-},
-chartArea:{
-  top:25
-},
-
-hAxis:{textStyle:{color:"white", fontSize:14}},
-vAxis:{textStyle:{color:"white"}, title:unit}
+legend:{position:"none"},
+hAxis:{textStyle:{color:"white"}},
+vAxis:{textStyle:{color:"white"},title:unit}
 })
 }
 
-// ▼円グラフはそのまま（変更なし）
 function drawPie(id,title,obj){
 let dataArr=[[title,"割合"]]
 Object.entries(obj).forEach(v=>dataArr.push(v))
@@ -253,9 +244,7 @@ chart.draw(data,{
 title:title,
 titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
 backgroundColor:"transparent",
-legend:{
-textStyle:{color:"white", fontSize:14}
-}
+legend:{textStyle:{color:"white"}}
 })
 }
 
