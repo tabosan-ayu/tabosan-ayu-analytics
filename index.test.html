@@ -14,7 +14,7 @@ header{
 background:#041822;
 padding:25px;
 text-align:center;
-font-size:40px; /* ←変更 */
+font-size:40px;
 color:#7fffd4;
 }
 
@@ -29,7 +29,7 @@ color:white;
 margin:0 18px;
 text-decoration:none;
 font-weight:bold;
-font-size:20px; /* ←変更 */
+font-size:20px;
 }
 
 nav a.active{
@@ -59,11 +59,11 @@ text-align:center;
 
 .card-title{
 color:#7fffd4;
-font-size:18px; /* ←変更 */
+font-size:18px;
 }
 
 .card-value{
-font-size:28px; /* ←変更 */
+font-size:28px;
 font-weight:bold;
 }
 
@@ -81,7 +81,7 @@ border-radius:12px;
 height:340px;
 }
 
-/* ===== 最近の釣果 ===== */
+/* ===== 最近の釣果（←変更） ===== */
 .latest{
 background:#0b2435;
 padding:22px;
@@ -89,12 +89,12 @@ border-radius:12px;
 }
 
 .latest h3{
-font-size:24px; /* ←変更 */
+font-size:26px; /* ←変更 */
 color:#7fffd4;
 }
 
 .latest p{
-font-size:20px; /* ←変更 */
+font-size:22px; /* ←変更 */
 margin:6px 0;
 }
 </style>
@@ -162,7 +162,6 @@ let monthTotal={}, monthTrip={}, monthCatch={}, monthEff={}, monthSize={}
 let riverData={}, rodData={}
 
 data.forEach(r=>{
-
 let month=r["月"]
 let catchNum=Number(r["匹数"])||0
 let eff=Number(r["効率"])||0
@@ -182,7 +181,6 @@ monthSize[month]=(monthSize[month]||0)+size
 
 riverData[river]=(riverData[river]||0)+catchNum
 rodData[rod]=(rodData[rod]||0)+1
-
 })
 
 let avgCatchMonth={}, avgEffMonth={}, avgSizeMonth={}
@@ -230,15 +228,11 @@ titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
 backgroundColor:"transparent",
 legend:{
 position:"top",
-textStyle:{color:"white", fontSize:14}
+alignment:"end", /* ←変更（右上統一） */
+textStyle:{color:"#7fffd4", fontSize:14}
 },
-hAxis:{
-textStyle:{color:"white", fontSize:14}
-},
-vAxis:{
-textStyle:{color:"white"},
-title:unit
-}
+hAxis:{textStyle:{color:"white", fontSize:14}},
+vAxis:{textStyle:{color:"white"}, title:unit}
 })
 }
 
@@ -255,7 +249,7 @@ title:title,
 titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
 backgroundColor:"transparent",
 legend:{
-textStyle:{color:"white", fontSize:14}
+textStyle:{color:"#7fffd4", fontSize:14}
 }
 })
 }
