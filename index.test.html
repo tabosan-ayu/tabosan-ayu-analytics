@@ -9,11 +9,12 @@
 <style>
 body{font-family:Arial;background:#021018;color:white;margin:0;}
 
+/* ===== ヘッダー ===== */
 header{
 background:#041822;
 padding:25px;
 text-align:center;
-font-size:34px;
+font-size:40px; /* ←変更 */
 color:#7fffd4;
 }
 
@@ -28,6 +29,7 @@ color:white;
 margin:0 18px;
 text-decoration:none;
 font-weight:bold;
+font-size:20px; /* ←変更 */
 }
 
 nav a.active{
@@ -40,6 +42,7 @@ margin:auto;
 padding:30px;
 }
 
+/* ===== カード ===== */
 .cards{
 display:grid;
 grid-template-columns:repeat(5,1fr);
@@ -56,14 +59,15 @@ text-align:center;
 
 .card-title{
 color:#7fffd4;
-font-size:14px;
+font-size:18px; /* ←変更 */
 }
 
 .card-value{
-font-size:32px;
+font-size:28px; /* ←変更 */
 font-weight:bold;
 }
 
+/* ===== グリッド ===== */
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -77,6 +81,7 @@ border-radius:12px;
 height:340px;
 }
 
+/* ===== 最近の釣果 ===== */
 .latest{
 background:#0b2435;
 padding:22px;
@@ -84,12 +89,12 @@ border-radius:12px;
 }
 
 .latest h3{
-font-size:20px;
+font-size:24px; /* ←変更 */
 color:#7fffd4;
 }
 
 .latest p{
-font-size:18px;
+font-size:20px; /* ←変更 */
 margin:6px 0;
 }
 </style>
@@ -127,17 +132,14 @@ margin:6px 0;
 <div id="chart_month_avgEff" class="chart"></div>
 <div id="chart_month_avgSize" class="chart"></div>
 
-<!-- 竿使用回数（円グラフ） -->
 <div id="chart_rod" class="chart"></div>
 
-<!-- 最近の釣果 -->
 <div class="latest">
 <h3>最近の釣果</h3>
 <div id="latestFishing"></div>
 </div>
 
 </div>
-
 </div>
 
 <script>
@@ -226,9 +228,17 @@ chart.draw(data,{
 title:title,
 titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
 backgroundColor:"transparent",
-legend:{position:"none"},
-hAxis:{textStyle:{color:"white"}},
-vAxis:{textStyle:{color:"white"},title:unit}
+legend:{
+position:"top",
+textStyle:{color:"white", fontSize:14}
+},
+hAxis:{
+textStyle:{color:"white", fontSize:14}
+},
+vAxis:{
+textStyle:{color:"white"},
+title:unit
+}
 })
 }
 
@@ -244,7 +254,9 @@ chart.draw(data,{
 title:title,
 titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
 backgroundColor:"transparent",
-legend:{textStyle:{color:"white"}}
+legend:{
+textStyle:{color:"white", fontSize:14}
+}
 })
 }
 
