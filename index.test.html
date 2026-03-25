@@ -1,3 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>TABOSAN AYU ANALYTICS LAB</title>
+
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+
+<style>
+body{font-family:Arial;background:#021018;color:white;margin:0;}
+
+header{
+background:#041822;
+padding:25px;
+text-align:center;
+font-size:40px;
+color:#7fffd4;
+}
+
+nav{
+text-align:center;
+background:#041822;
+padding:12px 0;
+}
+
+nav a{
+color:white;
+margin:0 18px;
+text-decoration:none;
+font-weight:bold;
+font-size:20px;
+}
+
+nav a.active{
+color:#7fffd4;
+}
+
+.container{
+max-width:1500px;
+margin:auto;
+padding:30px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:22px;
+margin-bottom:35px;
+}
+
+.card{
+background:#0b2435;
+padding:22px;
+border-radius:12px;
+text-align:center;
+}
+
+.card-title{
+color:#7fffd4;
+font-size:18px;
+}
+
+.card-value{
+font-size:28px;
+font-weight:bold;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:28px;
+}
+
+.chart{
+background:#0b2435;
+padding:22px;
+border-radius:12px;
+height:340px;
+}
+
+.latest{
+background:#0b2435;
+padding:22px;
+border-radius:12px;
+}
+
+.latest h3{
+font-size:26px;
+color:#7fffd4;
+}
+
+.latest p{
+font-size:22px;
+margin:6px 0;
+}
+</style>
+</head>
+
+<body>
+
+<header>TABOSAN AYU ANALYTICS LAB</header>
+
+<nav>
+<a href="index.html" class="active">HOME</a>
+<a href="ranking.html">RANKING</a>
+<a href="efficiency.html">EFFICIENCY</a>
+<a href="photo.html">PHOTO</a>
+</nav>
+
+<div class="container">
+
+<div class="cards">
+<div class="card"><div class="card-title">総釣果</div><div id="totalCatch" class="card-value">-</div></div>
+<div class="card"><div class="card-title">釣行回数</div><div id="tripCount" class="card-value">-</div></div>
+<div class="card"><div class="card-title">平均釣果</div><div id="avgCatch" class="card-value">-</div></div>
+<div class="card"><div class="card-title">平均効率</div><div id="avgEff" class="card-value">-</div></div>
+<div class="card"><div class="card-title">平均サイズ</div><div id="avgSize" class="card-value">-</div></div>
+</div>
+
+<div class="grid">
+
+<div id="chart_month_total" class="chart"></div>
+<div id="chart_river" class="chart"></div>
+
+<div id="chart_month_trip" class="chart"></div>
+<div id="chart_month_avgCatch" class="chart"></div>
+
+<div id="chart_month_avgEff" class="chart"></div>
+<div id="chart_month_avgSize" class="chart"></div>
+
+<div id="chart_rod" class="chart"></div>
+
+<div class="latest">
+<h3>最近の釣果</h3>
+<div id="latestFishing"></div>
+</div>
+
+</div>
+</div>
+
 <script>
 
 google.charts.load('current',{packages:['corechart']});
@@ -68,7 +208,6 @@ showLatest(data)
 }
 
 function drawChart(id,title,obj,unit){
-
 let arr=Object.entries(obj)
 arr.sort((a,b)=>a[0]-b[0])
 
@@ -93,7 +232,6 @@ vAxis:{textStyle:{color:"white"}, title:unit}
 }
 
 function drawPie(id,title,obj){
-
 let dataArr=[[title,"割合"]]
 Object.entries(obj).forEach(v=>dataArr.push(v))
 
@@ -121,3 +259,6 @@ document.getElementById("latestFishing").innerHTML=html
 }
 
 </script>
+
+</body>
+</html>
