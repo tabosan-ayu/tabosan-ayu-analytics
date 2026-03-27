@@ -57,14 +57,25 @@ height:320px;
 
 <body>
 
-<header>TABOSAN AYU RANKING</header>
+<div id="common"></div>
 
-<nav>
-<a href="index.html">HOME</a>
-<a href="ranking.html" class="active">RANKING</a>
-<a href="efficiency.html">EFFICIENCY</a>
-<a href="photo.html">PHOTO</a>
-</nav>
+<script>
+fetch("common.test.html")
+.then(res => res.text())
+.then(data => {
+document.getElementById("common").innerHTML = data;
+
+// active自動化
+const links = document.querySelectorAll("nav a");
+const current = location.pathname.split("/").pop();
+
+links.forEach(link => {
+if(link.getAttribute("href") === current){
+link.classList.add("active");
+}
+});
+});
+</script>
 
 <div class="container">
 
