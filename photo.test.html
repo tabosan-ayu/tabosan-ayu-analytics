@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -5,6 +6,7 @@
 <title>AYU PHOTO</title>
 
 <style>
+
 body{
 font-family:Arial;
 background:#021018;
@@ -35,7 +37,7 @@ text-decoration:none;
 }
 
 .container{
-max-width:1100px;
+max-width:1000px;
 margin:auto;
 padding:40px;
 }
@@ -43,8 +45,7 @@ padding:40px;
 .gallery{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:15px;
-margin-bottom:40px;
+gap:20px;
 }
 
 .gallery img{
@@ -56,14 +57,6 @@ transition:0.3s;
 
 .gallery img:hover{
 transform:scale(1.05);
-}
-
-.date-title{
-font-size:22px;
-margin:20px 0 10px;
-color:#7fffd4;
-border-left:5px solid #7fffd4;
-padding-left:10px;
 }
 
 .modal{
@@ -82,12 +75,15 @@ align-items:center;
 max-width:90%;
 max-height:90%;
 }
+
 </style>
 </head>
 
 <body>
 
-<header>TABOSAN AYU PHOTO</header>
+<header>
+TABOSAN AYU PHOTO
+</header>
 
 <nav>
 <a href="index.html">HOME</a>
@@ -96,7 +92,18 @@ max-height:90%;
 </nav>
 
 <div class="container">
-<div id="gallery"></div>
+
+<h2>AYU GALLERY</h2>
+
+<div class="gallery">
+
+<img src="https://picsum.photos/400?1">
+<img src="https://picsum.photos/400?2">
+<img src="https://picsum.photos/400?3">
+<img src="https://picsum.photos/400?4">
+
+</div>
+
 </div>
 
 <div class="modal" id="modal">
@@ -105,44 +112,6 @@ max-height:90%;
 
 <script>
 
-const sheetURL =
-"https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA_RAW";
-
-fetch(sheetURL)
-.then(res=>res.json())
-.then(data=>{
-
-let groups = {};
-
-// 日付ごとに分類
-data.forEach(r=>{
-let date = r["日付"];
-let img = r["画像URL"];
-
-if(img){
-if(!groups[date]) groups[date]=[];
-groups[date].push(img);
-}
-});
-
-// HTML生成
-let html="";
-
-for(let date in groups){
-
-html += `<div class="date-title">${date}</div>`;
-html += `<div class="gallery">`;
-
-groups[date].forEach(img=>{
-html += `<img src="${img}">`;
-});
-
-html += `</div>`;
-}
-
-document.getElementById("gallery").innerHTML=html;
-
-// モーダル
 const images=document.querySelectorAll(".gallery img");
 const modal=document.getElementById("modal");
 const modalImg=document.getElementById("modalImg");
@@ -158,9 +127,8 @@ modal.onclick=function(){
 modal.style.display="none";
 }
 
-});
-
 </script>
 
 </body>
 </html>
+```
