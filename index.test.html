@@ -2,26 +2,14 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>TABOSAN AYU ANALYTICS LAB</title>
-
+<title>INDEX</title>
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 <style>
-body{
-font-family:Arial;
-background:#021018;
-color:white;
-margin:0;
-}
+body{font-family:Arial;background:#021018;color:white;margin:0;}
 
-/* コンテナ */
-.container{
-max-width:1500px;
-margin:auto;
-padding:30px;
-}
+.container{max-width:1500px;margin:auto;padding:30px;}
 
-/* カード */
 .cards{
 display:grid;
 grid-template-columns:repeat(5,1fr);
@@ -34,24 +22,11 @@ background:#0b2435;
 padding:20px;
 border-radius:12px;
 text-align:center;
-transition:0.2s;
 }
 
-.card:hover{
-transform:translateY(-5px);
-}
+.card-title{color:#7fffd4;}
+.card-value{font-size:28px;font-weight:bold;}
 
-.card-title{
-color:#7fffd4;
-font-size:16px;
-}
-
-.card-value{
-font-size:30px;
-font-weight:bold;
-}
-
-/* グラフ */
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -67,43 +42,20 @@ width:100%;
 box-sizing:border-box;
 }
 
-/* 最近 */
 .latest{
 background:#0b2435;
 padding:20px;
 border-radius:10px;
-}
-
-.latest h3{
-color:#7fffd4;
-font-size:22px;
-}
-
-.latest p{
-font-size:18px;
-margin:5px 0;
-}
-
-/* スマホ */
-@media(max-width:768px){
-.grid{
-grid-template-columns:1fr;
-}
-.cards{
-grid-template-columns:1fr 1fr;
-}
 }
 </style>
 </head>
 
 <body>
 
-<!-- 共通ナビ -->
 <div id="common"></div>
 
 <div class="container">
 
-<!-- カード -->
 <div class="cards">
 <div class="card"><div class="card-title">総釣果</div><div id="totalCatch" class="card-value">-</div></div>
 <div class="card"><div class="card-title">釣行回数</div><div id="tripCount" class="card-value">-</div></div>
@@ -112,35 +64,22 @@ grid-template-columns:1fr 1fr;
 <div class="card"><div class="card-title">平均サイズ</div><div id="avgSize" class="card-value">-</div></div>
 </div>
 
-<!-- グラフ -->
 <div class="grid">
-<div id="chart_month_total" class="chart"></div>
-<div id="chart_river" class="chart"></div>
-<div id="chart_month_trip" class="chart"></div>
-<div id="chart_month_avgCatch" class="chart"></div>
-<div id="chart_month_avgEff" class="chart"></div>
-<div id="chart_month_avgSize" class="chart"></div>
-<div id="chart_rod" class="chart"></div>
-
-<div class="latest">
-<h3>最近の釣果</h3>
-<div id="latestFishing"></div>
-</div>
+<div id="chart1" class="chart"></div>
+<div id="chart2" class="chart"></div>
 </div>
 
 </div>
 
-<!-- スクリプト（最下部） -->
 <script>
 
-// 共通ナビ読み込み
+// 共通ナビ
 fetch("common.test.html")
-.then(res => res.text())
-.then(data => {
-document.getElementById("common").innerHTML = data;
+.then(res=>res.text())
+.then(data=>{
+document.getElementById("common").innerHTML=data;
 
-const links = document.querySelectorAll("nav a");
-links.forEach(link => {
+document.querySelectorAll("nav a").forEach(link=>{
 if(location.href.includes(link.getAttribute("href"))){
 link.classList.add("active");
 }
@@ -148,121 +87,45 @@ link.classList.add("active");
 });
 
 google.charts.load('current',{packages:['corechart']});
-google.charts.setOnLoadCallback(loadData);
+google.charts.setOnLoadCallback(draw);
 
-const sheetURL="https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
+function draw(){
 
-function loadData(){
-fetch(sheetURL)
-.then(res=>res.json())
-.then(data=>{
+let data=google.visualization.arrayToDataTable([
+["月","匹"],
+["6",50],
+["7",80]
+]);
 
-data=data.filter(r=>r["匹数"])
+let chart=new google.visualization.ColumnChart(document.getElementById("chart1"));
 
-let totalCatch=0, tripCount=data.length, effTotal=0, sizeTotal=0
+chart.draw(data,getOptions("月別釣果"));
 
-let monthTotal={}, monthTrip={}, monthCatch={}, monthEff={}, monthSize={}
-let riverData={}, rodData={}
-
-data.forEach(r=>{
-let month=r["月"]
-let catchNum=Number(r["匹数"])||0
-let eff=Number(r["効率"])||0
-let size=Number(r["平均サイズ"])||0
-let river=r["河川"]
-let rod=r["竿名"]
-
-totalCatch+=catchNum
-effTotal+=eff
-sizeTotal+=size
-
-monthTotal[month]=(monthTotal[month]||0)+catchNum
-monthTrip[month]=(monthTrip[month]||0)+1
-monthCatch[month]=(monthCatch[month]||0)+catchNum
-monthEff[month]=(monthEff[month]||0)+eff
-monthSize[month]=(monthSize[month]||0)+size
-
-riverData[river]=(riverData[river]||0)+catchNum
-rodData[rod]=(rodData[rod]||0)+1
-})
-
-let avgCatchMonth={}, avgEffMonth={}, avgSizeMonth={}
-
-Object.keys(monthTrip).forEach(m=>{
-avgCatchMonth[m]=monthCatch[m]/monthTrip[m]
-avgEffMonth[m]=monthEff[m]/monthTrip[m]
-avgSizeMonth[m]=monthSize[m]/monthTrip[m]
-})
-
-document.getElementById("totalCatch").innerText=totalCatch+"匹"
-document.getElementById("tripCount").innerText=tripCount+"回"
-document.getElementById("avgCatch").innerText=(totalCatch/tripCount).toFixed(1)+"匹"
-document.getElementById("avgEff").innerText=(effTotal/tripCount).toFixed(2)+"匹/h"
-document.getElementById("avgSize").innerText=(sizeTotal/tripCount).toFixed(1)+"cm"
-
-drawChart("chart_month_total","月別釣果",monthTotal,"匹")
-drawChart("chart_month_trip","月別釣行回数",monthTrip,"回")
-drawChart("chart_month_avgCatch","月別平均釣果",avgCatchMonth,"匹")
-drawChart("chart_month_avgEff","月別平均効率",avgEffMonth,"匹/h")
-drawChart("chart_month_avgSize","月別平均サイズ",avgSizeMonth,"cm")
-
-drawPie("chart_river","河川割合",riverData)
-drawPie("chart_rod","竿使用回数",rodData)
-
-showLatest(data)
-
-})
 }
 
-function drawChart(id,title,obj,unit){
-let arr=Object.entries(obj)
-arr.sort((a,b)=>a[0]-b[0])
-
-let dataArr=[[title,unit]]
-arr.forEach(v=>dataArr.push([v[0],v[1]]))
-
-let data=google.visualization.arrayToDataTable(dataArr)
-
-let chart=new google.visualization.ColumnChart(document.getElementById(id))
-
-chart.draw(data,{
+// 🔥共通設定（最重要）
+function getOptions(title){
+return{
 title:title,
 titleTextStyle:{color:"#7fffd4"},
 backgroundColor:"transparent",
+
+chartArea:{
+left:50,
+top:50,
+width:"65%",
+height:"65%"
+},
+
 legend:{
 position:"top",
-alignment:"start", /* ←ランキングと同じ */
+alignment:"end",
 textStyle:{color:"#7fffd4",fontSize:14}
 },
+
 hAxis:{textStyle:{color:"white"}},
-vAxis:{textStyle:{color:"white"},title:unit}
-})
-}
-
-function drawPie(id,title,obj){
-let dataArr=[[title,"割合"]]
-Object.entries(obj).forEach(v=>dataArr.push(v))
-
-let data=google.visualization.arrayToDataTable(dataArr)
-
-let chart=new google.visualization.PieChart(document.getElementById(id))
-
-chart.draw(data,{
-title:title,
-titleTextStyle:{color:"#7fffd4"},
-backgroundColor:"transparent",
-legend:{
-textStyle:{color:"#7fffd4"}
-}
-})
-}
-
-function showLatest(data){
-let html=""
-data.slice(-5).reverse().forEach(r=>{
-html+=`<p>${r["日付"]}　${r["河川"]}　${r["匹数"]}匹</p>`
-})
-document.getElementById("latestFishing").innerHTML=html
+vAxis:{textStyle:{color:"white"}}
+};
 }
 
 </script>
