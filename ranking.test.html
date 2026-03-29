@@ -57,28 +57,16 @@ height:320px;
 
 <body>
 
-<div id="common"></div>
+<header>TABOSAN AYU RANKING</header>
 
-<script>
-fetch("common.test.html")
-.then(res => res.text())
-.then(data => {
-document.getElementById("common").innerHTML = data;
-
-// active自動化
-const links = document.querySelectorAll("nav a");
-const current = location.pathname.split("/").pop();
-
-links.forEach(link => {
-if(link.getAttribute("href") === current){
-link.classList.add("active");
-}
-});
-});
-</script>
+<nav>
+<a href="index.html">HOME</a>
+<a href="ranking.html" class="active">RANKING</a>
+<a href="efficiency.html">EFFICIENCY</a>
+<a href="photo.html">PHOTO</a>
+</nav>
 
 <div class="container">
-
 <div class="grid">
 
 <div id="chart_river_total" class="chart"></div>
@@ -91,7 +79,6 @@ link.classList.add("active");
 <div id="chart_rod" class="chart"></div>
 
 </div>
-
 </div>
 
 <script>
@@ -107,7 +94,8 @@ fetch(sheetURL)
 .then(res=>res.json())
 .then(data=>{
 
-data=data.filter(r=>r["匹数"])
+// 空データ除外（0は残す）
+data=data.filter(r=>r["匹数"] !== "" && r["匹数"] != null)
 
 let riverTotal={}
 let pointData={}
@@ -121,35 +109,35 @@ data.forEach(row=>{
 let catchNum=Number(row["匹数"])||0
 let size=Number(row["平均サイズ"])||0
 
-let river=row["河川"]
+let river=row["河川"] || "不明"
+let point=row["ポイント"] || "不明"
+let weather=row["天候"] || "不明"
+let water=row["水位"] || "不明"
+let rod=row["竿名"] || "不明"
+
+// 合計
 riverTotal[river]=(riverTotal[river]||0)+catchNum
-
-let point=row["ポイント"]
 pointData[point]=(pointData[point]||0)+catchNum
+weatherData[weather]=(weatherData[weather]||0)+catchNum
+waterData[water]=(waterData[water]||0)+catchNum
+rodData[rod]=(rodData[rod]||0)+catchNum
 
+// サイズ平均用
 if(!riverSizeData[river]){
 riverSizeData[river]={sum:0,count:0}
 }
 riverSizeData[river].sum+=size
 riverSizeData[river].count++
 
-let weather=row["天候"]
-weatherData[weather]=(weatherData[weather]||0)+catchNum
-
-let water=row["水位"]
-waterData[water]=(waterData[water]||0)+catchNum
-
-let rod=row["竿名"]
-rodData[rod]=(rodData[rod]||0)+catchNum
-
 })
 
+// 平均サイズ
 let riverAvgSize={}
 Object.entries(riverSizeData).forEach(([k,v])=>{
-riverAvgSize[k]=v.sum/v.count
+riverAvgSize[k]= v.count ? v.sum/v.count : 0
 })
 
-// 単位つきで描画
+// 描画
 drawChart("chart_river_total","河川別釣果",riverTotal,"匹")
 drawChart("chart_point","ポイント別釣果",pointData,"匹")
 drawChart("chart_river_size","河川平均サイズ",riverAvgSize,"cm")
@@ -158,12 +146,21 @@ drawChart("chart_water","水位別釣果",waterData,"匹")
 drawChart("chart_rod","竿別釣果",rodData,"匹")
 
 })
+.catch(err=>{
+console.error("データ取得失敗", err)
+})
 
 }
 
+// 共通グラフ
 function drawChart(id,title,obj,unit){
 
 let arr=Object.entries(obj)
+
+// データなし防止
+if(arr.length===0) return
+
+// 降順ソート
 arr.sort((a,b)=>b[1]-a[1])
 
 let dataArr=[[title,unit]]
@@ -175,9 +172,13 @@ let chart=new google.visualization.ColumnChart(document.getElementById(id))
 
 chart.draw(data,{
 title:title,
-titleTextStyle:{color:"#7fffd4"},
+titleTextStyle:{color:"#7fffd4", fontSize:16, bold:true},
 backgroundColor:"transparent",
-legend:{textStyle:{color:"white"}}, // ←凡例あり
+legend:{
+position:"top",
+alignment:"end",
+textStyle:{color:"#7fffd4", fontSize:13}
+},
 hAxis:{textStyle:{color:"white"}},
 vAxis:{textStyle:{color:"white"},title:unit}
 })
