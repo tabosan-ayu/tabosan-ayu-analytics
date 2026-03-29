@@ -9,6 +9,7 @@
 <style>
 body{font-family:Arial;background:#021018;color:white;margin:0;}
 
+/* ===== ヘッダー ===== */
 header{
 background:#041822;
 padding:25px;
@@ -31,10 +32,17 @@ font-weight:bold;
 font-size:20px;
 }
 
-nav a.active{color:#7fffd4;}
+nav a.active{
+color:#7fffd4;
+}
 
-.container{max-width:1500px;margin:auto;padding:30px;}
+.container{
+max-width:1500px;
+margin:auto;
+padding:30px;
+}
 
+/* ===== カード ===== */
 .cards{
 display:grid;
 grid-template-columns:repeat(5,1fr);
@@ -49,9 +57,17 @@ border-radius:12px;
 text-align:center;
 }
 
-.card-title{color:#7fffd4;font-size:18px;}
-.card-value{font-size:28px;font-weight:bold;}
+.card-title{
+color:#7fffd4;
+font-size:18px;
+}
 
+.card-value{
+font-size:28px;
+font-weight:bold;
+}
+
+/* ===== グリッド ===== */
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -65,14 +81,22 @@ border-radius:12px;
 height:340px;
 }
 
+/* ===== 最近の釣果（←変更） ===== */
 .latest{
 background:#0b2435;
 padding:22px;
 border-radius:12px;
 }
 
-.latest h3{font-size:26px;color:#7fffd4;}
-.latest p{font-size:22px;margin:6px 0;}
+.latest h3{
+font-size:26px; /* ←変更 */
+color:#7fffd4;
+}
+
+.latest p{
+font-size:22px; /* ←変更 */
+margin:6px 0;
+}
 </style>
 </head>
 
@@ -81,7 +105,10 @@ border-radius:12px;
 <header>TABOSAN AYU ANALYTICS LAB</header>
 
 <nav>
-<a href="#" class="active">HOME</a>
+<a href="index.html" class="active">HOME</a>
+<a href="ranking.html">RANKING</a>
+<a href="efficiency.html">EFFICIENCY</a>
+<a href="photo.html">PHOTO</a>
 </nav>
 
 <div class="container">
@@ -123,32 +150,24 @@ google.charts.setOnLoadCallback(loadData);
 const sheetURL="https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
 
 function loadData(){
-
 fetch(sheetURL)
 .then(res=>res.json())
 .then(data=>{
 
-// ✅ 0を消さないフィルター
-data = data.filter(r => r["匹数"] !== "" && r["匹数"] != null)
-
-// ✅ 日付ソート（安定）
-data.sort((a,b)=> new Date(a["日付"]) - new Date(b["日付"]))
+data=data.filter(r=>r["匹数"])
 
 let totalCatch=0, tripCount=data.length, effTotal=0, sizeTotal=0
 
 let monthTotal={}, monthTrip={}, monthCatch={}, monthEff={}, monthSize={}
 let riverData={}, rodData={}
 
-// ===== メイン処理 =====
 data.forEach(r=>{
-
-let catchNum = parseFloat(r["匹数"]) || 0
-let eff = parseFloat(r["効率"]) || 0
-let size = parseFloat(r["平均サイズ"]) || 0
-
-let river = r["河川"] ?? "不明"
-let rod = r["竿"] ?? r["竿名"] ?? "不明"
-let month = r["月"] ?? "0"
+let month=r["月"]
+let catchNum=Number(r["匹数"])||0
+let eff=Number(r["効率"])||0
+let size=Number(r["平均サイズ"])||0
+let river=r["河川"]
+let rod=r["竿名"]
 
 totalCatch+=catchNum
 effTotal+=eff
@@ -162,10 +181,8 @@ monthSize[month]=(monthSize[month]||0)+size
 
 riverData[river]=(riverData[river]||0)+catchNum
 rodData[rod]=(rodData[rod]||0)+1
-
 })
 
-// ===== 月平均 =====
 let avgCatchMonth={}, avgEffMonth={}, avgSizeMonth={}
 
 Object.keys(monthTrip).forEach(m=>{
@@ -174,14 +191,12 @@ avgEffMonth[m]=monthEff[m]/monthTrip[m]
 avgSizeMonth[m]=monthSize[m]/monthTrip[m]
 })
 
-// ===== 表示（ゼロ割防止）=====
 document.getElementById("totalCatch").innerText=totalCatch+"匹"
 document.getElementById("tripCount").innerText=tripCount+"回"
-document.getElementById("avgCatch").innerText=tripCount? (totalCatch/tripCount).toFixed(1)+"匹":"0"
-document.getElementById("avgEff").innerText=tripCount? (effTotal/tripCount).toFixed(2)+"匹/h":"0"
-document.getElementById("avgSize").innerText=tripCount? (sizeTotal/tripCount).toFixed(1)+"cm":"0"
+document.getElementById("avgCatch").innerText=(totalCatch/tripCount).toFixed(1)+"匹"
+document.getElementById("avgEff").innerText=(effTotal/tripCount).toFixed(2)+"匹/h"
+document.getElementById("avgSize").innerText=(sizeTotal/tripCount).toFixed(1)+"cm"
 
-// ===== グラフ =====
 drawChart("chart_month_total","月別釣果",monthTotal,"匹")
 drawChart("chart_month_trip","月別釣行回数",monthTrip,"回")
 drawChart("chart_month_avgCatch","月別平均釣果",avgCatchMonth,"匹")
@@ -194,25 +209,17 @@ drawPie("chart_rod","竿使用回数",rodData)
 showLatest(data)
 
 })
-.catch(err=>{
-alert("データ取得失敗")
-console.error(err)
-})
-
 }
 
-// ===== 棒グラフ =====
 function drawChart(id,title,obj,unit){
-
 let arr=Object.entries(obj)
-arr.sort((a,b)=>Number(a[0]) - Number(b[0]))
-
-if(arr.length===0) return
+arr.sort((a,b)=>a[0]-b[0])
 
 let dataArr=[[title,unit]]
 arr.forEach(v=>dataArr.push([v[0],v[1]]))
 
 let data=google.visualization.arrayToDataTable(dataArr)
+
 let chart=new google.visualization.ColumnChart(document.getElementById(id))
 
 chart.draw(data,{
@@ -221,37 +228,32 @@ titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
 backgroundColor:"transparent",
 legend:{
 position:"top",
-alignment:"end",
+alignment:"end", /* ←変更（右上統一） */
 textStyle:{color:"#7fffd4", fontSize:14}
 },
-hAxis:{textStyle:{color:"white"}},
-vAxis:{textStyle:{color:"white"},title:unit}
+hAxis:{textStyle:{color:"white", fontSize:14}},
+vAxis:{textStyle:{color:"white"}, title:unit}
 })
-
 }
 
-// ===== 円グラフ =====
 function drawPie(id,title,obj){
-
-let entries=Object.entries(obj)
-if(entries.length===0) return
-
 let dataArr=[[title,"割合"]]
-entries.forEach(v=>dataArr.push(v))
+Object.entries(obj).forEach(v=>dataArr.push(v))
 
 let data=google.visualization.arrayToDataTable(dataArr)
+
 let chart=new google.visualization.PieChart(document.getElementById(id))
 
 chart.draw(data,{
 title:title,
 titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
 backgroundColor:"transparent",
-legend:{textStyle:{color:"#7fffd4"}}
+legend:{
+textStyle:{color:"#7fffd4", fontSize:14}
+}
 })
-
 }
 
-// ===== 最新5件 =====
 function showLatest(data){
 let html=""
 data.slice(-5).reverse().forEach(r=>{
