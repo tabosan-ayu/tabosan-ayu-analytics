@@ -59,25 +59,14 @@ height:320px;
 
 <body>
 
-<div id="common"></div>
+<header>TABOSAN AYU EFFICIENCY</header>
 
-<script>
-fetch("common.test.html")
-.then(res => res.text())
-.then(data => {
-document.getElementById("common").innerHTML = data;
-
-// active自動化
-const links = document.querySelectorAll("nav a");
-const current = location.pathname.split("/").pop();
-
-links.forEach(link => {
-if(link.getAttribute("href") === current){
-link.classList.add("active");
-}
-});
-});
-</script>
+<nav>
+<a href="index.html">HOME</a>
+<a href="ranking.html">RANKING</a>
+<a href="efficiency.html" class="active">EFFICIENCY</a>
+<a href="photo.html">PHOTO</a>
+</nav>
 
 <div class="container">
 
@@ -110,7 +99,8 @@ fetch(sheetURL)
 .then(res=>res.json())
 .then(data=>{
 
-data=data.filter(r=>r["効率"])
+// 空データ除外（0は残す）
+data=data.filter(r=>r["効率"] !== "" && r["効率"] != null)
 
 let river={}, point={}, weather={}, water={}
 let rc={}, pc={}, wc={}, wc2={}
@@ -122,11 +112,12 @@ data.forEach(r=>{
 
 let eff = Number(r["効率"]) || 0
 
-let riverName=r["河川"]
-let pointName=r["ポイント"]
-let weatherName=r["天候"]
-let waterName=r["水位"]
+let riverName=r["河川"] || "不明"
+let pointName=r["ポイント"] || "不明"
+let weatherName=r["天候"] || "不明"
+let waterName=r["水位"] || "不明"
 
+// 単体
 river[riverName]=(river[riverName]||0)+eff
 rc[riverName]=(rc[riverName]||0)+1
 
@@ -139,6 +130,7 @@ wc[weatherName]=(wc[weatherName]||0)+1
 water[waterName]=(water[waterName]||0)+eff
 wc2[waterName]=(wc2[waterName]||0)+1
 
+// 組み合わせ
 let wwKey = weatherName + "×" + waterName
 weatherWater[wwKey]=(weatherWater[wwKey]||0)+eff
 wwCount[wwKey]=(wwCount[wwKey]||0)+1
@@ -149,13 +141,15 @@ rwCount[rwKey]=(rwCount[rwKey]||0)+1
 
 })
 
-avg(river,rc)
-avg(point,pc)
-avg(weather,wc)
-avg(water,wc2)
-avg(weatherWater,wwCount)
-avg(riverWater,rwCount)
+// 平均化（ゼロ除算防止）
+safeAvg(river,rc)
+safeAvg(point,pc)
+safeAvg(weather,wc)
+safeAvg(water,wc2)
+safeAvg(weatherWater,wwCount)
+safeAvg(riverWater,rwCount)
 
+// 描画
 draw("riverEff","河川効率",river)
 draw("pointEff","ポイント効率",point)
 draw("weatherEff","天候効率",weather)
@@ -165,22 +159,33 @@ draw("weatherWaterEff","天候×水位効率",weatherWater)
 draw("riverWaterEff","河川×水位効率",riverWater)
 
 })
+.catch(err=>{
+console.error("データ取得失敗", err)
+})
 
 }
 
-function avg(obj,count){
+// 安全平均
+function safeAvg(obj,count){
 for(let k in obj){
-obj[k]=obj[k]/count[k]
+obj[k] = count[k] ? obj[k]/count[k] : 0
 }
 }
 
+// グラフ描画
 function draw(id,title,obj){
 
 let arr=Object.entries(obj)
+
+// データなし防止
+if(arr.length===0) return
+
+// 降順
 arr.sort((a,b)=>b[1]-a[1])
 
 let dataArr=[[title,"匹/h"]]
 
+// TOP10
 arr.slice(0,10).forEach(v=>{
 dataArr.push([v[0],Number(v[1].toFixed(2))])
 })
@@ -193,9 +198,13 @@ document.getElementById(id)
 
 chart.draw(data,{
 title:title,
-titleTextStyle:{color:"#7fffd4"},
+titleTextStyle:{color:"#7fffd4",fontSize:16,bold:true},
 backgroundColor:"transparent",
-legend:{textStyle:{color:"white"}},
+legend:{
+position:"top",
+alignment:"end",
+textStyle:{color:"#7fffd4", fontSize:13}
+},
 hAxis:{textStyle:{color:"white"}},
 vAxis:{textStyle:{color:"white"},title:"匹/h"}
 })
