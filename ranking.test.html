@@ -30,9 +30,7 @@ text-decoration:none;
 font-weight:bold;
 }
 
-nav a.active{
-color:#7fffd4;
-}
+nav a.active{color:#7fffd4;}
 
 .container{
 max-width:1500px;
@@ -94,35 +92,32 @@ fetch(sheetURL)
 .then(res=>res.json())
 .then(data=>{
 
-// 空データ除外（0は残す）
-data=data.filter(r=>r["匹数"] !== "" && r["匹数"] != null)
+// ===== 0消さない =====
+data = data.filter(r => r["匹数"] !== "" && r["匹数"] != null)
 
-let riverTotal={}
-let pointData={}
-let riverSizeData={}
-let weatherData={}
-let waterData={}
-let rodData={}
+// ===== データ格納 =====
+let riverTotal={}, pointData={}, riverSizeData={}
+let weatherData={}, waterData={}, rodData={}
 
 data.forEach(row=>{
 
-let catchNum=Number(row["匹数"])||0
-let size=Number(row["平均サイズ"])||0
+let catchNum = parseFloat(row["匹数"]) || 0
+let size = parseFloat(row["平均サイズ"]) || 0
 
-let river=row["河川"] || "不明"
-let point=row["ポイント"] || "不明"
-let weather=row["天候"] || "不明"
-let water=row["水位"] || "不明"
-let rod=row["竿名"] || "不明"
+let river = row["河川"] ?? "不明"
+let point = row["ポイント"] ?? "不明"
+let weather = row["天候"] ?? "不明"
+let water = row["水位"] ?? "不明"
+let rod = row["竿"] ?? row["竿名"] ?? "不明"
 
-// 合計
+// ===== 合計 =====
 riverTotal[river]=(riverTotal[river]||0)+catchNum
 pointData[point]=(pointData[point]||0)+catchNum
 weatherData[weather]=(weatherData[weather]||0)+catchNum
 waterData[water]=(waterData[water]||0)+catchNum
 rodData[rod]=(rodData[rod]||0)+catchNum
 
-// サイズ平均用
+// ===== 平均サイズ =====
 if(!riverSizeData[river]){
 riverSizeData[river]={sum:0,count:0}
 }
@@ -131,13 +126,13 @@ riverSizeData[river].count++
 
 })
 
-// 平均サイズ
+// ===== 平均サイズ計算 =====
 let riverAvgSize={}
 Object.entries(riverSizeData).forEach(([k,v])=>{
 riverAvgSize[k]= v.count ? v.sum/v.count : 0
 })
 
-// 描画
+// ===== 描画 =====
 drawChart("chart_river_total","河川別釣果",riverTotal,"匹")
 drawChart("chart_point","ポイント別釣果",pointData,"匹")
 drawChart("chart_river_size","河川平均サイズ",riverAvgSize,"cm")
@@ -147,27 +142,26 @@ drawChart("chart_rod","竿別釣果",rodData,"匹")
 
 })
 .catch(err=>{
-console.error("データ取得失敗", err)
+alert("データ取得失敗")
+console.error(err)
 })
 
 }
 
-// 共通グラフ
+// ===== 共通グラフ =====
 function drawChart(id,title,obj,unit){
 
 let arr=Object.entries(obj)
 
-// データなし防止
-if(arr.length===0) return
-
-// 降順ソート
+// 降順（ランキング）
 arr.sort((a,b)=>b[1]-a[1])
+
+if(arr.length===0) return
 
 let dataArr=[[title,unit]]
 arr.forEach(v=>dataArr.push([v[0],v[1]]))
 
 let data=google.visualization.arrayToDataTable(dataArr)
-
 let chart=new google.visualization.ColumnChart(document.getElementById(id))
 
 chart.draw(data,{
