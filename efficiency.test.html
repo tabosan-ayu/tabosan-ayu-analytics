@@ -13,27 +13,31 @@ header{
 background:#041822;
 padding:25px;
 text-align:center;
-font-size:32px;
+font-size:30px;
 color:#7fffd4;
 }
 
 nav{
 text-align:center;
-background:#041822;
-padding:10px 0;
+padding:15px;
+background:#03151f;
 }
 
 nav a{
 color:white;
 margin:0 15px;
 text-decoration:none;
-font-weight:bold;
+padding:6px 12px;
+border-radius:6px;
 }
 
-nav a.active{color:#7fffd4;}
+nav a.active{
+background:#0b2435;
+color:#7fffd4;
+}
 
 .container{
-max-width:1500px;
+max-width:1400px;
 margin:auto;
 padding:30px;
 }
@@ -65,18 +69,20 @@ height:320px;
 </nav>
 
 <div class="container">
+
 <div class="grid">
 
-<div id="chart_eff_river" class="chart"></div>
-<div id="chart_eff_point" class="chart"></div>
+<div id="riverEff" class="chart"></div>
+<div id="pointEff" class="chart"></div>
 
-<div id="chart_eff_weather" class="chart"></div>
-<div id="chart_eff_water" class="chart"></div>
+<div id="weatherEff" class="chart"></div>
+<div id="waterEff" class="chart"></div>
 
-<div id="chart_eff_rod" class="chart"></div>
-<div id="chart_eff_month" class="chart"></div>
+<div id="weatherWaterEff" class="chart"></div>
+<div id="riverWaterEff" class="chart"></div>
 
 </div>
+
 </div>
 
 <script>
@@ -84,7 +90,8 @@ height:320px;
 google.charts.load('current',{packages:['corechart']});
 google.charts.setOnLoadCallback(loadData);
 
-const sheetURL="https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
+const sheetURL =
+"https://opensheet.elk.sh/13W9RPYH2eR9EhikRsV0z3kMGJlYg5ou39708JWy4IX8/DATA";
 
 function loadData(){
 
@@ -92,104 +99,94 @@ fetch(sheetURL)
 .then(res=>res.json())
 .then(data=>{
 
-// ===== 0消さない =====
-data = data.filter(r => r["匹数"] !== "" && r["匹数"] != null)
+data=data.filter(r=>r["効率"])
 
-// ===== 格納 =====
-let river={}, point={}, weather={}, water={}, rod={}, month={}
+let river={}, point={}, weather={}, water={}
+let rc={}, pc={}, wc={}, wc2={}
+
+let weatherWater={}, wwCount={}
+let riverWater={}, rwCount={}
 
 data.forEach(r=>{
 
-let eff = parseFloat(r["効率"]) || 0
+let eff = Number(r["効率"]) || 0
 
-let riverKey = r["河川"] ?? "不明"
-let pointKey = r["ポイント"] ?? "不明"
-let weatherKey = r["天候"] ?? "不明"
-let waterKey = r["水位"] ?? "不明"
-let rodKey = r["竿"] ?? r["竿名"] ?? "不明"
-let monthKey = r["月"] ?? "0"
+let riverName=r["河川"]
+let pointName=r["ポイント"]
+let weatherName=r["天候"]
+let waterName=r["水位"]
 
-// 平均計算用
-addData(river, riverKey, eff)
-addData(point, pointKey, eff)
-addData(weather, weatherKey, eff)
-addData(water, waterKey, eff)
-addData(rod, rodKey, eff)
-addData(month, monthKey, eff)
+river[riverName]=(river[riverName]||0)+eff
+rc[riverName]=(rc[riverName]||0)+1
 
-})
+point[pointName]=(point[pointName]||0)+eff
+pc[pointName]=(pc[pointName]||0)+1
 
-// ===== 平均化 =====
-let riverAvg = calcAvg(river)
-let pointAvg = calcAvg(point)
-let weatherAvg = calcAvg(weather)
-let waterAvg = calcAvg(water)
-let rodAvg = calcAvg(rod)
-let monthAvg = calcAvg(month)
+weather[weatherName]=(weather[weatherName]||0)+eff
+wc[weatherName]=(wc[weatherName]||0)+1
 
-// ===== 描画 =====
-drawChart("chart_eff_river","河川別効率",riverAvg)
-drawChart("chart_eff_point","ポイント別効率",pointAvg)
-drawChart("chart_eff_weather","天候別効率",weatherAvg)
-drawChart("chart_eff_water","水位別効率",waterAvg)
-drawChart("chart_eff_rod","竿別効率",rodAvg)
-drawChart("chart_eff_month","月別効率",monthAvg,true)
+water[waterName]=(water[waterName]||0)+eff
+wc2[waterName]=(wc2[waterName]||0)+1
+
+let wwKey = weatherName + "×" + waterName
+weatherWater[wwKey]=(weatherWater[wwKey]||0)+eff
+wwCount[wwKey]=(wwCount[wwKey]||0)+1
+
+let rwKey = riverName + "×" + waterName
+riverWater[rwKey]=(riverWater[rwKey]||0)+eff
+rwCount[rwKey]=(rwCount[rwKey]||0)+1
 
 })
-.catch(err=>{
-alert("データ取得失敗")
-console.error(err)
+
+avg(river,rc)
+avg(point,pc)
+avg(weather,wc)
+avg(water,wc2)
+avg(weatherWater,wwCount)
+avg(riverWater,rwCount)
+
+draw("riverEff","河川効率",river)
+draw("pointEff","ポイント効率",point)
+draw("weatherEff","天候効率",weather)
+draw("waterEff","水位効率",water)
+
+draw("weatherWaterEff","天候×水位効率",weatherWater)
+draw("riverWaterEff","河川×水位効率",riverWater)
+
 })
 
 }
 
-// ===== データ加算 =====
-function addData(obj,key,val){
-if(!obj[key]) obj[key]={sum:0,count:0}
-obj[key].sum += val
-obj[key].count++
+function avg(obj,count){
+for(let k in obj){
+obj[k]=obj[k]/count[k]
+}
 }
 
-// ===== 平均化 =====
-function calcAvg(obj){
-let result={}
-Object.entries(obj).forEach(([k,v])=>{
-result[k]= v.count ? v.sum/v.count : 0
-})
-return result
-}
-
-// ===== グラフ =====
-function drawChart(id,title,obj,isMonth=false){
+function draw(id,title,obj){
 
 let arr=Object.entries(obj)
-
-// 月だけ昇順、それ以外はランキング
-if(isMonth){
-arr.sort((a,b)=>Number(a[0]) - Number(b[0]))
-}else{
 arr.sort((a,b)=>b[1]-a[1])
-}
-
-if(arr.length===0) return
 
 let dataArr=[[title,"匹/h"]]
-arr.forEach(v=>dataArr.push([v[0],v[1]]))
+
+arr.slice(0,10).forEach(v=>{
+dataArr.push([v[0],Number(v[1].toFixed(2))])
+})
 
 let data=google.visualization.arrayToDataTable(dataArr)
-let chart=new google.visualization.ColumnChart(document.getElementById(id))
+
+let chart=new google.visualization.ColumnChart(
+document.getElementById(id)
+)
 
 chart.draw(data,{
 title:title,
-titleTextStyle:{color:"#7fffd4", fontSize:16, bold:true},
+titleTextStyle:{color:"#7fffd4"},
 backgroundColor:"transparent",
-legend:{
-position:"top",
-alignment:"end",
-textStyle:{color:"#7fffd4", fontSize:13}
-},
+legend:{textStyle:{color:"white"}},
 hAxis:{textStyle:{color:"white"}},
-vAxis:{textStyle:{color:"white"}, title:"匹/h"}
+vAxis:{textStyle:{color:"white"},title:"匹/h"}
 })
 
 }
