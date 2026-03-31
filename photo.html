@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -36,6 +35,10 @@ color:#7fffd4;
 text-decoration:none;
 }
 
+nav a.active{
+border-bottom:2px solid #7fffd4;
+}
+
 .container{
 max-width:1000px;
 margin:auto;
@@ -69,11 +72,13 @@ height:100%;
 background:rgba(0,0,0,0.9);
 justify-content:center;
 align-items:center;
+z-index:999;
 }
 
 .modal img{
 max-width:90%;
 max-height:90%;
+border-radius:10px;
 }
 
 </style>
@@ -81,15 +86,29 @@ max-height:90%;
 
 <body>
 
-<header>
-TABOSAN AYU PHOTO
-</header>
+<div id="common"></div>
 
-<nav>
-<a href="index.html">HOME</a>
-<a href="data.html">DATA</a>
-<a href="photo.html">PHOTO</a>
-</nav>
+<script>
+fetch("common.test.html")
+.then(res => res.text())
+.then(data => {
+
+document.getElementById("common").innerHTML = data;
+
+// active自動化（安全版）
+const links = document.querySelectorAll("nav a");
+links.forEach(link => {
+const href = link.getAttribute("href");
+if(href && location.href.includes(href)){
+link.classList.add("active");
+}
+});
+
+})
+.catch(err=>{
+console.error("共通HTML読み込み失敗", err);
+});
+</script>
 
 <div class="container">
 
@@ -112,23 +131,28 @@ TABOSAN AYU PHOTO
 
 <script>
 
+// DOM読み込み後に実行（重要）
+document.addEventListener("DOMContentLoaded", ()=>{
+
 const images=document.querySelectorAll(".gallery img");
 const modal=document.getElementById("modal");
 const modalImg=document.getElementById("modalImg");
 
 images.forEach(img=>{
-img.onclick=function(){
+img.addEventListener("click", ()=>{
 modal.style.display="flex";
-modalImg.src=this.src;
-}
+modalImg.src=img.src;
+});
 });
 
-modal.onclick=function(){
+// モーダル閉じる
+modal.addEventListener("click", ()=>{
 modal.style.display="none";
-}
+});
+
+});
 
 </script>
 
 </body>
 </html>
-```
