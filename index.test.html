@@ -9,25 +9,27 @@
 <style>
 body{font-family:Arial;background:#021018;color:white;margin:0;}
 
+/* ===== ヘッダー ===== */
 header{
 background:#041822;
 padding:25px;
 text-align:center;
-font-size:32px;
+font-size:40px;
 color:#7fffd4;
 }
 
 nav{
 text-align:center;
 background:#041822;
-padding:10px 0;
+padding:12px 0;
 }
 
 nav a{
 color:white;
-margin:0 15px;
+margin:0 18px;
 text-decoration:none;
 font-weight:bold;
+font-size:20px;
 }
 
 nav a.active{
@@ -40,42 +42,60 @@ margin:auto;
 padding:30px;
 }
 
-/* カード */
+/* ===== カード ===== */
 .cards{
 display:grid;
 grid-template-columns:repeat(5,1fr);
-gap:20px;
-margin-bottom:30px;
+gap:22px;
+margin-bottom:35px;
 }
 
 .card{
 background:#0b2435;
-padding:20px;
-border-radius:10px;
+padding:22px;
+border-radius:12px;
 text-align:center;
 }
 
-.card-title{color:#7fffd4;}
-.card-value{font-size:26px;font-weight:bold;}
+.card-title{
+color:#7fffd4;
+font-size:18px;
+}
 
-/* グラフ（ランキングと完全一致） */
+.card-value{
+font-size:28px;
+font-weight:bold;
+}
+
+/* ===== グリッド ===== */
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:25px;
+gap:28px;
 }
 
 .chart{
 background:#0b2435;
-padding:20px;
-border-radius:10px;
-height:320px;
+padding:22px;
+border-radius:12px;
+height:340px;
 }
 
+/* ===== 最近の釣果（←変更） ===== */
 .latest{
 background:#0b2435;
-padding:20px;
-border-radius:10px;
+padding:22px;
+border-radius:12px;
+}
+
+.latest h3{
+font-size:26px; /* ←変更 */
+color:#7fffd4;
+}
+
+.latest p{
+font-size:22px; /* ←変更 */
+margin:6px 0;
 }
 </style>
 </head>
@@ -192,7 +212,6 @@ showLatest(data)
 }
 
 function drawChart(id,title,obj,unit){
-
 let arr=Object.entries(obj)
 arr.sort((a,b)=>a[0]-b[0])
 
@@ -205,17 +224,16 @@ let chart=new google.visualization.ColumnChart(document.getElementById(id))
 
 chart.draw(data,{
 title:title,
-titleTextStyle:{color:"#7fffd4"},
+titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
 backgroundColor:"transparent",
 legend:{
 position:"top",
-alignment:"end",
-textStyle:{color:"white"}
+alignment:"end", /* ←変更（右上統一） */
+textStyle:{color:"#7fffd4", fontSize:14}
 },
-hAxis:{textStyle:{color:"white"}},
-vAxis:{textStyle:{color:"white"},title:unit}
+hAxis:{textStyle:{color:"white", fontSize:14}},
+vAxis:{textStyle:{color:"white"}, title:unit}
 })
-
 }
 
 function drawPie(id,title,obj){
@@ -228,8 +246,11 @@ let chart=new google.visualization.PieChart(document.getElementById(id))
 
 chart.draw(data,{
 title:title,
+titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
 backgroundColor:"transparent",
-legend:{textStyle:{color:"white"}}
+legend:{
+textStyle:{color:"#7fffd4", fontSize:14}
+}
 })
 }
 
