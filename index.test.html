@@ -65,32 +65,33 @@ font-size:28px;
 font-weight:bold;
 }
 
+/* 🔥ランキングと完全統一 */
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:28px;
+gap:25px;
 }
 
 .chart{
 background:#0b2435;
-padding:22px;
-border-radius:12px;
-height:340px;
+padding:20px;      /* ←統一 */
+border-radius:10px;/* ←統一 */
+height:320px;      /* ←統一 */
 }
 
 .latest{
 background:#0b2435;
-padding:22px;
-border-radius:12px;
+padding:20px;
+border-radius:10px;
 }
 
 .latest h3{
-font-size:26px;
+font-size:24px;
 color:#7fffd4;
 }
 
 .latest p{
-font-size:22px;
+font-size:20px;
 margin:6px 0;
 }
 </style>
@@ -223,12 +224,12 @@ title:title,
 titleTextStyle:{color:"#7fffd4",fontSize:18,bold:true},
 backgroundColor:"transparent",
 
-// 🔥ここだけ追加（HOME修正ポイント）
+/* 🔥ここが最終調整 */
 chartArea:{
 left:50,
-top:70,
+top:80,
 width:"60%",
-height:"60%"
+height:"55%"
 },
 
 legend:{
