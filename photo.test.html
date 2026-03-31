@@ -45,6 +45,7 @@ margin:auto;
 padding:40px;
 }
 
+/* サムネイル */
 .gallery{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
@@ -53,6 +54,8 @@ gap:20px;
 
 .gallery img{
 width:100%;
+height:200px;
+object-fit:cover;
 border-radius:10px;
 cursor:pointer;
 transition:0.3s;
@@ -62,6 +65,7 @@ transition:0.3s;
 transform:scale(1.05);
 }
 
+/* モーダル */
 .modal{
 display:none;
 position:fixed;
@@ -81,6 +85,21 @@ max-height:90%;
 border-radius:10px;
 }
 
+/* 左右ボタン */
+.modal button{
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+background:none;
+border:none;
+color:white;
+font-size:40px;
+cursor:pointer;
+}
+
+#prev{left:20px;}
+#next{right:20px;}
+
 </style>
 </head>
 
@@ -95,7 +114,6 @@ fetch("common.test.html")
 
 document.getElementById("common").innerHTML = data;
 
-// active自動化（安全版）
 const links = document.querySelectorAll("nav a");
 links.forEach(link => {
 const href = link.getAttribute("href");
@@ -104,9 +122,6 @@ link.classList.add("active");
 }
 });
 
-})
-.catch(err=>{
-console.error("共通HTML読み込み失敗", err);
 });
 </script>
 
@@ -114,40 +129,76 @@ console.error("共通HTML読み込み失敗", err);
 
 <h2>AYU GALLERY</h2>
 
-<div class="gallery">
-
-<img src="https://picsum.photos/400?1">
-<img src="https://picsum.photos/400?2">
-<img src="https://picsum.photos/400?3">
-<img src="https://picsum.photos/400?4">
+<div class="gallery" id="gallery"></div>
 
 </div>
 
-</div>
-
+<!-- モーダル -->
 <div class="modal" id="modal">
+<button id="prev">◀</button>
 <img id="modalImg">
+<button id="next">▶</button>
 </div>
 
 <script>
 
-// DOM読み込み後に実行（重要）
 document.addEventListener("DOMContentLoaded", ()=>{
 
+/* ========= ③フォルダ風データ ========= */
+const photos = [
+"2026-07-10/1.jpg",
+"2026-07-10/2.jpg",
+"2026-07-10/3.jpg",
+"2026-07-15/1.jpg",
+"2026-07-15/2.jpg"
+];
+
+/* ========= 生成 ========= */
+const gallery=document.getElementById("gallery");
+
+photos.forEach(src=>{
+const img=document.createElement("img");
+img.src="photos/"+src;
+gallery.appendChild(img);
+});
+
+/* ========= モーダル ========= */
 const images=document.querySelectorAll(".gallery img");
 const modal=document.getElementById("modal");
 const modalImg=document.getElementById("modalImg");
 
-images.forEach(img=>{
+let currentIndex=0;
+
+images.forEach((img,index)=>{
 img.addEventListener("click", ()=>{
 modal.style.display="flex";
 modalImg.src=img.src;
+currentIndex=index;
 });
 });
 
-// モーダル閉じる
+/* 次 */
+document.getElementById("next").onclick=()=>{
+currentIndex=(currentIndex+1)%images.length;
+modalImg.src=images[currentIndex].src;
+};
+
+/* 前 */
+document.getElementById("prev").onclick=()=>{
+currentIndex=(currentIndex-1+images.length)%images.length;
+modalImg.src=images[currentIndex].src;
+};
+
+/* クリックで閉じる */
 modal.addEventListener("click", ()=>{
 modal.style.display="none";
+});
+
+/* ========= ④ESCキー ========= */
+document.addEventListener("keydown", (e)=>{
+if(e.key==="Escape"){
+modal.style.display="none";
+}
 });
 
 });
