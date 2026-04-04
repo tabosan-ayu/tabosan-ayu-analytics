@@ -140,21 +140,48 @@ const gallery = document.getElementById("gallery");
 const modal = document.getElementById("modal");
 const modalImg = document.getElementById("modalImg");
 
-// ★ GitHub Pages対応ベースパス
+// GitHub Pages対応
 const BASE = location.pathname.includes("tabosan-ayu-analytics")
   ? "/tabosan-ayu-analytics/"
   : "/";
 
-// 日付グループ化
+// =====================
+// データ安全処理
+// =====================
 const groups = {};
+
 data.forEach(src => {
-const date = src.split("/")[1];
+
+try{
+
+if(!src) return;
+
+src = src.trim();
+
+const parts = src.split("/");
+
+// 形式チェック
+if(parts.length < 3) return;
+
+const date = parts[1];
+
 if(!groups[date]) groups[date] = [];
+
 groups[date].push(src);
+
+}catch(e){
+console.log("skip:", src);
+}
+
 });
 
-// 日付一覧
-Object.keys(groups).sort().reverse().forEach(date => {
+// =====================
+// 日付一覧表示
+// =====================
+Object.keys(groups)
+.sort()
+.reverse()
+.forEach(date => {
 
 const btn = document.createElement("div");
 btn.textContent = date;
@@ -166,7 +193,9 @@ gallery.appendChild(btn);
 
 });
 
+// =====================
 // 画像表示
+// =====================
 function showImages(date){
 
 gallery.innerHTML = "";
@@ -185,8 +214,12 @@ groups[date].forEach(src => {
 
 const img = document.createElement("img");
 
-// ★ ここが修正ポイント
+// ★絶対に正しいパス
 img.src = BASE + src;
+
+img.onerror = () => {
+console.log("画像エラー:", img.src);
+};
 
 img.onclick = () => {
 modal.style.display = "flex";
@@ -200,9 +233,14 @@ div.appendChild(img);
 gallery.appendChild(div);
 }
 
+// =====================
 // モーダル閉じる
+// =====================
 modal.onclick = () => modal.style.display = "none";
 
+})
+.catch(err => {
+console.error("JSON読み込み失敗", err);
 });
 
 </script>
