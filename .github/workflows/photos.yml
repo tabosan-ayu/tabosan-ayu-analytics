@@ -19,7 +19,7 @@ jobs:
       - name: Create JSON
         run: |
           echo "[" > photos.json
-          find photos -type f -name "*.jpg" | sed 's|photos/||' | awk '{print "\"" $0 "\","}' >> photos.json
+          find photos -type f -name "*.jpg" | awk '{print "\"" $0 "\","}' >> photos.json
           sed -i '$ s/,$//' photos.json
           echo "]" >> photos.json
 
