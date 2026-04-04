@@ -5,7 +5,6 @@
 <title>AYU PHOTO</title>
 
 <style>
-
 body{
 font-family:Arial;
 background:#021018;
@@ -99,7 +98,6 @@ max-width:90%;
 max-height:90%;
 border-radius:10px;
 }
-
 </style>
 </head>
 
@@ -142,6 +140,11 @@ const gallery = document.getElementById("gallery");
 const modal = document.getElementById("modal");
 const modalImg = document.getElementById("modalImg");
 
+// ★ GitHub Pages対応ベースパス
+const BASE = location.pathname.includes("tabosan-ayu-analytics")
+  ? "/tabosan-ayu-analytics/"
+  : "/";
+
 // 日付グループ化
 const groups = {};
 data.forEach(src => {
@@ -150,7 +153,7 @@ if(!groups[date]) groups[date] = [];
 groups[date].push(src);
 });
 
-// 日付一覧表示
+// 日付一覧
 Object.keys(groups).sort().reverse().forEach(date => {
 
 const btn = document.createElement("div");
@@ -181,7 +184,9 @@ div.className = "gallery";
 groups[date].forEach(src => {
 
 const img = document.createElement("img");
-img.src = src;
+
+// ★ ここが修正ポイント
+img.src = BASE + src;
 
 img.onclick = () => {
 modal.style.display = "flex";
