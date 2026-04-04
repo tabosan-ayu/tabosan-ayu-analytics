@@ -1,0 +1,28 @@
+name: Auto Photo List
+
+on:
+  push:
+    paths:
+      - 'photos/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create JSON
+        run: |
+          echo "[" > photos.json
+          find photos -type f -name "*.jpg" | sed 's|photos/||' | awk '{print "\"" $0 "\","}' >> photos.json
+          sed -i '$ s/,$//' photos.json
+          echo "]" >> photos.json
+
+      - name: Commit JSON
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add photos.json
+          git commit -m "auto update" || echo "no change"
+          git push
