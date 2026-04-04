@@ -20,25 +20,26 @@ jobs:
         run: |
           echo "{" > photos.json
 
-          find photos -type f \( -iname "*.jpg" -o -iname "*.png" \) | while read file; do
+          current=""
+
+          find photos -type f \( -iname "*.jpg" -o -iname "*.png" \) | sort | while read file; do
             dir=$(dirname "$file" | sed 's|photos/||')
             name=$(basename "$file")
-            echo "$dir|$name"
-          done | sort | awk -F'|' '
-          {
-            if ($1 != prev) {
-              if (NR != 1) print "],"
-              printf "\"%s\": [", $1
-              prev=$1
-            } else {
-              printf ","
-            }
-            printf "\"%s\"", $2
-          }
-          END {
-            print "]"
-          }' >> photos.json
 
+            if [ "$dir" != "$current" ]; then
+              if [ "$current" != "" ]; then
+                echo "] ," >> photos.json
+              fi
+              echo "\"$dir\": [" >> photos.json
+              current="$dir"
+            else
+              echo "," >> photos.json
+            fi
+
+            echo -n "\"$name\"" >> photos.json
+          done
+
+          echo "]" >> photos.json
           echo "}" >> photos.json
 
       - name: Commit JSON
