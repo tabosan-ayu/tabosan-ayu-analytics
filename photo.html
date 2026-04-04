@@ -95,7 +95,7 @@ fetch("common.test.html")
 
 document.getElementById("common").innerHTML = data;
 
-// active自動化（安全版）
+// active自動化
 const links = document.querySelectorAll("nav a");
 links.forEach(link => {
 const href = link.getAttribute("href");
@@ -104,9 +104,6 @@ link.classList.add("active");
 }
 });
 
-})
-.catch(err=>{
-console.error("共通HTML読み込み失敗", err);
 });
 </script>
 
@@ -114,14 +111,7 @@ console.error("共通HTML読み込み失敗", err);
 
 <h2>AYU GALLERY</h2>
 
-<div class="gallery">
-
-<img src="https://picsum.photos/400?1">
-<img src="https://picsum.photos/400?2">
-<img src="https://picsum.photos/400?3">
-<img src="https://picsum.photos/400?4">
-
-</div>
+<div class="gallery" id="gallery"></div>
 
 </div>
 
@@ -131,21 +121,30 @@ console.error("共通HTML読み込み失敗", err);
 
 <script>
 
-// DOM読み込み後に実行（重要）
-document.addEventListener("DOMContentLoaded", ()=>{
+// 自動画像読み込み
+fetch("photos.json")
+.then(res => res.json())
+.then(data => {
 
-const images=document.querySelectorAll(".gallery img");
-const modal=document.getElementById("modal");
-const modalImg=document.getElementById("modalImg");
+const gallery = document.getElementById("gallery");
+const modal = document.getElementById("modal");
+const modalImg = document.getElementById("modalImg");
 
-images.forEach(img=>{
+data.forEach(src => {
+
+const img = document.createElement("img");
+img.src = src;
+gallery.appendChild(img);
+
+// クリック拡大
 img.addEventListener("click", ()=>{
 modal.style.display="flex";
-modalImg.src=img.src;
-});
+modalImg.src = src;
 });
 
-// モーダル閉じる
+});
+
+// 閉じる
 modal.addEventListener("click", ()=>{
 modal.style.display="none";
 });
