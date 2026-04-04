@@ -155,10 +155,10 @@ if(!src) return;
 src = src.trim();
 
 // 日付抽出（安全）
-const match = src.match(/photos\/([^\/]+)\//);
-if(!match) return;
+const parts = src.split("/");
+if(parts.length < 3) return;
 
-const date = match[1];
+const date = parts[1];
 
 if(!groups[date]) groups[date] = [];
 
