@@ -2,40 +2,14 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>AYU PHOTO</title>
+<title>PHOTO</title>
 
 <style>
 body{
-font-family:Arial;
 background:#021018;
 color:white;
+font-family:Arial;
 margin:0;
-}
-
-header{
-text-align:center;
-padding:25px;
-font-size:28px;
-letter-spacing:4px;
-color:#7fffd4;
-background:#061520;
-}
-
-nav{
-display:flex;
-justify-content:center;
-gap:40px;
-background:#05121a;
-padding:10px;
-}
-
-nav a{
-color:#7fffd4;
-text-decoration:none;
-}
-
-nav a.active{
-border-bottom:2px solid #7fffd4;
 }
 
 .container{
@@ -50,71 +24,48 @@ grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
 gap:20px;
 }
 
-.folder{
-padding:30px;
-border:1px solid #7fffd4;
+.gallery img{
+width:100%;
 border-radius:10px;
-text-align:center;
-cursor:pointer;
-}
-
-.folder:hover{
-background:#0a2a38;
 }
 </style>
 </head>
 
 <body>
 
-<div id="common"></div>
-
-<script>
-fetch("common.test.html")
-.then(res => res.text())
-.then(data => {
-
-document.getElementById("common").innerHTML = data;
-
-const links = document.querySelectorAll("nav a");
-links.forEach(link => {
-const href = link.getAttribute("href");
-if(href && location.href.includes(href)){
-link.classList.add("active");
-}
-});
-
-});
-</script>
-
 <div class="container">
-<h2>AYU GALLERY</h2>
+<h2 id="title"></h2>
 <div class="gallery" id="gallery"></div>
 </div>
 
 <script>
 
-// フォルダ一覧表示
+// フォルダ取得
+const params = new URLSearchParams(location.search);
+const folder = params.get("folder");
+
+// タイトル表示
+document.getElementById("title").innerText = folder;
+
+// JSON読み込み
 fetch("photos.json")
 .then(res => res.json())
 .then(data => {
 
 const gallery = document.getElementById("gallery");
 
-Object.keys(data).forEach(folder => {
+// フォルダ内画像表示
+(data[folder] || []).forEach(file => {
 
-const div = document.createElement("div");
-div.className = "folder";
-div.innerText = folder;
+const img = document.createElement("img");
+img.src = "photos/" + folder + "/" + file;
 
-div.onclick = () => {
-location.href = "photo.html?folder=" + folder;
-};
-
-gallery.appendChild(div);
+gallery.appendChild(img);
 
 });
 
 });
+
 </script>
 
 </body>
