@@ -50,34 +50,16 @@ grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
 gap:20px;
 }
 
-.gallery img{
-width:100%;
+.folder{
+padding:30px;
+border:1px solid #7fffd4;
 border-radius:10px;
+text-align:center;
 cursor:pointer;
-transition:0.3s;
 }
 
-.gallery img:hover{
-transform:scale(1.05);
-}
-
-.modal{
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.9);
-justify-content:center;
-align-items:center;
-z-index:999;
-}
-
-.modal img{
-max-width:90%;
-max-height:90%;
-border-radius:10px;
+.folder:hover{
+background:#0a2a38;
 }
 </style>
 </head>
@@ -109,40 +91,30 @@ link.classList.add("active");
 <div class="gallery" id="gallery"></div>
 </div>
 
-<div class="modal" id="modal">
-<img id="modalImg">
-</div>
-
 <script>
 
-// JSON読み込み
+// フォルダ一覧表示
 fetch("photos.json")
 .then(res => res.json())
 .then(data => {
 
 const gallery = document.getElementById("gallery");
 
-data.forEach(src => {
+Object.keys(data).forEach(folder => {
 
-const img = document.createElement("img");
-img.src = "photos/" + src;   // ←ここが重要
+const div = document.createElement("div");
+div.className = "folder";
+div.innerText = folder;
 
-img.onclick = () => {
-document.getElementById("modal").style.display = "flex";
-document.getElementById("modalImg").src = img.src;
+div.onclick = () => {
+location.href = "photo.html?folder=" + folder;
 };
 
-gallery.appendChild(img);
+gallery.appendChild(div);
 
 });
 
 });
-
-// モーダル閉じる
-document.getElementById("modal").addEventListener("click", ()=>{
-document.getElementById("modal").style.display="none";
-});
-
 </script>
 
 </body>
