@@ -5,7 +5,6 @@
 <title>AYU PHOTO</title>
 
 <style>
-
 body{
 font-family:Arial;
 background:#021018;
@@ -80,7 +79,6 @@ max-width:90%;
 max-height:90%;
 border-radius:10px;
 }
-
 </style>
 </head>
 
@@ -107,11 +105,8 @@ link.classList.add("active");
 </script>
 
 <div class="container">
-
 <h2>AYU GALLERY</h2>
-
 <div class="gallery" id="gallery"></div>
-
 </div>
 
 <div class="modal" id="modal">
@@ -120,7 +115,7 @@ link.classList.add("active");
 
 <script>
 
-// JSONから自動生成（修正版）
+// JSON読み込み
 fetch("photos.json")
 .then(res => res.json())
 .then(data => {
@@ -130,7 +125,7 @@ const gallery = document.getElementById("gallery");
 data.forEach(src => {
 
 const img = document.createElement("img");
-img.src = src;   // ←ここが重要（修正済み）
+img.src = "photos/" + src;   // ←ここが重要
 
 img.onclick = () => {
 document.getElementById("modal").style.display = "flex";
