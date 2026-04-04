@@ -6,6 +6,9 @@ on:
       - 'photos/**'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,7 +19,7 @@ jobs:
       - name: Create JSON
         run: |
           echo "[" > photos.json
-          find photos -type f -name "*.jpg" | sed 's/.*/"&",/' >> photos.json
+          find photos -type f -name "*.jpg" | sed 's|photos/||' | awk '{print "\"" $0 "\","}' >> photos.json
           sed -i '$ s/,$//' photos.json
           echo "]" >> photos.json
 
@@ -25,5 +28,5 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add photos.json
-          git commit -m "fix json format" || true
+          git commit -m "auto update" || echo "no change"
           git push
