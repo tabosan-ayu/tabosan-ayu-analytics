@@ -120,7 +120,7 @@ link.classList.add("active");
 
 <script>
 
-// JSONから自動生成
+// JSONから自動生成（修正版）
 fetch("photos.json")
 .then(res => res.json())
 .then(data => {
@@ -130,7 +130,7 @@ const gallery = document.getElementById("gallery");
 data.forEach(src => {
 
 const img = document.createElement("img");
-img.src = "photos/" + src;
+img.src = src;   // ←ここが重要（修正済み）
 
 img.onclick = () => {
 document.getElementById("modal").style.display = "flex";
