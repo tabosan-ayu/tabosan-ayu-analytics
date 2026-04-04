@@ -132,51 +132,42 @@ link.classList.add("active");
 
 <script>
 
-fetch("photos.json")
-.then(res => res.json())
+fetch("photos.json?nocache=" + Date.now())
+.then(res => {
+if(!res.ok) throw new Error("JSON取得失敗");
+return res.json();
+})
 .then(data => {
 
 const gallery = document.getElementById("gallery");
 const modal = document.getElementById("modal");
 const modalImg = document.getElementById("modalImg");
 
-// GitHub Pages対応
-const BASE = location.pathname.includes("tabosan-ayu-analytics")
-  ? "/tabosan-ayu-analytics/"
-  : "/";
-
 // =====================
-// データ安全処理
+// グループ化
 // =====================
 const groups = {};
 
 data.forEach(src => {
 
-try{
-
 if(!src) return;
 
 src = src.trim();
 
-const parts = src.split("/");
+// 日付抽出（安全）
+const match = src.match(/photos\/([^\/]+)\//);
+if(!match) return;
 
-// 形式チェック
-if(parts.length < 3) return;
-
-const date = parts[1];
+const date = match[1];
 
 if(!groups[date]) groups[date] = [];
 
 groups[date].push(src);
 
-}catch(e){
-console.log("skip:", src);
-}
-
 });
 
 // =====================
-// 日付一覧表示
+// 日付一覧
 // =====================
 Object.keys(groups)
 .sort()
@@ -214,8 +205,8 @@ groups[date].forEach(src => {
 
 const img = document.createElement("img");
 
-// ★絶対に正しいパス
-img.src = BASE + src;
+// ★ここが最重要（固定パス）
+img.src = "/tabosan-ayu-analytics/" + src;
 
 img.onerror = () => {
 console.log("画像エラー:", img.src);
