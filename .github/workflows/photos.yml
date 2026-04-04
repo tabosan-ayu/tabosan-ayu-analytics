@@ -15,6 +15,7 @@ jobs:
 
       - name: Create JSON
         run: |
+          rm -f photos.json
           echo "[" > photos.json
           find photos -type f -name "*.jpg" | awk '{print "\"" $0 "\","}' >> photos.json
           sed -i '$ s/,$//' photos.json
@@ -25,5 +26,5 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add photos.json
-          git commit -m "auto update" || echo "no change"
+          git commit -m "force update" || true
           git push
