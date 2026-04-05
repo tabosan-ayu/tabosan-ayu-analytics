@@ -1,37 +1,32 @@
-- name: Create JSON
+- name: Safe JSON Build
   run: |
-    echo "{" > photos.json
+    set -e
 
-    first_dir=true
+    if [ ! -d photos ]; then
+      echo "{}" > photos.json
+      exit 0
+    fi
+
+    echo "{" > photos.json
 
     find photos -type f \( -iname "*.jpg" -o -iname "*.png" \) | sort | awk -F/ '
     {
-      dir=$2;
-      file=$3;
+      dir=$2; file=$3;
 
-      if (dir != current) {
-        if (NR > 1) {
-          printf "]"
-        }
-        if (NR > 1) {
-          printf ","
-        }
-        printf "\n\"%s\": [", dir
-        current=dir
-        first=1
+      if (!(dir in seen)) {
+        if (count > 0) printf "],";
+        printf "\n\"%s\":[", dir;
+        seen[dir]=1;
+        count++;
+        first=1;
       }
 
-      if (!first) {
-        printf ","
-      }
-
-      printf "\"%s\"", file
-      first=0
+      if (!first) printf ",";
+      printf "\"%s\"", file;
+      first=0;
     }
-    END {
-      if (NR > 0) {
-        printf "]\n"
-      }
+    END{
+      if(count>0) printf "]\n";
     }' >> photos.json
 
     echo "}" >> photos.json
