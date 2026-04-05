@@ -15,45 +15,55 @@ margin:0;
 .container{
 max-width:1000px;
 margin:auto;
-padding:80px 20px 40px; /* 上に余白追加（固定ボタン分） */
+padding:40px 20px;
 }
 
-/* ===== 戻るボタン（強化版） ===== */
-.back{
-position:fixed;
-top:20px;
-left:20px;
-z-index:1000;
+/* ===== 上部（戻る＋タイトル） ===== */
+.top-area{
+text-align:center;
+margin-bottom:30px;
+}
 
-padding:16px 32px;
+/* 戻る（中央・大きめ） */
+.back{
+display:inline-block;
+margin-bottom:20px;
+padding:14px 30px;
+font-size:18px;
+font-weight:bold;
+border-radius:10px;
 background:#061520;
 color:#7fffd4;
 border:none;
-border-radius:12px;
 cursor:pointer;
-
-font-size:20px;
-font-weight:bold;
-
-box-shadow:0 0 15px rgba(127,255,212,0.3);
+box-shadow:0 0 10px rgba(127,255,212,0.2);
 }
 
 .back:hover{
 background:#0a2a38;
 }
 
+/* タイトル（日付） */
+#title{
+font-size:30px;
+font-weight:bold;
+letter-spacing:2px;
+margin:0;
+}
+
 /* ===== 一覧 ===== */
 .list button{
 display:block;
 width:100%;
-margin:10px 0;
-padding:18px;
+margin:12px 0;
+padding:20px;
 background:#061520;
 color:#7fffd4;
 border:none;
 border-radius:10px;
 cursor:pointer;
-font-size:18px;
+font-size:22px;
+font-weight:bold;
 }
 
 .list button:hover{
@@ -102,11 +112,12 @@ border-radius:10px;
 
 <body>
 
-<button class="back" onclick="history.back()">← 戻る</button>
-
 <div class="container">
 
+<div class="top-area">
+<button class="back" onclick="history.back()">← 戻る</button>
 <h2 id="title"></h2>
+</div>
 
 <div id="content"></div>
 
@@ -118,7 +129,7 @@ border-radius:10px;
 
 <script>
 
-// URLパラメータ
+// URLパラメータ取得
 const params = new URLSearchParams(location.search);
 const folder = params.get("folder");
 
@@ -145,7 +156,7 @@ Object.keys(data)
 .forEach(f => {
 
 const btn = document.createElement("button");
-btn.textContent = f + " (" + data[f].length + "枚)";
+btn.textContent = f + "（" + data[f].length + "枚）";
 
 btn.onclick = () => {
 location.href = "photo.html?folder=" + f;
@@ -163,7 +174,7 @@ return;
 // 写真表示
 // =================
 
-title.innerText = folder + " (" + (data[folder]?.length || 0) + "枚)";
+title.innerText = folder + "（" + (data[folder]?.length || 0) + "枚）";
 
 if (!data[folder] || data[folder].length === 0){
 content.innerHTML = "写真なし";
@@ -179,7 +190,7 @@ const img = document.createElement("img");
 img.src = "photos/" + folder + "/" + file;
 img.loading = "lazy";
 
-// クリックで拡大
+// クリック拡大
 img.onclick = () => {
 document.getElementById("modal").style.display = "flex";
 document.getElementById("modalImg").src = img.src;
