@@ -1,51 +1,37 @@
-name: Auto Photo List
+- name: Create JSON
+  run: |
+    echo "{" > photos.json
 
-on:
-  push:
-    paths:
-      - 'photos/**'
-  workflow_dispatch:
+    first_dir=true
 
-permissions:
-  contents: write
+    find photos -type f \( -iname "*.jpg" -o -iname "*.png" \) | sort | awk -F/ '
+    {
+      dir=$2;
+      file=$3;
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+      if (dir != current) {
+        if (NR > 1) {
+          printf "]"
+        }
+        if (NR > 1) {
+          printf ","
+        }
+        printf "\n\"%s\": [", dir
+        current=dir
+        first=1
+      }
 
-    steps:
-      - uses: actions/checkout@v3
+      if (!first) {
+        printf ","
+      }
 
-      - name: Create JSON
-        run: |
-          echo "{" > photos.json
+      printf "\"%s\"", file
+      first=0
+    }
+    END {
+      if (NR > 0) {
+        printf "]\n"
+      }
+    }' >> photos.json
 
-          current=""
-
-          find photos -type f \( -iname "*.jpg" -o -iname "*.png" \) | sort | while read file; do
-            dir=$(dirname "$file" | sed 's|photos/||')
-            name=$(basename "$file")
-
-            if [ "$dir" != "$current" ]; then
-              if [ "$current" != "" ]; then
-                echo "] ," >> photos.json
-              fi
-              echo "\"$dir\": [" >> photos.json
-              current="$dir"
-            else
-              echo "," >> photos.json
-            fi
-
-            echo -n "\"$name\"" >> photos.json
-          done
-
-          echo "]" >> photos.json
-          echo "}" >> photos.json
-
-      - name: Commit JSON
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add photos.json
-          git commit -m "auto update photos.json" || echo "no change"
-          git push
+    echo "}" >> photos.json
