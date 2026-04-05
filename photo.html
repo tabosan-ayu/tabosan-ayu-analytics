@@ -25,11 +25,11 @@ text-align:center;
 margin-bottom:40px;
 }
 
-/* 戻る（left:30% + 中央補正） */
+/* 戻る（中央→右へオフセット） */
 .back{
 position:absolute;
-left:30%;
-transform:translateX(-50%);
+left:50%;
+transform:translateX(140px); /* ←ここで右に寄せる */
 
 padding:16px 36px;
 font-size:20px;
@@ -72,7 +72,6 @@ padding:26px;
 
 font-size:36px;
 font-weight:bold;
-letter-spacing:1px;
 
 background:#061520;
 color:#7fffd4;
@@ -172,10 +171,7 @@ Object.keys(data)
 
 const btn = document.createElement("button");
 
-btn.innerHTML = `
-  <div>${f}</div>
-  <div style="font-size:16px;color:#aaa">${data[f].length}枚</div>
-`;
+btn.innerHTML = `${f}（${data[f].length}枚）`;
 
 btn.onclick = () => {
 location.href = "photo.html?folder=" + f;
@@ -191,7 +187,7 @@ return;
 
 // ===== 写真 =====
 
-title.innerText = folder + "（" + (data[folder]?.length || 0) + "枚）";
+title.innerText = `${folder}（${data[folder]?.length || 0}枚）`;
 
 if (!data[folder] || data[folder].length === 0){
 content.innerHTML = "写真なし";
