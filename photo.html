@@ -21,16 +21,18 @@ padding:40px 20px;
 /* ===== 上部 ===== */
 .top-area{
 position:relative;
-text-align:center;
+display:flex;
+flex-direction:column;
+align-items:center;
 margin-bottom:40px;
-padding-top:40px; /* ←タイトル下げ */
+padding-top:20px;
 }
 
-/* 戻る（右寄せ） */
+/* 戻る（右上） */
 .back{
 position:absolute;
 top:0;
-right:20px;
+right:40px;
 
 padding:16px 36px;
 font-size:20px;
@@ -49,11 +51,11 @@ box-shadow:0 0 15px rgba(127,255,212,0.3);
 background:#0a2a38;
 }
 
-/* タイトル（3倍） */
+/* タイトル（3倍＋下） */
 #title{
-font-size:48px;   /* ←3倍 */
+font-size:48px;
 font-weight:bold;
-margin:0;
+margin-top:50px;
 }
 
 /* ===== 一覧（カード） ===== */
@@ -171,8 +173,6 @@ Object.keys(data)
 .forEach(f => {
 
 const btn = document.createElement("button");
-
-// 日付＋枚数（同サイズ）
 btn.innerHTML = `${f}（${data[f].length}枚）`;
 
 btn.onclick = () => {
@@ -189,7 +189,6 @@ return;
 
 // ===== 写真 =====
 
-// 日付＋枚数（同サイズ）
 title.innerText = `${folder}（${data[folder]?.length || 0}枚）`;
 
 if (!data[folder] || data[folder].length === 0){
