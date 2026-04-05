@@ -19,7 +19,6 @@ padding:40px 20px;
 }
 
 .top-area{
-position:relative;
 display:flex;
 flex-direction:column;
 align-items:center;
@@ -27,11 +26,12 @@ margin-bottom:40px;
 padding-top:20px;
 }
 
-/* ★ 左固定に変更 */
+/* ★ ここが最重要（完全固定） */
 .back{
-position:absolute;
-top:0;
+position:fixed;
+top:20px;
 left:20px;
+z-index:1000;
 
 padding:16px 36px;
 font-size:20px;
@@ -127,10 +127,11 @@ border-radius:10px;
 
 <body>
 
+<button class="back" onclick="history.back()">← 戻る</button>
+
 <div class="container">
 
 <div class="top-area">
-<button class="back" onclick="history.back()">← 戻る</button>
 <h2 id="title">読み込み中...</h2>
 </div>
 
