@@ -26,7 +26,7 @@ margin-bottom:40px;
 padding-top:20px;
 }
 
-/* ★ ここが最重要（完全固定） */
+/* 戻る（固定） */
 .back{
 position:fixed;
 top:20px;
@@ -56,6 +56,7 @@ font-weight:bold;
 margin-top:50px;
 }
 
+/* 一覧 */
 .list{
 display:flex;
 flex-direction:column;
@@ -87,23 +88,28 @@ transform:scale(1.03);
 background:#0a2a38;
 }
 
+/* ★ 改善：小さめ＋枚数増対応 */
 .gallery{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:16px;
 }
 
+/* ★ 改善：hoverで大きく */
 .gallery img{
 width:100%;
 border-radius:10px;
 cursor:zoom-in;
-transition:0.2s;
+transition:0.25s;
 }
 
 .gallery img:hover{
-transform:scale(1.05);
+transform:scale(1.2);
+position:relative;
+z-index:10;
 }
 
+/* モーダル */
 .modal{
 display:none;
 position:fixed;
@@ -151,7 +157,7 @@ const folder = params.get("folder");
 const content = document.getElementById("content");
 const title = document.getElementById("title");
 
-// ===== データ取得 =====
+// データ取得
 fetch("photos.json?v=" + Date.now())
 .then(res => {
   if(!res.ok) throw new Error("JSON取得失敗");
@@ -159,7 +165,7 @@ fetch("photos.json?v=" + Date.now())
 })
 .then(data => {
 
-// ===== 一覧 =====
+// 一覧
 if (!folder) {
 
 title.innerText = "PHOTO一覧";
@@ -187,8 +193,7 @@ content.appendChild(list);
 return;
 }
 
-// ===== 写真 =====
-
+// 写真
 title.innerText = `${folder}（${data[folder]?.length || 0}枚）`;
 
 if (!data[folder] || data[folder].length === 0){
