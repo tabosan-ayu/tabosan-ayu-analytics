@@ -27,22 +27,28 @@ margin-bottom:40px;
 padding-top:20px;
 }
 
+/* ★ 左固定に変更 */
 .back{
 position:absolute;
 top:0;
-right:40px;
+left:20px;
+
 padding:16px 36px;
 font-size:20px;
 font-weight:bold;
+
 background:#061520;
 color:#7fffd4;
 border:none;
 border-radius:12px;
 cursor:pointer;
+
 box-shadow:0 0 15px rgba(127,255,212,0.3);
 }
 
-.back:hover{background:#0a2a38;}
+.back:hover{
+background:#0a2a38;
+}
 
 #title{
 font-size:48px;
@@ -60,15 +66,19 @@ align-items:center;
 width:60%;
 min-width:300px;
 max-width:500px;
+
 margin:16px 0;
 padding:26px;
+
 font-size:36px;
 font-weight:bold;
+
 background:#061520;
 color:#7fffd4;
 border:none;
 border-radius:14px;
 cursor:pointer;
+
 transition:0.2s;
 }
 
@@ -137,13 +147,6 @@ border-radius:10px;
 const params = new URLSearchParams(location.search);
 const folder = params.get("folder");
 
-// 戻る位置変更
-if (folder) {
-  const back = document.querySelector(".back");
-  back.style.left = "20px";
-  back.style.right = "auto";
-}
-
 const content = document.getElementById("content");
 const title = document.getElementById("title");
 
@@ -201,7 +204,6 @@ const img = document.createElement("img");
 img.src = "photos/" + folder + "/" + file;
 img.loading = "lazy";
 
-// 画像エラー対策
 img.onerror = () => {
 img.style.display = "none";
 };
