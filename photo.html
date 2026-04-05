@@ -28,7 +28,7 @@ margin-bottom:40px;
 padding-top:20px;
 }
 
-/* 戻る（右上） */
+/* 戻る（デフォルト：右上） */
 .back{
 position:absolute;
 top:0;
@@ -51,7 +51,7 @@ box-shadow:0 0 15px rgba(127,255,212,0.3);
 background:#0a2a38;
 }
 
-/* タイトル（3倍＋下） */
+/* タイトル */
 #title{
 font-size:48px;
 font-weight:bold;
@@ -153,6 +153,14 @@ border-radius:10px;
 const params = new URLSearchParams(location.search);
 const folder = params.get("folder");
 
+// ===== 戻る位置切替 =====
+if (folder) {
+  const back = document.querySelector(".back");
+  back.style.left = "20px";
+  back.style.right = "auto";
+}
+
+// ===== データ取得 =====
 fetch("photos.json")
 .then(res => res.json())
 .then(data => {
