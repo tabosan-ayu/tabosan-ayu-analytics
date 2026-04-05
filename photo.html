@@ -15,28 +15,52 @@ margin:0;
 .container{
 max-width:1000px;
 margin:auto;
-padding:40px;
+padding:80px 20px 40px; /* 上に余白追加（固定ボタン分） */
 }
 
-/* 一覧ボタン */
+/* ===== 戻るボタン（強化版） ===== */
+.back{
+position:fixed;
+top:20px;
+left:20px;
+z-index:1000;
+
+padding:16px 32px;
+background:#061520;
+color:#7fffd4;
+border:none;
+border-radius:12px;
+cursor:pointer;
+
+font-size:20px;
+font-weight:bold;
+
+box-shadow:0 0 15px rgba(127,255,212,0.3);
+}
+
+.back:hover{
+background:#0a2a38;
+}
+
+/* ===== 一覧 ===== */
 .list button{
 display:block;
 width:100%;
 margin:10px 0;
-padding:15px;
+padding:18px;
 background:#061520;
 color:#7fffd4;
 border:none;
-border-radius:8px;
+border-radius:10px;
 cursor:pointer;
-font-size:16px;
+font-size:18px;
 }
 
 .list button:hover{
 background:#0a2a38;
 }
 
-/* ギャラリー */
+/* ===== ギャラリー ===== */
 .gallery{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
@@ -46,7 +70,7 @@ gap:20px;
 .gallery img{
 width:100%;
 border-radius:10px;
-cursor:pointer;
+cursor:zoom-in;
 transition:0.2s;
 }
 
@@ -54,7 +78,7 @@ transition:0.2s;
 transform:scale(1.05);
 }
 
-/* モーダル */
+/* ===== モーダル ===== */
 .modal{
 display:none;
 position:fixed;
@@ -73,29 +97,14 @@ max-width:90%;
 max-height:90%;
 border-radius:10px;
 }
-
-/* 戻る */
-.back{
-margin-bottom:20px;
-padding:10px 20px;
-background:#061520;
-color:#7fffd4;
-border:none;
-border-radius:5px;
-cursor:pointer;
-}
-
-.back:hover{
-background:#0a2a38;
-}
 </style>
 </head>
 
 <body>
 
-<div class="container">
-
 <button class="back" onclick="history.back()">← 戻る</button>
+
+<div class="container">
 
 <h2 id="title"></h2>
 
@@ -109,7 +118,7 @@ background:#0a2a38;
 
 <script>
 
-// パラメータ取得
+// URLパラメータ
 const params = new URLSearchParams(location.search);
 const folder = params.get("folder");
 
@@ -119,21 +128,24 @@ fetch("photos.json")
 .then(data => {
 
 const content = document.getElementById("content");
+const title = document.getElementById("title");
 
-// =====================
-// 一覧表示
-// =====================
+// =================
+// 一覧
+// =================
 if (!folder) {
 
-document.getElementById("title").innerText = "PHOTO一覧";
+title.innerText = "PHOTO一覧";
 
 const list = document.createElement("div");
 list.className = "list";
 
-Object.keys(data).forEach(f => {
+Object.keys(data)
+.sort((a,b)=>b.localeCompare(a))
+.forEach(f => {
 
 const btn = document.createElement("button");
-btn.textContent = f;
+btn.textContent = f + " (" + data[f].length + "枚)";
 
 btn.onclick = () => {
 location.href = "photo.html?folder=" + f;
@@ -147,21 +159,27 @@ content.appendChild(list);
 return;
 }
 
-// =====================
+// =================
 // 写真表示
-// =====================
+// =================
 
-document.getElementById("title").innerText = folder;
+title.innerText = folder + " (" + (data[folder]?.length || 0) + "枚)";
+
+if (!data[folder] || data[folder].length === 0){
+content.innerHTML = "写真なし";
+return;
+}
 
 const gallery = document.createElement("div");
 gallery.className = "gallery";
 
-(data[folder] || []).forEach(file => {
+data[folder].forEach(file => {
 
 const img = document.createElement("img");
 img.src = "photos/" + folder + "/" + file;
+img.loading = "lazy";
 
-// クリック拡大
+// クリックで拡大
 img.onclick = () => {
 document.getElementById("modal").style.display = "flex";
 document.getElementById("modalImg").src = img.src;
@@ -178,6 +196,13 @@ content.appendChild(gallery);
 // モーダル閉じる
 document.getElementById("modal").addEventListener("click", ()=>{
 document.getElementById("modal").style.display="none";
+});
+
+// Escキーで閉じる
+document.addEventListener("keydown", e=>{
+if(e.key==="Escape"){
+document.getElementById("modal").style.display="none";
+}
 });
 
 </script>
