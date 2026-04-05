@@ -18,52 +18,57 @@ margin:auto;
 padding:40px 20px;
 }
 
-/* ===== 上部（戻る＋タイトル） ===== */
+/* ===== 上部（中央） ===== */
 .top-area{
 text-align:center;
-margin-bottom:30px;
+margin-bottom:40px;
 }
 
-/* 戻る（中央・大きめ） */
+/* 戻る（中央） */
 .back{
 display:inline-block;
-margin-bottom:20px;
-padding:14px 30px;
-font-size:18px;
+margin-bottom:25px;
+
+padding:16px 36px;
+font-size:20px;
 font-weight:bold;
-border-radius:10px;
+
 background:#061520;
 color:#7fffd4;
 border:none;
+border-radius:12px;
 cursor:pointer;
-box-shadow:0 0 10px rgba(127,255,212,0.2);
+
+box-shadow:0 0 15px rgba(127,255,212,0.3);
 }
 
 .back:hover{
 background:#0a2a38;
 }
 
-/* タイトル（日付） */
+/* タイトル */
 #title{
-font-size:30px;
-font-weight:bold;
-letter-spacing:2px;
+font-size:22px;
 margin:0;
+opacity:0.8;
 }
 
-/* ===== 一覧 ===== */
+/* ===== 一覧（日付強調） ===== */
 .list button{
 display:block;
 width:100%;
-margin:12px 0;
-padding:20px;
+margin:16px 0;
+padding:26px;
+
+font-size:36px;   /* ←3倍 */
+font-weight:bold;
+letter-spacing:1px;
+
 background:#061520;
 color:#7fffd4;
 border:none;
-border-radius:10px;
+border-radius:14px;
 cursor:pointer;
-font-size:22px;
-font-weight:bold;
 }
 
 .list button:hover{
@@ -129,11 +134,9 @@ border-radius:10px;
 
 <script>
 
-// URLパラメータ取得
 const params = new URLSearchParams(location.search);
 const folder = params.get("folder");
 
-// JSON取得
 fetch("photos.json")
 .then(res => res.json())
 .then(data => {
@@ -141,9 +144,7 @@ fetch("photos.json")
 const content = document.getElementById("content");
 const title = document.getElementById("title");
 
-// =================
-// 一覧
-// =================
+// ===== 一覧 =====
 if (!folder) {
 
 title.innerText = "PHOTO一覧";
@@ -156,7 +157,11 @@ Object.keys(data)
 .forEach(f => {
 
 const btn = document.createElement("button");
-btn.textContent = f + "（" + data[f].length + "枚）";
+
+btn.innerHTML = `
+  <div>${f}</div>
+  <div style="font-size:16px;color:#aaa">${data[f].length}枚</div>
+`;
 
 btn.onclick = () => {
 location.href = "photo.html?folder=" + f;
@@ -170,9 +175,7 @@ content.appendChild(list);
 return;
 }
 
-// =================
-// 写真表示
-// =================
+// ===== 写真 =====
 
 title.innerText = folder + "（" + (data[folder]?.length || 0) + "枚）";
 
@@ -190,7 +193,6 @@ const img = document.createElement("img");
 img.src = "photos/" + folder + "/" + file;
 img.loading = "lazy";
 
-// クリック拡大
 img.onclick = () => {
 document.getElementById("modal").style.display = "flex";
 document.getElementById("modalImg").src = img.src;
@@ -209,7 +211,7 @@ document.getElementById("modal").addEventListener("click", ()=>{
 document.getElementById("modal").style.display="none";
 });
 
-// Escキーで閉じる
+// Escで閉じる
 document.addEventListener("keydown", e=>{
 if(e.key==="Escape"){
 document.getElementById("modal").style.display="none";
