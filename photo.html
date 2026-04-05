@@ -18,16 +18,18 @@ margin:auto;
 padding:40px 20px;
 }
 
-/* ===== 上部（中央） ===== */
+/* ===== 上部 ===== */
 .top-area{
+position:relative;
 text-align:center;
 margin-bottom:40px;
 }
 
-/* 戻る（中央） */
+/* 戻る（left:30% + 中央補正） */
 .back{
-display:inline-block;
-margin-bottom:25px;
+position:absolute;
+left:30%;
+transform:translateX(-50%);
 
 padding:16px 36px;
 font-size:20px;
@@ -53,14 +55,22 @@ margin:0;
 opacity:0.8;
 }
 
-/* ===== 一覧（日付強調） ===== */
+/* ===== 一覧（カードUI） ===== */
+.list{
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
 .list button{
-display:block;
-width:100%;
+width:60%;
+min-width:300px;
+max-width:500px;
+
 margin:16px 0;
 padding:26px;
 
-font-size:36px;   /* ←3倍 */
+font-size:36px;
 font-weight:bold;
 letter-spacing:1px;
 
@@ -69,9 +79,13 @@ color:#7fffd4;
 border:none;
 border-radius:14px;
 cursor:pointer;
+
+box-shadow:0 0 15px rgba(0,255,200,0.08);
+transition:0.2s;
 }
 
 .list button:hover{
+transform:scale(1.03);
 background:#0a2a38;
 }
 
