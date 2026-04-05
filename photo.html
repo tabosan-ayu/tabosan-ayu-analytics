@@ -18,6 +18,25 @@ margin:auto;
 padding:40px;
 }
 
+/* 一覧ボタン */
+.list button{
+display:block;
+width:100%;
+margin:10px 0;
+padding:15px;
+background:#061520;
+color:#7fffd4;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+}
+
+.list button:hover{
+background:#0a2a38;
+}
+
+/* ギャラリー */
 .gallery{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
@@ -28,13 +47,14 @@ gap:20px;
 width:100%;
 border-radius:10px;
 cursor:pointer;
-transition:0.3s;
+transition:0.2s;
 }
 
 .gallery img:hover{
 transform:scale(1.05);
 }
 
+/* モーダル */
 .modal{
 display:none;
 position:fixed;
@@ -54,6 +74,7 @@ max-height:90%;
 border-radius:10px;
 }
 
+/* 戻る */
 .back{
 margin-bottom:20px;
 padding:10px 20px;
@@ -74,11 +95,11 @@ background:#0a2a38;
 
 <div class="container">
 
-<button class="back" onclick="location.href='photo.html'">← 戻る</button>
+<button class="back" onclick="history.back()">← 戻る</button>
 
 <h2 id="title"></h2>
 
-<div class="gallery" id="gallery"></div>
+<div id="content"></div>
 
 </div>
 
@@ -88,26 +109,59 @@ background:#0a2a38;
 
 <script>
 
-// フォルダ取得
+// パラメータ取得
 const params = new URLSearchParams(location.search);
 const folder = params.get("folder");
 
-// タイトル
-document.getElementById("title").innerText = folder;
-
-// JSON読み込み
+// JSON取得
 fetch("photos.json")
 .then(res => res.json())
 .then(data => {
 
-const gallery = document.getElementById("gallery");
+const content = document.getElementById("content");
+
+// =====================
+// 一覧表示
+// =====================
+if (!folder) {
+
+document.getElementById("title").innerText = "PHOTO一覧";
+
+const list = document.createElement("div");
+list.className = "list";
+
+Object.keys(data).forEach(f => {
+
+const btn = document.createElement("button");
+btn.textContent = f;
+
+btn.onclick = () => {
+location.href = "photo.html?folder=" + f;
+};
+
+list.appendChild(btn);
+
+});
+
+content.appendChild(list);
+return;
+}
+
+// =====================
+// 写真表示
+// =====================
+
+document.getElementById("title").innerText = folder;
+
+const gallery = document.createElement("div");
+gallery.className = "gallery";
 
 (data[folder] || []).forEach(file => {
 
 const img = document.createElement("img");
 img.src = "photos/" + folder + "/" + file;
 
-// クリックで拡大
+// クリック拡大
 img.onclick = () => {
 document.getElementById("modal").style.display = "flex";
 document.getElementById("modalImg").src = img.src;
@@ -116,6 +170,8 @@ document.getElementById("modalImg").src = img.src;
 gallery.appendChild(img);
 
 });
+
+content.appendChild(gallery);
 
 });
 
