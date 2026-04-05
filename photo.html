@@ -12,6 +12,34 @@ font-family:Arial;
 margin:0;
 }
 
+/* ヘッダー */
+header{
+background:#041822;
+padding:25px;
+text-align:center;
+font-size:40px;
+color:#7fffd4;
+}
+
+nav{
+text-align:center;
+background:#041822;
+padding:12px 0;
+}
+
+nav a{
+color:white;
+margin:0 18px;
+text-decoration:none;
+font-weight:bold;
+font-size:20px;
+}
+
+nav a.active{
+color:#7fffd4;
+}
+
+/* コンテナ */
 .container{
 max-width:1000px;
 margin:auto;
@@ -27,7 +55,7 @@ margin-bottom:40px;
 padding-top:20px;
 }
 
-/* ← 元のまま（ここ触らない） */
+/* 戻る（写真ページのみ） */
 .back{
 position:absolute;
 top:0;
@@ -56,6 +84,7 @@ font-weight:bold;
 margin-top:50px;
 }
 
+/* 一覧 */
 .list{
 display:flex;
 flex-direction:column;
@@ -87,7 +116,7 @@ transform:scale(1.03);
 background:#0a2a38;
 }
 
-/* ★ここだけ変更（写真サイズ調整） */
+/* 写真 */
 .gallery{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
@@ -107,6 +136,7 @@ position:relative;
 z-index:10;
 }
 
+/* モーダル */
 .modal{
 display:none;
 position:fixed;
@@ -130,10 +160,20 @@ border-radius:10px;
 
 <body>
 
+<header>TABOSAN AYU ANALYTICS LAB</header>
+
+<nav>
+<a href="index.html">HOME</a>
+<a href="ranking.html">RANKING</a>
+<a href="efficiency.html">EFFICIENCY</a>
+<a href="photo.html" class="active">PHOTO</a>
+</nav>
+
 <div class="container">
 
 <div class="top-area">
-<button class="back" onclick="history.back()">← 戻る</button>
+<!-- ★戻るはJSで制御 -->
+<button class="back" id="backBtn" onclick="history.back()">← 戻る</button>
 <h2 id="title">読み込み中...</h2>
 </div>
 
@@ -152,6 +192,12 @@ const folder = params.get("folder");
 
 const content = document.getElementById("content");
 const title = document.getElementById("title");
+const backBtn = document.getElementById("backBtn");
+
+// ★ 一覧では戻るを消す（安全）
+if (!folder) {
+  backBtn.style.display = "none";
+}
 
 // データ取得
 fetch("photos.json?v=" + Date.now())
@@ -189,7 +235,7 @@ content.appendChild(list);
 return;
 }
 
-// 写真
+// 写真ページ（ここは触らない）
 title.innerText = `${folder}（${data[folder]?.length || 0}枚）`;
 
 if (!data[folder] || data[folder].length === 0){
